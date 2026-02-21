@@ -1,0 +1,159 @@
+.authForm {
+  width: 460px;
+  text-align: left;
+  border-radius: 24px;
+  padding: 32px 28px;
+
+  // 核心玻璃效果增强
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7); // 更亮的边框
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), // 更柔和的阴影
+    inset 0 1px 2px rgba(255, 255, 255, 0.8); // 内部高光
+  transition: all 0.3s ease;
+
+  // 悬停时玻璃感增强
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.65);
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12), inset 0 1px 3px rgba(255, 255, 255, 0.9);
+  }
+
+  // 标题样式
+  .title {
+    margin: 0 0 28px 0;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    color: #1e2b37;
+    text-align: center;
+    position: relative;
+  }
+
+  // 表单项容器
+  .arco-form-item {
+    margin-bottom: 22px;
+
+    // 最后一项（按钮）特殊处理
+    &:last-of-type {
+      margin-bottom: 16px;
+    }
+  }
+
+  // 修复标签列对齐
+  .arco-col.arco-col-5.arco-form-label-item {
+    text-align: left;
+
+    // 标签文字样式
+    .arco-form-item-label {
+      color: #2c3e50;
+      font-weight: 500;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+  }
+
+  // 输入框样式 - 更融入玻璃感
+  input {
+    background: rgba(255, 255, 255, 0.3) !important; // 半透明背景
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    border-radius: 16px !important; // 更大圆角
+    height: 44px;
+    font-size: 15px;
+    color: #1e2b37;
+    transition: all 0.2s ease;
+
+    // 占位符样式
+    &::placeholder {
+      color: rgba(30, 43, 55, 0.4);
+      font-size: 14px;
+    }
+
+    // 悬停状态
+    &:hover {
+      background: rgba(255, 255, 255, 0.5) !important;
+      border-color: rgba(var(--primary-6), 0.6) !important;
+    }
+
+    // 聚焦状态
+    &:focus {
+      background: rgba(255, 255, 255, 0.7) !important;
+      border-color: rgb(var(--primary-6)) !important;
+      box-shadow: 0 4px 12px rgba(var(--primary-6), 0.2);
+    }
+  }
+
+  // 按钮样式
+  .arco-btn {
+    width: 102px;
+    height: 48px;
+    border-radius: 15px !important; // 超大圆角
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    color: #1e2b37;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: rgb(var(--primary-6)) !important;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8));
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    &:active {
+      transform: translateY(0);
+      background: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  // 底部选项区域
+  .authOption {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding: 0 8px;
+    font-size: 14px;
+
+    .forgetPsd,
+    .changeAuth {
+      cursor: pointer;
+      color: rgba(30, 43, 55, 0.7);
+      transition: all 0.2s ease;
+      position: relative;
+
+      // 悬停效果
+      &:hover {
+        color: rgb(var(--primary-6));
+
+        // 下划线动画
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 100%;
+          height: 1px;
+          background: rgb(var(--primary-6));
+          animation: slideIn 0.3s ease;
+        }
+      }
+    }
+  }
+
+  // 动画定义
+  @keyframes slideIn {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+
+    to {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+}
