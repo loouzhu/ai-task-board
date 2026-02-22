@@ -1,0 +1,25 @@
+.taskList {
+  border: 1px solid #ccc;
+  padding: 8px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+
+  .data {
+    overflow-y: scroll;
+    flex: 1;
+    margin: 8px 0;
+    scrollbar-width: none;
+
+    .taskItem {
+      display: flex;
+      justify-content: space-between;
+      height: 30px;
+      line-height: 30px;
+      border: 1px solid #ccc;
+      padding: 0 5px;
+      border-radius: 5px;
+      margin: 5px 0;
+    }
+  }
+}

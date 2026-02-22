@@ -1,0 +1,33 @@
+.describe {
+  padding: 8px;
+  padding-top: 0;
+  border: 1px solid rgb(199, 199, 199);
+
+  .part {
+    position: relative;
+    padding: 8px 0 20px 0;
+
+    .title {
+      margin-bottom: 6px;
+    }
+
+    .detail {
+      resize: vertical;
+      width: 100%;
+      min-height: 82px;
+      max-height: 189px;
+      padding: 5px;
+      border: 1px solid rgba(188, 188, 188, 0.856);
+    }
+  }
+
+  .part:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+  }
+}
