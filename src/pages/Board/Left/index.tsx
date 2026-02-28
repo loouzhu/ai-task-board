@@ -15,7 +15,7 @@ export default function LeftSide() {
     <Sider
       className="options"
       style={{
-        width: 230,
+        width: 200,
       }}
     >
       <Menu defaultOpenKeys={["1"]} defaultSelectedKeys={["0_1"]}>

@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     children: [
       {
         path:"/",
-        element: <Navigate to="/board" replace />
+        element: <Navigate to="/auth" replace />
       },
       // 主看板
       {
