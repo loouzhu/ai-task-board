@@ -36,13 +36,14 @@ const AuthForm = () => {
   const usernameRules = [
     { required: true, message: "请输入用户名" },
     { minLength: 3, message: "用户名至少3个字符" },
-    { maxLength: 20, message: "用户名不能超过20个字符" },
+    { maxLength: 8, message: "用户名不能超过8个字符" },
   ];
 
   // 密码验证规则
   const passwordRules = [
     { required: true, message: "请输入密码" },
     { minLength: 6, message: "密码长度不能小于6位" },
+    { maxLength: 20, message: "密码长度不能超过20个字符" },
   ];
 
   // 确认密码验证规则 - 纯前端验证
@@ -51,7 +52,7 @@ const AuthForm = () => {
     {
       validator: (
         value: string | undefined,
-        callback: (error?: React.ReactNode) => void
+        callback: (error?: React.ReactNode) => void,
       ) => {
         if (value && value !== form.getFieldValue("password")) {
           callback("两次输入的密码不一致");
@@ -65,47 +66,37 @@ const AuthForm = () => {
   // 处理表单提交
   const handleSubmit = async () => {
     try {
-      // 1. 前端验证所有字段
       const values = await form.validate();
-
-      // 2. 验证通过后，准备发送到后端的数据
-      //    注意：只发送 username 和 password，不发送 confirmPassword
       const submitData = {
         username: values.username,
         password: values.password,
       };
-
-      console.log("提交到后端的数据:", submitData); // { username: 'xxx', password: 'xxx' }
-
-      // 3. 设置加载状态
+      //console.log("提交到后端的数据:", submitData);
       setLoading(true);
-
-      // 4. 根据不同模式调用不同接口
       let response;
       if (mode === "login") {
-        // 调用登录接口
         response = await login(submitData);
-        if (response.status===200) {
+        if (response.status === 200) {
           Message.success("登录成功！");
-          // 存储token
-          // localStorage.setItem("token", response);
           navigate("/board");
         }
-      } else if (mode === "register") {
-        // 调用注册接口 - 只传 username 和 password
+        if (response.status === 400) Message.error("用户不存在");
+        if (response.status === 401) Message.error("用户名和密码不匹配");
+      }
+      if (mode === "register") {
         response = await register(submitData);
-        if (response.status===200) {
+        if (response.status === 200) {
           Message.success("注册成功！请登录");
           setMode("login");
           form.resetFields();
         }
-      } else if (mode === "findPsd") {
+      }
+      if (mode === "findPsd") {
         Message.info("修改密码功能开发中");
         setMode("login");
         form.resetFields();
       }
     } catch (error) {
-      // 表单验证失败，不会请求后端
       console.log("表单验证失败", error);
       Message.warning("请正确填写表单信息");
     } finally {

@@ -1,23 +1,19 @@
 import React from "react";
-import { Layout,Menu } from "@arco-design/web-react";
+import { Layout, Menu } from "@arco-design/web-react";
 import {
   IconCalendar,
   IconPlus,
   IconPen,
   IconDelete,
 } from "@arco-design/web-react/icon";
+import "./index.less";
 
 export default function LeftSide() {
   const Sider = Layout.Sider;
   const MenuItem = Menu.Item;
   const SubMenu = Menu.SubMenu;
   return (
-    <Sider
-      className="options"
-      style={{
-        width: 200,
-      }}
-    >
+    <Sider className="leftSide">
       <Menu defaultOpenKeys={["1"]} defaultSelectedKeys={["0_1"]}>
         {/* 看板管理 */}
         <SubMenu
