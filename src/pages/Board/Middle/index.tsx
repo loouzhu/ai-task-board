@@ -2,6 +2,7 @@ import React from "react";
 import { Layout } from "@arco-design/web-react";
 import HeaderNav from "./HeadNav";
 import Filter from "./Filter";
+import Tasks from "./Tasks";
 import "./index.less";
 
 export default function Middle() {
@@ -10,6 +11,7 @@ export default function Middle() {
     <Content className="middle">
       <HeaderNav />
       <Filter />
+      <Tasks />
     </Content>
   );
 }
