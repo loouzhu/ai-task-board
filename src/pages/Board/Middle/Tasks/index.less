@@ -25,10 +25,26 @@
       .taskItem {
         background-color: #f3f4f6;
         border-radius: 8px;
-        padding: 10px 8px; /* 卡片内边距 */
+        padding: 10px 8px;
         margin-bottom: 8px;
-        width: 100%; /* 确保占满 */
+        width: 100%;
         box-sizing: border-box;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px); // 轻微上浮
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // 阴影加深
+          border-color: #d9d9d9; // 边框颜色变化
+          background-color: #fafafa; // 背景色微变
+          cursor: pointer;
+        }
+      }
+      .addTask {
+        text-align: center;
+        border-radius: 6px;
+        span {
+          width: fit-content;
+        }
       }
     }
   }

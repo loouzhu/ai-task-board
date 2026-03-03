@@ -1,5 +1,6 @@
-import React from "react";
 import { status, type StatusType } from "@/constants/common";
+import { Button } from "@arco-design/web-react";
+import { IconPlus } from "@arco-design/web-react/icon";
 import "./index.less";
 
 interface ColumnProps {
@@ -106,7 +107,6 @@ export default function Tasks() {
   return (
     <div className="middleTasks">
       {columns.map((column) => {
-        // 获取当前列的任务
         const tasks = getTasksByColumnType(column.type);
 
         return (
@@ -135,7 +135,14 @@ export default function Tasks() {
                 </div>
               ))}
               {/* 添加任务按钮 */}
-              <div className="addTask">+ 新建任务</div>
+              <Button
+                className="addTask"
+                icon={<IconPlus />}
+                type="primary"
+                long
+              >
+                新建任务
+              </Button>
             </div>
           </div>
         );
