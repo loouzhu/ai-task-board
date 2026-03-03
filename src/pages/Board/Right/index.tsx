@@ -1,4 +1,3 @@
-import React from "react";
 import { Layout } from "@arco-design/web-react";
 import Head from "./Head";
 import Tag from "./Tag";
@@ -10,10 +9,12 @@ export default function RightSide() {
   const Sider = Layout.Sider;
   return (
     <Sider className="rightSide">
-      <Head />
-      <Tag />
-      <Describe />
-      <TaskList />
+      <div className="content">
+        <Head />
+        <Tag />
+        <Describe />
+        <TaskList />
+      </div>
     </Sider>
   );
 }

@@ -1,12 +1,16 @@
 .rightSide {
   width: 300px !important;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
   border-left: 1px solid #e2e2e287;
-  gap: 18px;
   box-shadow: 2px 0 3px rgba(0, 0, 0, 0.5);
-  & > * {
-    border-radius: 5px;
+
+  .content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    & > * {
+      border-radius: 5px;
+    }
   }
 }
