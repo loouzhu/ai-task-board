@@ -7,23 +7,52 @@
   justify-content: space-between;
 
   .taskColumns {
-    width: 220px;
+    flex: 1;
     flex-shrink: 0;
-    border: 1px solid rgb(208, 208, 208);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     padding: 12px 8px;
+    border: 1px solid #f3f4f6;
+    gap: 12px;
+    background: linear-gradient(180deg, var(--start-color), var(--end-color));
+
+    &.pending {
+      --start-color: #5a6b7c;
+      --end-color: #8a9ba8;
+    }
+    &.processing {
+      --start-color: #1b79fd;
+      --end-color: #69b1ff;
+    }
+    &.testing {
+      --start-color: #8943eb;
+      --end-color: #b37fed;
+    }
+    &.completed {
+      --start-color: #23c16b;
+      --end-color: #6ee7b7;
+    }
 
     .status {
       display: flex;
       justify-content: space-between;
-      padding: 0 4px 8px 4px; /* 内部元素自己控制边距 */
+      height: 30px;
+      line-height: 30px;
+      color: #f9fbff;
+
+      .type {
+        font-size: 16px;
+        font-weight: 500;
+      }
     }
 
     .taskItems {
+      background-color: none;
+
       .taskItem {
-        background-color: #f3f4f6;
+        color: #333;
+        background-color: #fff;
         border-radius: 8px;
         padding: 10px 8px;
         margin-bottom: 8px;
@@ -33,9 +62,8 @@
 
         &:hover {
           transform: translateY(-2px); // 轻微上浮
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // 阴影加深
-          border-color: #d9d9d9; // 边框颜色变化
-          background-color: #fafafa; // 背景色微变
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.353);
+          background-color: #f9fbff; // 阴影加深
           cursor: pointer;
         }
       }

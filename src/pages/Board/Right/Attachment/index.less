@@ -1,0 +1,20 @@
+.attachment {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  padding: 8px 6px;
+  height: 128px;
+  gap: 10px;
+
+  .title {
+    height: fit-content;
+  }
+  .attachmentContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 5px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+}

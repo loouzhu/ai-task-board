@@ -3,6 +3,7 @@ import Head from "./Head";
 import Tag from "./Tag";
 import Describe from "./Describe";
 import TaskList from "./TaskList";
+import Attachment from "./Attachment";
 import "./index.less";
 
 export default function RightSide() {
@@ -14,6 +15,7 @@ export default function RightSide() {
         <Tag />
         <Describe />
         <TaskList />
+        <Attachment />
       </div>
     </Sider>
   );

@@ -1,6 +1,4 @@
 import { status, type StatusType } from "@/constants/common";
-import { Button } from "@arco-design/web-react";
-import { IconPlus } from "@arco-design/web-react/icon";
 import "./index.less";
 
 interface ColumnProps {
@@ -20,7 +18,7 @@ interface Task {
 export default function Tasks() {
   // 列配置
   const columns: ColumnProps[] = [
-    { id: "col_1", type: "todo", count: 3 },
+    { id: "col_1", type: "pending", count: 3 },
     { id: "col_2", type: "processing", count: 5 },
     { id: "col_3", type: "testing", count: 2 },
     { id: "col_4", type: "completed", count: 4 },
@@ -110,7 +108,10 @@ export default function Tasks() {
         const tasks = getTasksByColumnType(column.type);
 
         return (
-          <div key={column.id} className="taskColumns">
+          <div
+            key={column.id}
+            className={`taskColumns ${column.type}`}
+          >
             {/* 列头 */}
             <div className="status">
               <div className="type">{status[column.type]}</div>
@@ -130,19 +131,11 @@ export default function Tasks() {
                         ? "中"
                         : "低"}
                   </div>
+                  <div className="assignee">负责人：张三</div>
                   <div className="deadline">截止日期：{task.deadline}</div>
                   {task.info && <div className="else">{task.info}</div>}
                 </div>
               ))}
-              {/* 添加任务按钮 */}
-              <Button
-                className="addTask"
-                icon={<IconPlus />}
-                type="primary"
-                long
-              >
-                新建任务
-              </Button>
             </div>
           </div>
         );

@@ -1,19 +1,15 @@
 .filter {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
   line-height: 40px;
-  gap: 4px;
-  
-  .content,
-  .options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .search {
     display: flex;
     align-items: center;
-    gap: 10px;
+    flex: 1;
   }
-  .content {
-    .tags {
-      display: flex;
-      flex: 1;
-    }
+  .options{
+    width: fit-content;
   }
 }
