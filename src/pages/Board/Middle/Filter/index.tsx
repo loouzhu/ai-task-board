@@ -57,7 +57,9 @@ export default function Filter() {
   const [selectedPrincipal, setSelectedPrincipal] = useState<
     string | undefined
   >(undefined);
-  const [selectedPriority, setSelectedPriority] = useState<string|undefined>(undefined);
+  const [selectedPriority, setSelectedPriority] = useState<string | undefined>(
+    undefined,
+  );
   const [searchValue, setSearchValue] = useState("");
 
   // 清除筛选条件
@@ -70,6 +72,11 @@ export default function Filter() {
       content: `筛选条件已清除`,
       showIcon: true,
     });
+  };
+
+  // 添加任务
+  const addTask = () => {
+    console.log(111);
   };
 
   // 格式化日期显示
@@ -131,7 +138,9 @@ export default function Filter() {
       </div>
       <div className="deadline">
         <DatePicker.RangePicker
-          triggerElement={<Button style={{color:"#999"}}>{formatDateRange()}</Button>}
+          triggerElement={
+            <Button style={{ color: "#999" }}>{formatDateRange()}</Button>
+          }
           style={{ width: 268 }}
           value={rangeValue}
           onChange={(v) => setRangeValue(v)}
@@ -156,6 +165,9 @@ export default function Filter() {
       <div className="options">
         <Button onClick={cleanFilter} type="primary">
           清除筛选
+        </Button>
+        <Button onClick={addTask} type="primary">
+          添加任务
         </Button>
       </div>
     </div>

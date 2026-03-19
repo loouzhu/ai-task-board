@@ -4,7 +4,9 @@
   border-radius: 8px;
   padding: 5px;
   border: 1px solid rgb(208, 208, 208);
+  background-color: #ffffffe8;
   justify-content: space-between;
+  gap: 6px;
 
   .taskColumns {
     flex: 1;
@@ -17,29 +19,29 @@
     gap: 12px;
     background: linear-gradient(180deg, var(--start-color), var(--end-color));
 
-    &.pending {
-      --start-color: #5a6b7c;
-      --end-color: #8a9ba8;
-    }
-    &.processing {
-      --start-color: #1b79fd;
-      --end-color: #69b1ff;
-    }
-    &.testing {
-      --start-color: #8943eb;
-      --end-color: #b37fed;
-    }
-    &.completed {
-      --start-color: #23c16b;
-      --end-color: #6ee7b7;
-    }
+    // &.pending {
+    //   --start-color: #5a6b7c;
+    //   --end-color: #8a9ba8;
+    // }
+    // &.processing {
+    //   --start-color: #1b79fd;
+    //   --end-color: #69b1ff;
+    // }
+    // &.testing {
+    //   --start-color: #8943eb;
+    //   --end-color: #b37fed;
+    // }
+    // &.completed {
+    //   --start-color: #23c16b;
+    //   --end-color: #6ee7b7;
+    // }
 
     .status {
       display: flex;
       justify-content: space-between;
       height: 30px;
       line-height: 30px;
-      color: #f9fbff;
+      color: #303031;
 
       .type {
         font-size: 16px;
@@ -52,7 +54,7 @@
 
       .taskItem {
         color: #333;
-        background-color: #fff;
+        background-color: #ffffff;
         border-radius: 8px;
         padding: 10px 8px;
         margin-bottom: 8px;
@@ -62,8 +64,8 @@
 
         &:hover {
           transform: translateY(-2px); // 轻微上浮
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.353);
-          background-color: #f9fbff; // 阴影加深
+          box-shadow: 0 4px 12px rgba(156, 156, 156, 0.353);
+          //background-color: #fefff4d6; // 阴影加深
           cursor: pointer;
         }
       }

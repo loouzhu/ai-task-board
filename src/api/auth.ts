@@ -3,40 +3,47 @@ interface RegisterUserData {
   password: string;
 }
 
-export const register = async (userData: RegisterUserData) => {
+export const register = async (
+  userData: RegisterUserData,
+  signal?: AbortSignal,
+) => {
   const response = await fetch("/api/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
+    signal,
   });
-
-  // 解析 JSON 响应体
   const data = await response.json();
 
-  // 返回包含状态码和数据的对象
-  return {
-    status: response.status,
-    ...data,
-  };
+  if (!response.ok) {
+    throw new Error(data.message || "注册失败");
+  }
+  return data;
 };
 
-export const login = async (userData: RegisterUserData) => {
+export const login = async (
+  userData: RegisterUserData,
+  signal?: AbortSignal,
+) => {
   const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
+    signal,
   });
-
-  // 解析 JSON 响应体
   const data = await response.json();
-
-  // 返回包含状态码和数据的对象
-  return {
-    status: response.status,
-    ...data,
-  };
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("用户不存在");
+    }
+    if (response.status === 401) {
+      throw new Error("用户名和密码不匹配");
+    }
+    throw new Error(data.message || "登陆失败 ");
+  }
+  return data;
 };

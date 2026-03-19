@@ -1,4 +1,5 @@
 import { status, type StatusType } from "@/constants/common";
+import TaskItem from "@/components/TaskItem";
 import "./index.less";
 
 interface ColumnProps {
@@ -27,7 +28,7 @@ export default function Tasks() {
   // 任务数据 - 按列分组
   const taskItems = [
     {
-      columnType: "waiting",
+      columnType: "pending",
       tasks: [
         {
           id: 1,
@@ -121,20 +122,7 @@ export default function Tasks() {
             {/* 任务列表 */}
             <div className="taskItems">
               {tasks.map((task) => (
-                <div key={task.id} className="taskItem">
-                  <div className="name">任务名：{task.name}</div>
-                  <div className="priority">
-                    优先级：
-                    {task.priority === "high"
-                      ? "高"
-                      : task.priority === "medium"
-                        ? "中"
-                        : "低"}
-                  </div>
-                  <div className="assignee">负责人：张三</div>
-                  <div className="deadline">截止日期：{task.deadline}</div>
-                  {task.info && <div className="else">{task.info}</div>}
-                </div>
+                <TaskItem task={task} />
               ))}
             </div>
           </div>

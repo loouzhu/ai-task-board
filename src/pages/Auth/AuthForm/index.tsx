@@ -1,22 +1,16 @@
 import { Form, Input, Button, Message } from "@arco-design/web-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login, register } from "@/api/auth";
+import { usernameRules, passwordRules } from "@/rules/auth";
+import { getTitle } from "@/utils/common";
+import { useLogin, useRegister } from "@/hooks/useAuth";
 import "./index.less";
 
 const AuthForm = () => {
   const [form] = Form.useForm();
   const FormItem = Form.Item;
-  const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "register" | "findPsd">("login");
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const getTitle = (mode: string) => {
-    if (mode === "login") return "登录";
-    if (mode === "register") return "注册";
-    if (mode === "findPsd") return "修改密码";
-    return mode + "错误";
-  };
+  const loginMutation = useLogin();
+  const registerMutation = useRegister();
 
   const handleChangeAuth = () => {
     if (mode === "login") {
@@ -31,20 +25,6 @@ const AuthForm = () => {
     setMode("findPsd");
     form.resetFields();
   };
-
-  // 用户名验证规则
-  const usernameRules = [
-    { required: true, message: "请输入用户名" },
-    { minLength: 3, message: "用户名至少3个字符" },
-    { maxLength: 8, message: "用户名不能超过8个字符" },
-  ];
-
-  // 密码验证规则
-  const passwordRules = [
-    { required: true, message: "请输入密码" },
-    { minLength: 6, message: "密码长度不能小于6位" },
-    { maxLength: 20, message: "密码长度不能超过20个字符" },
-  ];
 
   // 确认密码验证规则 - 纯前端验证
   const confirmPasswordRules = [
@@ -72,35 +52,17 @@ const AuthForm = () => {
         password: values.password,
       };
       //console.log("提交到后端的数据:", submitData);
-      setLoading(true);
-      let response;
       if (mode === "login") {
-        response = await login(submitData);
-        if (response.status === 200) {
-          Message.success("登录成功！");
-          navigate("/board");
-        }
-        if (response.status === 400) Message.error("用户不存在");
-        if (response.status === 401) Message.error("用户名和密码不匹配");
-      }
-      if (mode === "register") {
-        response = await register(submitData);
-        if (response.status === 200) {
-          Message.success("注册成功！请登录");
-          setMode("login");
-          form.resetFields();
-        }
-      }
-      if (mode === "findPsd") {
-        Message.info("修改密码功能开发中");
+        await loginMutation.mutateAsync(submitData);
+      } else if (mode === "register") {
+        await registerMutation.mutateAsync(submitData);
         setMode("login");
-        form.resetFields();
+      } else if (mode === "findPsd") {
+        console.log(111);
       }
-    } catch (error) {
-      console.log("表单验证失败", error);
-      Message.warning("请正确填写表单信息");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.log("出现错误：", err);
+      Message.error("请填写正确信息");
     }
   };
 
@@ -135,7 +97,7 @@ const AuthForm = () => {
         </FormItem>
       )}
 
-      {/* 修改密码时的确认密码（如果有这个功能） */}
+      {/* 修改密码时的确认密码 */}
       {mode === "findPsd" && (
         <FormItem label="新密码" field="newPassword" rules={passwordRules}>
           <Input.Password placeholder="请输入新密码" />
@@ -144,7 +106,12 @@ const AuthForm = () => {
 
       {/* 提交按钮 */}
       <FormItem wrapperCol={{ offset: 5 }}>
-        <Button type="primary" onClick={handleSubmit} loading={loading} long>
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          loading={loginMutation.isPending || registerMutation.isPending}
+          long
+        >
           {getTitle(mode)}
         </Button>
       </FormItem>
