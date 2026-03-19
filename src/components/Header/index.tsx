@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout } from "@arco-design/web-react";
-import { pageList } from "@/types/components";
+import { pageList } from "@/types/common";
 import "./index.less";
 
 export default function Header() {

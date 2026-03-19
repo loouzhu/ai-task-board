@@ -1,4 +1,4 @@
-import { Form, Input, Button, Message } from "@arco-design/web-react";
+import { Form, Input, Button } from "@arco-design/web-react";
 import { useState } from "react";
 import { usernameRules, passwordRules } from "@/rules/auth";
 import { getTitle } from "@/utils/common";
@@ -45,24 +45,19 @@ const AuthForm = () => {
 
   // 处理表单提交
   const handleSubmit = async () => {
-    try {
-      const values = await form.validate();
-      const submitData = {
-        username: values.username,
-        password: values.password,
-      };
-      //console.log("提交到后端的数据:", submitData);
-      if (mode === "login") {
-        await loginMutation.mutateAsync(submitData);
-      } else if (mode === "register") {
-        await registerMutation.mutateAsync(submitData);
-        setMode("login");
-      } else if (mode === "findPsd") {
-        console.log(111);
-      }
-    } catch (err) {
-      console.log("出现错误：", err);
-      Message.error("请填写正确信息");
+    const values = await form.validate();
+    const submitData = {
+      username: values.username,
+      password: values.password,
+    };
+    //console.log("提交到后端的数据:", submitData);
+    if (mode === "login") {
+      await loginMutation.mutateAsync(submitData);
+    } else if (mode === "register") {
+      await registerMutation.mutateAsync(submitData);
+      setMode("login");
+    } else if (mode === "findPsd") {
+      console.log(111);
     }
   };
 

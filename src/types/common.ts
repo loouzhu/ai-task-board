@@ -17,3 +17,5 @@ export const pageList = [
     name: "任务统计",
   },
 ];
+
+export type AuthStatus = "unknown" | "authenticated" | "unauthenticated";

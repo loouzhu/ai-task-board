@@ -34,6 +34,8 @@ export const login = async (
     },
     body: JSON.stringify(userData),
     signal,
+    // 允许接收和发送cookie
+    credentials: "include",
   });
   const data = await response.json();
   if (!response.ok) {
@@ -46,4 +48,23 @@ export const login = async (
     throw new Error(data.message || "登陆失败 ");
   }
   return data;
+};
+
+export const queryMe = async () => {
+  const response = await fetch("/api/auth/me", { credentials: "include" });
+  if (!response.ok) return null;
+  return response.json();
+};
+
+export const logout = async () => {
+  const response = await fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-type": "application/json",
+    },
+  });
+  if (response.ok) return { success: true };
+  const data = await response.json().catch(() => ({}));
+  throw new Error(data.message || "登出失败");
 };

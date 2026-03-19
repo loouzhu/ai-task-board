@@ -11,20 +11,3 @@ export const passwordRules = [
   { minLength: 6, message: "密码长度不能小于6位" },
   { maxLength: 20, message: "密码长度不能超过20个字符" },
 ];
-
-// 确认密码验证规则 - 纯前端验证
-export const confirmPasswordRules = [
-  { required: true, message: "请再次输入密码" },
-  {
-    validator: (
-      value: string | undefined,
-      callback: (error?: React.ReactNode) => void,
-    ) => {
-      if (value && value !== form.getFieldValue("password")) {
-        callback("两次输入的密码不一致");
-      } else {
-        callback();
-      }
-    },
-  },
-];
