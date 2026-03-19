@@ -1,19 +1,34 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { login, register, queryMe, logout } from "@/api/auth";
+import { login, register, queryMe, logout, changePwd } from "@/api/auth";
 import type { AuthStatus } from "@/types/common";
 import { Message } from "@arco-design/web-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+export const getSafeRedirectPath = (from: unknown): string => {
+  const fallback = "/board";
+  if (!from) return fallback;
+  const pathname =
+    typeof from === "string"
+      ? from
+      : typeof from === "object" && from !== null && "pathname" in from
+        ? String((from as { pathname?: unknown }).pathname ?? "")
+        : "";
+  if (!pathname.startsWith("/") || pathname.startsWith("//")) return fallback;
+  return pathname;
+};
 
 export const useLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (userData: { username: string; password: string }) =>
       login(userData),
     onSuccess: () => {
-      Message.success("登陆成功");
       queryClient.invalidateQueries({ queryKey: ["me"] });
-      navigate("/board");
+      const from = getSafeRedirectPath(location.state?.from);
+      Message.success("登陆成功");
+      navigate(from, { replace: true });
     },
     onError: (error: Error) => {
       Message.error(error.message);
@@ -50,12 +65,12 @@ export const useLogout = () => {
     // 无论成功与否，都要清理前端状态
     onSuccess: () => {
       Message.success("退出登陆成功");
-      queryClient.clear();
+      queryClient.removeQueries({ queryKey: ["me"] });
       navigate("/auth", { replace: true });
     },
     onError: (error: Error) => {
       Message.error(error.message || "退出登录失败");
-      queryClient.clear();
+      queryClient.removeQueries({ queryKey: ["me"] });
       navigate("/auth", { replace: true });
     },
   });
@@ -78,4 +93,20 @@ export const useAuthStatus = () => {
     isUnauthenticated: status === "unauthenticated",
     refetch: meQuery.refetch,
   };
+};
+
+export const useChangePwd = () => {
+  return useMutation({
+    mutationFn: (userData: {
+      username: string;
+      password: string;
+      newPassword: string;
+    }) => changePwd(userData),
+    onSuccess: () => {
+      Message.success("修改密码成功");
+    },
+    onError: (error: Error) => {
+      Message.error(error.message || "修改密码失败");
+    },
+  });
 };

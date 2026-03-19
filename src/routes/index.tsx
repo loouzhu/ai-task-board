@@ -18,10 +18,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      {
-        path: "/",
-        element: <Navigate to="/auth" replace />,
-      },
       // 主看板
       {
         path: "board",

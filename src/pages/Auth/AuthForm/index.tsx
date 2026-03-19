@@ -2,15 +2,16 @@ import { Form, Input, Button } from "@arco-design/web-react";
 import { useState } from "react";
 import { usernameRules, passwordRules } from "@/rules/auth";
 import { getTitle } from "@/utils/common";
-import { useLogin, useRegister } from "@/hooks/useAuth";
+import { useLogin, useRegister, useChangePwd } from "@/hooks/useAuth";
 import "./index.less";
 
 const AuthForm = () => {
   const [form] = Form.useForm();
   const FormItem = Form.Item;
-  const [mode, setMode] = useState<"login" | "register" | "findPsd">("login");
+  const [mode, setMode] = useState<"login" | "register" | "changePwd">("login");
   const loginMutation = useLogin();
   const registerMutation = useRegister();
+  const changePwdMutation = useChangePwd();
 
   const handleChangeAuth = () => {
     if (mode === "login") {
@@ -21,8 +22,8 @@ const AuthForm = () => {
     form.resetFields(); // 切换模式时重置表单
   };
 
-  const handleFindPsd = () => {
-    setMode("findPsd");
+  const handleChangePwd = () => {
+    setMode("changePwd");
     form.resetFields();
   };
 
@@ -50,14 +51,22 @@ const AuthForm = () => {
       username: values.username,
       password: values.password,
     };
-    //console.log("提交到后端的数据:", submitData);
-    if (mode === "login") {
-      await loginMutation.mutateAsync(submitData);
-    } else if (mode === "register") {
-      await registerMutation.mutateAsync(submitData);
-      setMode("login");
-    } else if (mode === "findPsd") {
-      console.log(111);
+    const changePwdData = {
+      username: values.username,
+      password: values.password,
+      newPassword: values.newPassword,
+    };
+    try {
+      if (mode === "login") {
+        await loginMutation.mutateAsync(submitData);
+      } else if (mode === "register") {
+        await registerMutation.mutateAsync(submitData);
+        setMode("login");
+      } else if (mode === "changePwd") {
+        await changePwdMutation.mutateAsync(changePwdData);
+      }
+    } catch (err) {
+      console.log("提交表单出现问题", err);
     }
   };
 
@@ -93,7 +102,7 @@ const AuthForm = () => {
       )}
 
       {/* 修改密码时的确认密码 */}
-      {mode === "findPsd" && (
+      {mode === "changePwd" && (
         <FormItem label="新密码" field="newPassword" rules={passwordRules}>
           <Input.Password placeholder="请输入新密码" />
         </FormItem>
@@ -104,7 +113,11 @@ const AuthForm = () => {
         <Button
           type="primary"
           onClick={handleSubmit}
-          loading={loginMutation.isPending || registerMutation.isPending}
+          loading={
+            loginMutation.isPending ||
+            registerMutation.isPending ||
+            changePwdMutation.isPending
+          }
           long
         >
           {getTitle(mode)}
@@ -113,8 +126,8 @@ const AuthForm = () => {
 
       {/* 底部选项 */}
       <div className="authOption">
-        <div className="forgetPsd" onClick={handleFindPsd}>
-          {mode === "findPsd" ? "" : "忘记密码?"}
+        <div className="forgetPsd" onClick={handleChangePwd}>
+          {mode === "changePwd" ? "" : "忘记密码?"}
         </div>
         <div className="changeAuth" onClick={handleChangeAuth}>
           {mode === "login" ? "前往注册" : "前往登录"}

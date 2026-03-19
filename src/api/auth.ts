@@ -1,7 +1,4 @@
-interface RegisterUserData {
-  username: string;
-  password: string;
-}
+import type { RegisterUserData, ChangePwdUserData } from "@/types/auth";
 
 export const register = async (
   userData: RegisterUserData,
@@ -14,6 +11,7 @@ export const register = async (
     },
     body: JSON.stringify(userData),
     signal,
+    credentials: "include",
   });
   const data = await response.json();
 
@@ -52,8 +50,16 @@ export const login = async (
 
 export const queryMe = async () => {
   const response = await fetch("/api/auth/me", { credentials: "include" });
-  if (!response.ok) return null;
-  return response.json();
+  const data = await response.json();
+  if (!response.ok) {
+    if (response.status === 401) {
+      return null;
+    }
+    if (response.status >= 500) {
+      throw new Error(data.message || "服务器错误");
+    }
+  }
+  return data;
 };
 
 export const logout = async () => {
@@ -67,4 +73,30 @@ export const logout = async () => {
   if (response.ok) return { success: true };
   const data = await response.json().catch(() => ({}));
   throw new Error(data.message || "登出失败");
+};
+
+export const changePwd = async (
+  userData: ChangePwdUserData,
+  signal?: AbortSignal,
+) => {
+  const response = await fetch("/api/auth/changePwd", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(userData),
+    signal,
+    credentials: "include",
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("用户不存在");
+    }
+    if (response.status === 401) {
+      throw new Error("用户名和密码不匹配");
+    }
+    throw new Error(data.message || "修改密码失败 ");
+  }
+  return data;
 };
