@@ -1,4 +1,4 @@
-import type { RegisterUserData, ChangePwdUserData } from "@/types/auth";
+import type { RegisterUserData, ForgetPasswordUserData } from "@/types/auth";
 
 export const register = async (
   userData: RegisterUserData,
@@ -75,11 +75,11 @@ export const logout = async () => {
   throw new Error(data.message || "登出失败");
 };
 
-export const changePwd = async (
-  userData: ChangePwdUserData,
+export const forgetPassword = async (
+  userData: ForgetPasswordUserData,
   signal?: AbortSignal,
 ) => {
-  const response = await fetch("/api/auth/changePwd", {
+  const response = await fetch("/api/auth/forget-password", {
     method: "POST",
     headers: {
       "Content-type": "application/json",

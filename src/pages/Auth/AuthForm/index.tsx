@@ -2,16 +2,18 @@ import { Form, Input, Button } from "@arco-design/web-react";
 import { useState } from "react";
 import { usernameRules, passwordRules } from "@/rules/auth";
 import { getTitle } from "@/utils/common";
-import { useLogin, useRegister, useChangePwd } from "@/hooks/useAuth";
+import { useLogin, useRegister, useForgetPassword } from "@/hooks/useAuth";
 import "./index.less";
 
 const AuthForm = () => {
   const [form] = Form.useForm();
   const FormItem = Form.Item;
-  const [mode, setMode] = useState<"login" | "register" | "changePwd">("login");
+  const [mode, setMode] = useState<"login" | "register" | "change-password">(
+    "login",
+  );
   const loginMutation = useLogin();
   const registerMutation = useRegister();
-  const changePwdMutation = useChangePwd();
+  const forgetPasswordMutation = useForgetPassword();
 
   const handleChangeAuth = () => {
     if (mode === "login") {
@@ -22,8 +24,8 @@ const AuthForm = () => {
     form.resetFields(); // 切换模式时重置表单
   };
 
-  const handleChangePwd = () => {
-    setMode("changePwd");
+  const handleforgetPassword = () => {
+    setMode("change-password");
     form.resetFields();
   };
 
@@ -51,7 +53,7 @@ const AuthForm = () => {
       username: values.username,
       password: values.password,
     };
-    const changePwdData = {
+    const forgetPasswordData = {
       username: values.username,
       password: values.password,
       newPassword: values.newPassword,
@@ -62,8 +64,8 @@ const AuthForm = () => {
       } else if (mode === "register") {
         await registerMutation.mutateAsync(submitData);
         setMode("login");
-      } else if (mode === "changePwd") {
-        await changePwdMutation.mutateAsync(changePwdData);
+      } else if (mode === "change-password") {
+        await forgetPasswordMutation.mutateAsync(forgetPasswordData);
       }
     } catch (err) {
       console.log("提交表单出现问题", err);
@@ -101,8 +103,8 @@ const AuthForm = () => {
         </FormItem>
       )}
 
-      {/* 修改密码时的确认密码 */}
-      {mode === "changePwd" && (
+      {/* 忘记密码时的确认密码 */}
+      {mode === "change-password" && (
         <FormItem label="新密码" field="newPassword" rules={passwordRules}>
           <Input.Password placeholder="请输入新密码" />
         </FormItem>
@@ -116,7 +118,7 @@ const AuthForm = () => {
           loading={
             loginMutation.isPending ||
             registerMutation.isPending ||
-            changePwdMutation.isPending
+            forgetPasswordMutation.isPending
           }
           long
         >
@@ -126,8 +128,8 @@ const AuthForm = () => {
 
       {/* 底部选项 */}
       <div className="authOption">
-        <div className="forgetPsd" onClick={handleChangePwd}>
-          {mode === "changePwd" ? "" : "忘记密码?"}
+        <div className="forgetPsd" onClick={handleforgetPassword}>
+          {mode === "change-password" ? "" : "忘记密码?"}
         </div>
         <div className="changeAuth" onClick={handleChangeAuth}>
           {mode === "login" ? "前往注册" : "前往登录"}

@@ -1,6 +1,6 @@
 export const getTitle = (mode: string) => {
   if (mode === "login") return "登录";
   if (mode === "register") return "注册";
-  if (mode === "changePwd") return "修改密码";
+  if (mode === "change-password") return "忘记密码";
   return mode + "错误";
 };

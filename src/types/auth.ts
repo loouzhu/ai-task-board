@@ -3,7 +3,7 @@ export interface RegisterUserData {
   password: string;
 }
 
-export interface ChangePwdUserData {
+export interface ForgetPasswordUserData {
   username: string;
   password: string;
   newPassword: string;

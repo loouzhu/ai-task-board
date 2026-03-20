@@ -18,6 +18,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
+      {
+        index: true,
+        element: <Navigate to="/board" replace />,
+      },
       // 主看板
       {
         path: "board",

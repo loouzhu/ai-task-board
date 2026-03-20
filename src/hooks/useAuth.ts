@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { login, register, queryMe, logout, changePwd } from "@/api/auth";
+import { login, register, queryMe, logout, forgetPassword } from "@/api/auth";
 import type { AuthStatus } from "@/types/common";
 import { Message } from "@arco-design/web-react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -95,13 +95,13 @@ export const useAuthStatus = () => {
   };
 };
 
-export const useChangePwd = () => {
+export const useForgetPassword = () => {
   return useMutation({
     mutationFn: (userData: {
       username: string;
       password: string;
       newPassword: string;
-    }) => changePwd(userData),
+    }) => forgetPassword(userData),
     onSuccess: () => {
       Message.success("修改密码成功");
     },
