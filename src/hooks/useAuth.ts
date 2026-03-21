@@ -38,8 +38,10 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: (userData: { username: string; password: string }) =>
-      register(userData),
+    mutationFn: (userData: {
+      username: string;
+      password: string;
+    }) => register(userData),
     onSuccess: () => {
       Message.success("注册成功");
     },
@@ -70,8 +72,8 @@ export const useLogout = () => {
     },
     onError: (error: Error) => {
       Message.error(error.message || "退出登录失败");
-      queryClient.removeQueries({ queryKey: ["me"] });
-      navigate("/auth", { replace: true });
+      //queryClient.removeQueries({ queryKey: ["me"] });
+      //navigate("/auth", { replace: true });
     },
   });
 };

@@ -24,7 +24,7 @@ const AuthForm = () => {
     form.resetFields(); // 切换模式时重置表单
   };
 
-  const handleforgetPassword = () => {
+  const handleForgetPassword = () => {
     setMode("change-password");
     form.resetFields();
   };
@@ -128,7 +128,7 @@ const AuthForm = () => {
 
       {/* 底部选项 */}
       <div className="authOption">
-        <div className="forgetPsd" onClick={handleforgetPassword}>
+        <div className="forgetPsd" onClick={handleForgetPassword}>
           {mode === "change-password" ? "" : "忘记密码?"}
         </div>
         <div className="changeAuth" onClick={handleChangeAuth}>
