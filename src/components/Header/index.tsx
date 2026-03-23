@@ -3,13 +3,13 @@ import { IconUser, IconExport } from "@arco-design/web-react/icon";
 import { Layout, Avatar, Menu } from "@arco-design/web-react";
 import { pageList } from "@/types/common";
 import "./index.less";
-import { useLogout } from "@/hooks/useAuth";
+import { useLogout, useMeQuery } from "@/hooks/useAuth";
 
 export default function Header() {
   const Header = Layout.Header;
   const MenuItem = Menu.Item;
-  const username = "test12345678912345678";
   const logoutMutation = useLogout();
+  const user = useMeQuery().data?.user;
   const [activeIndex, setActiveIndex] = useState(0);
   const [userMenu, setUserMenu] = useState<boolean>(false);
   const handleChangePage = (index: number) => {
@@ -42,8 +42,8 @@ export default function Header() {
         <Avatar size={35}>
           <IconUser />
         </Avatar>
-        <span className="username" title={username}>
-          {username}
+        <span className="username" title={user?.username}>
+          {user?.username}
         </span>
         {userMenu && (
           <Menu className="userMenu">

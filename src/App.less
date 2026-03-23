@@ -26,11 +26,6 @@ h6 {
   text-align: center;
 }
 
-.arco-form-item > .arco-form-label-item {
-  padding-right: 0;
-  text-align: center;
-}
-
 button {
   border-radius: 8px;
 }
@@ -42,13 +37,28 @@ button {
   }
 }
 
-.add-tag:focus-visible {
-  box-shadow: 0 0 0 2px var(--color-primary-light-3);
-}
-
 ::placeholder {
   color: #999 !important;
   opacity: 1;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+svg {
+  margin: 0 !important;
+}
+
+// arco-design公共样式
+.arco-form-item > .arco-form-label-item {
+  padding-right: 0;
+  text-align: center;
+}
+
+.add-tag:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary-light-3);
 }
 
 // .arco-select .arco-select-view {
@@ -61,11 +71,8 @@ button {
   flex-shrink: 0;
 }
 
-.title {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-svg{
-  margin: 0 !important;
+.arco-empty{
+  display: flex;
+  align-items: center;
+  text-align: center;
 }
