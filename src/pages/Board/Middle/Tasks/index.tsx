@@ -1,6 +1,8 @@
 import { status, type StatusType } from "@/constants/common";
+import { useGetBoardTasks } from "@/hooks/useTask";
 import TaskItem from "@/components/TaskItem";
 import "./index.less";
+import { useSearchParams } from "react-router-dom";
 
 interface ColumnProps {
   id: string;
@@ -24,6 +26,11 @@ export default function Tasks() {
     { id: "col_3", type: "testing", count: 2 },
     { id: "col_4", type: "completed", count: 4 },
   ];
+
+  const [searchParams] = useSearchParams();
+  const boardId = searchParams.get("boardId") || "";
+  const tasks = useGetBoardTasks(boardId).data;
+  console.log(tasks, "tasks");
 
   // 任务数据 - 按列分组
   const taskItems = [
@@ -109,10 +116,7 @@ export default function Tasks() {
         const tasks = getTasksByColumnType(column.type);
 
         return (
-          <div
-            key={column.id}
-            className={`taskColumns ${column.type}`}
-          >
+          <div key={column.id} className={`taskColumns ${column.type}`}>
             {/* 列头 */}
             <div className="status">
               <div className="type">{status[column.type]}</div>
