@@ -74,26 +74,6 @@ export default function Filter() {
     });
   };
 
-  // 添加任务
-  const addTask = () => {
-    console.log(111);
-  };
-
-  // 格式化日期显示
-  const formatDateRange = () => {
-    if (
-      rangeValue &&
-      rangeValue.length === 2 &&
-      rangeValue[0] &&
-      rangeValue[1]
-    ) {
-      const startDate = new Date(rangeValue[0]);
-      const endDate = new Date(rangeValue[1]);
-      return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
-    }
-    return "请选择日期范围";
-  };
-
   return (
     <div className="filter">
       <div className="manager">
@@ -138,10 +118,7 @@ export default function Filter() {
       </div>
       <div className="deadline">
         <DatePicker.RangePicker
-          triggerElement={
-            <Button style={{ color: "#999" }}>{formatDateRange()}</Button>
-          }
-          style={{ width: 268 }}
+          style={{ width: 256 }}
           value={rangeValue}
           onChange={(v) => setRangeValue(v)}
           allowClear={true}
@@ -165,9 +142,6 @@ export default function Filter() {
       <div className="options">
         <Button onClick={cleanFilter} type="primary">
           清除筛选
-        </Button>
-        <Button onClick={addTask} type="primary">
-          添加任务
         </Button>
       </div>
     </div>

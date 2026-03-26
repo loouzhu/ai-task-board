@@ -1,40 +1,26 @@
 import "./index.less";
+import { formatData } from "@/utils/common";
 import { useState } from "react";
+import type { task } from "@/types/task";
 import { Modal, Form, Input, Radio } from "@arco-design/web-react";
 
-interface Task {
-  name: string;
-  priority: string;
-  deadline: string;
-  info?: string;
+interface TaskItemProps {
+  task: task;
 }
 
-interface TaskProp {
-  task: Task;
-}
-
-const handleEditTask = () => {};
-
-export default function TaskItem({ task }: TaskProp) {
+export default function TaskItem({ task }: TaskItemProps) {
   const FormItem = Form.Item;
   const RadioGroup = Radio.Group;
   const [visible, setVisible] = useState(false);
+  const { taskName, taskPriority, taskDeadline, principle } = task;
 
   return (
     <div>
-      <div className="taskItem" onClick={handleEditTask}>
-        <div className="name">任务名：{task.name}</div>
-        <div className="priority">
-          优先级：
-          {task.priority === "high"
-            ? "高"
-            : task.priority === "medium"
-              ? "中"
-              : "低"}
-        </div>
-        <div className="assignee">负责人：张三</div>
-        <div className="deadline">截止日期：{task.deadline}</div>
-        {task.info && <div className="else">{task.info}</div>}
+      <div className="taskItem" onClick={() => setVisible(true)}>
+        <div className="name">任务名：{taskName}</div>
+        <div className="priority">优先级：{taskPriority}</div>
+        <div className="principle">负责人：{principle} </div>
+        <div className="deadline">截止日期：{formatData(taskDeadline)}</div>
       </div>
       <Modal
         title="编辑任务详情"

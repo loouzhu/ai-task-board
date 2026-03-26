@@ -18,7 +18,7 @@ export default function HeaderNav({
   const urlBoardId = searchParams.get("boardId") || "";
   const getBoardUrl = () => {
     if (boardList.length > 0 && !urlBoardId) {
-      setSearchParams({ boardId: boardList[0].boardId },{replace});
+      setSearchParams({ boardId: boardList[0].boardId },{replace:true});
     }
     return "";
   };
