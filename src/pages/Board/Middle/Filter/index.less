@@ -2,22 +2,33 @@
   height: 60px;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 
   .manager {
-    position: relative;
     display: flex;
     align-items: center;
     gap: 15px;
-    border-right: 1px solid #ccc;
-    padding-right: 15px;
   }
 
   .search {
+    position: relative;
     display: flex;
     align-items: center;
     flex: 1;
+
+    &::before {
+      position: absolute;
+      content: "";
+      height: 50%;
+      top: 50%;
+      left: -10px;
+      height: 100%;
+      transform: translateY(-50%);
+      width: 1px;
+      background: rgba(213, 213, 213, 0.781);
+    }
   }
+
   .options {
     display: flex;
     width: fit-content;
