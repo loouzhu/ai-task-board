@@ -25,7 +25,8 @@ export default function TaskItem({ task }: TaskItemProps) {
   const Option = Select.Option;
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const { taskName, taskPriority, taskDeadline, principle } = task;
+  const { taskName, taskPriority, taskDeadline, members } = task;
+  const assignee = members?.[0] ?? "-";
 
   const handleDeleteOption = () => {
     Message.info("删除任务");
@@ -37,7 +38,7 @@ export default function TaskItem({ task }: TaskItemProps) {
       <div className="content">
         <div className="name">任务名：{taskName}</div>
         <div className="priority">优先级：{taskPriority}</div>
-        <div className="principle">负责人：{principle} </div>
+        <div className="principle">负责人：{assignee} </div>
         <div className="deadline">截止日期：{formatData(taskDeadline)}</div>
       </div>
       <div className="options">
