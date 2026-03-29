@@ -6,10 +6,11 @@ export default function Describe() {
     <div className="describe">
       <div className="part">
         <div className="title">任务描述</div>
-        <textarea className="detail">
-          任务描述任务描述任务描述任务描述任务描述任务描述任务描述 任务描述
-          任务描述 任务描述 任务描述 任务描述 任务描述 任务描述 任务描述
-        </textarea>
+        <textarea
+          className="detail"
+          defaultValue="任务描述任务描述任务描述任务描述任务描述任务描述任务描述 任务描述
+          任务描述 任务描述 任务描述 任务描述 任务描述 任务描述 任务描述"
+        />
       </div>
       <div className="part">
         <div className="title">参与研发</div>

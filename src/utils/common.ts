@@ -19,3 +19,17 @@ export const formatData = (date: string | Date) => {
 
   return `${year}-${month}-${day}`;
 };
+
+// 任务优先级转换
+export const formatTaskPriority = (priority: string) => {
+  switch (priority) {
+    case "low":
+      return "低";
+    case "medium":
+      return "中";
+    case "high":
+      return "高";
+    default:
+      return "未知";
+  }
+};

@@ -21,5 +21,7 @@ export interface taskFilterParams {
   member?: string;
   taskPriority?: string;
   keyword?: string;
-  deadlineRange?: [string, string] | [];
+  startDate?: string;
+  endDate?: string;
+  taskStatus?:string;
 }

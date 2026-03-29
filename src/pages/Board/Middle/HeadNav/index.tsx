@@ -3,29 +3,17 @@ import { useSearchParams } from "react-router-dom";
 import { useGetBoardInfo } from "@/hooks/useBoard";
 import type { boardListProps } from "@/types/board";
 import "./index.less";
-import { useEffect } from "react";
 
 export default function HeaderNav({
   boardList,
   memberList,
 }: {
   boardList: boardListProps[];
-  memberList: string[];
+  memberList: { userId: string; username: string }[];
 }) {
   const Option = Select.Option;
   const AvatarGroup = Avatar.Group;
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlBoardId = searchParams.get("boardId") || "";
-  const getBoardUrl = () => {
-    if (boardList.length > 0 && !urlBoardId) {
-      setSearchParams({ boardId: boardList[0].boardId },{replace:true});
-    }
-    return "";
-  };
-
-  useEffect(() => {
-    getBoardUrl();
-  }, [boardList, urlBoardId]);
 
   const switchBoard = (value: string) => {
     console.log("你选择了", value);
@@ -63,9 +51,9 @@ export default function HeaderNav({
         <AvatarGroup className="memberList" maxCount={3}>
           {memberList &&
             memberList.map((member, index) => (
-              <div key={`${member + index}`}>
+              <div key={`${member.userId}-${index}`}>
                 <Avatar className="member">
-                  {member.slice(0, 1).toUpperCase()}
+                  {member.username.slice(0, 1).toUpperCase()}
                 </Avatar>
               </div>
             ))}

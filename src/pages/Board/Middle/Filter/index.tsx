@@ -12,7 +12,7 @@ const InputSearch = Input.Search;
 import "./index.less";
 
 interface FilterProps {
-  memberList: string[];
+  memberList: { userId: string; username: string }[];
   onFilterChange: (params: taskFilterParams) => void;
 }
 
@@ -53,16 +53,20 @@ export default function Filter({ memberList, onFilterChange }: FilterProps) {
   useEffect(() => {
     onFilterChange({
       member: selectedPrincipal,
-      taskPriority: selectedPriority,
-      deadlineRange: rangeValue,
-      keyword: searchValue.trim(),
+      taskPriority:
+        selectedPriority && selectedPriority !== "all"
+          ? selectedPriority
+          : undefined,
+      keyword: searchValue.trim() || undefined,
+      startDate: rangeValue[0],
+      endDate: rangeValue[1],
     });
   }, [
-    selectedPrincipal,
-    selectedPriority,
+    onFilterChange,
     rangeValue,
     searchValue,
-    onFilterChange,
+    selectedPrincipal,
+    selectedPriority,
   ]);
 
   // 清除筛选条件
@@ -98,8 +102,8 @@ export default function Filter({ memberList, onFilterChange }: FilterProps) {
           </Option>
           {memberList &&
             memberList.map((item, index) => (
-              <Option key={`member-${index}`} value={item}>
-                {item}
+              <Option key={`member-${index}`} value={item.userId}>
+                {item.username}
               </Option>
             ))}
         </Select>
@@ -115,6 +119,9 @@ export default function Filter({ memberList, onFilterChange }: FilterProps) {
             });
           }}
         >
+          <Option key="priority-all" value="all">
+            全部
+          </Option>
           {priorityList &&
             priorityList.map((item) => (
               <Option key={item.id} value={item.value}>
