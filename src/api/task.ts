@@ -79,3 +79,17 @@ export const getBoardTasks = async (
 
   return data;
 };
+
+// 添加任务
+export const addTask = async (boardId: string, task: task) => {
+  const response = await fetch(`${BASE_URL}/add-task/${boardId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(task),
+    credentials: "include",
+  });
+  const data = await response.json();
+  return normalizeTask(data);
+};

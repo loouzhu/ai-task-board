@@ -1,0 +1,47 @@
+.taskColumns {
+  flex: 1;
+  flex-shrink: 0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px;
+  border: 1px solid #f3f4f6;
+  gap: 12px;
+  background: linear-gradient(180deg, var(--start-color), var(--end-color));
+
+  // &.pending {
+  //   --start-color: #5a6b7c;
+  //   --end-color: #8a9ba8;
+  // }
+  // &.processing {
+  //   --start-color: #1b79fd;
+  //   --end-color: #69b1ff;
+  // }
+  // &.testing {
+  //   --start-color: #8943eb;
+  //   --end-color: #b37fed;
+  // }
+  // &.completed {
+  //   --start-color: #23c16b;
+  //   --end-color: #6ee7b7;
+  // }
+
+  .status {
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    line-height: 30px;
+    color: #303031;
+
+    .left {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .type {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+}

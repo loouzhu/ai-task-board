@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { getBoardTasks } from "@/api/task";
-import type { taskFilterParams } from "@/types/task";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getBoardTasks, addTask } from "@/api/task";
+import type { taskFilterParams, task } from "@/types/task";
 
 export const useGetBoardTasks = (
   boardId: string,
@@ -10,5 +10,11 @@ export const useGetBoardTasks = (
     queryKey: ["boardTasks", boardId, filterParams],
     queryFn: () => getBoardTasks(boardId, filterParams),
     enabled: !!boardId,
+  });
+};
+
+export const useAddTask = (boardId: string, task: task) => {
+  return useMutation({
+    mutationFn: () => addTask(boardId, task),
   });
 };

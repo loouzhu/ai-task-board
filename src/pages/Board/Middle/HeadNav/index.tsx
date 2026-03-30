@@ -1,4 +1,10 @@
-import { Avatar, Select } from "@arco-design/web-react";
+import { Avatar, Select, Dropdown, Menu } from "@arco-design/web-react";
+import {
+  IconMoreVertical,
+  IconPlus,
+  IconEdit,
+  IconDelete,
+} from "@arco-design/web-react/icon";
 import { useSearchParams } from "react-router-dom";
 import { useGetBoardInfo } from "@/hooks/useBoard";
 import { useTaskStore } from "@/stores/taskStore";
@@ -13,6 +19,7 @@ export default function HeaderNav({
   memberList: { userId: string; username: string }[];
 }) {
   const Option = Select.Option;
+  const MenuItem = Menu.Item;
   const AvatarGroup = Avatar.Group;
   const [searchParams, setSearchParams] = useSearchParams();
   const clearTask = useTaskStore((state) => state.setTask);
@@ -20,6 +27,20 @@ export default function HeaderNav({
     setSearchParams({ boardId: value });
     clearTask(null);
   };
+
+  const dropList = (
+    <Menu>
+      <MenuItem key="addBoard">
+        <IconPlus /> 添加看板
+      </MenuItem>
+      <MenuItem key="editBoard">
+        <IconEdit /> 编辑看板
+      </MenuItem>
+      <MenuItem key="deleteBoard">
+        <IconDelete /> 删除看板
+      </MenuItem>
+    </Menu>
+  );
 
   const currentBoardInfo = useGetBoardInfo(
     searchParams.get("boardId") || "",
@@ -46,6 +67,12 @@ export default function HeaderNav({
             </Option>
           ))}
         </Select>
+        {/* 看板操作 */}
+        <div className="boardOptions">
+          <Dropdown droplist={dropList}>
+            <IconMoreVertical />
+          </Dropdown>
+        </div>
       </div>
       <div className="part">
         <div className="title">参与研发：</div>
