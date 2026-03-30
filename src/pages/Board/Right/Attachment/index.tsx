@@ -1,17 +1,19 @@
 import "./index.less";
 import { Button } from "@arco-design/web-react";
 
-export default function Attachment() {
-  const fileList = [
-    { id: 1, name: "文件1.pdf", size: "1.2 MB" },
-    { id: 2, name: "文件2.docx", size: "0.8 MB" },
-    { id: 3, name: "文件3.xlsx", size: "2.5 MB" },
-    { id: 4, name: "文件4.pptx", size: "1.8 MB" },
-    { id: 5, name: "文件5.txt", size: "0.1 MB" },
-    { id: 6, name: "文件6.jpg", size: "3.2 MB" },
-    { id: 7, name: "文件7.png", size: "2.1 MB" },
-    { id: 8, name: "文件8.gif", size: "4.5 MB" },
-  ];
+interface AttachmentFile {
+  name?: string;
+  size?: string;
+  fileName?: string;
+}
+
+interface AttachmentProps {
+  files?: unknown[];
+}
+
+export default function Attachment({ files = [] }: AttachmentProps) {
+  const fileList = files as AttachmentFile[];
+
   return (
     <div className="attachment">
       <div className="header">
@@ -21,12 +23,16 @@ export default function Attachment() {
         </Button>
       </div>
       <div className="attachmentContent">
-        {fileList &&
-          fileList.map((item) => (
-            <div key={item.id}>
-              {item.name} ({item.size})
+        {fileList.length > 0 ? (
+          fileList.map((item, index) => (
+            <div key={`${item.name || item.fileName || "file"}-${index}`}>
+              {item.name || item.fileName || `附件${index + 1}`}
+              {item.size ? ` (${item.size})` : ""}
             </div>
-          ))}
+          ))
+        ) : (
+          <div>暂无附件</div>
+        )}
       </div>
     </div>
   );

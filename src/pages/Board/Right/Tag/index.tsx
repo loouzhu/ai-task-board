@@ -1,24 +1,36 @@
-import React from "react";
 import TagItem from "@/components/TagItem";
+import { formatData, formatTaskPriority } from "@/utils/common";
 import "./index.less";
 
-export default function Tag() {
+interface TagProps {
+  members?: string[];
+  taskDeadline?: string;
+  taskPriority?: string;
+  taskWorkTime?: string;
+}
+
+export default function Tag({
+  members,
+  taskDeadline,
+  taskPriority,
+  taskWorkTime,
+}: TagProps) {
   const tagList = [
     {
       title: "负责人",
-      data: "张三",
+      data: members?.[0] || "-",
     },
     {
       title: "截止日期",
-      data: "2026-09-09",
+      data: taskDeadline ? formatData(taskDeadline) : "-",
     },
     {
       title: "优先级",
-      data: "高",
+      data: taskPriority ? formatTaskPriority(taskPriority) : "-",
     },
     {
       title: "预估工时",
-      data: "2h",
+      data: taskWorkTime ? taskWorkTime : "-",
     },
   ];
   return (

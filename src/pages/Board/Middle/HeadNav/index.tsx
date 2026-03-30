@@ -1,6 +1,7 @@
 import { Avatar, Select } from "@arco-design/web-react";
 import { useSearchParams } from "react-router-dom";
 import { useGetBoardInfo } from "@/hooks/useBoard";
+import { useTaskStore } from "@/stores/taskStore";
 import type { boardListProps } from "@/types/board";
 import "./index.less";
 
@@ -14,10 +15,10 @@ export default function HeaderNav({
   const Option = Select.Option;
   const AvatarGroup = Avatar.Group;
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const clearTask = useTaskStore((state) => state.setTask);
   const switchBoard = (value: string) => {
-    console.log("你选择了", value);
     setSearchParams({ boardId: value });
+    clearTask(null);
   };
 
   const currentBoardInfo = useGetBoardInfo(

@@ -1,7 +1,8 @@
 import "./index.less";
 import { useState } from "react";
 import { formatData, formatTaskPriority } from "@/utils/common";
-import type { task } from "@/types/task";
+import type { TaskItemProps, task } from "@/types/task";
+import { useTaskStore } from "@/stores/taskStore";
 import { IconEdit, IconDelete, IconMore } from "@arco-design/web-react/icon";
 import {
   Menu,
@@ -15,17 +16,20 @@ import {
   Message,
 } from "@arco-design/web-react";
 
-interface TaskItemProps {
-  task: task;
-}
-
 export default function TaskItem({ task }: TaskItemProps) {
   const MenuItem = Menu.Item;
   const FormItem = Form.Item;
   const Option = Select.Option;
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const { taskName, taskPriority, taskDeadline, members } = task;
+  const {
+    taskName,
+    taskPriority,
+    taskDeadline,
+    taskStatus,
+    taskWorkTime,
+    members,
+  } = task;
   const assignee = members?.[0] ?? "-";
 
   const handleDeleteOption = () => {
@@ -33,8 +37,14 @@ export default function TaskItem({ task }: TaskItemProps) {
     setDeleteModalVisible(false);
   };
 
+  const setTask = useTaskStore((state) => state.setTask);
+
+  const handleShowTaskDetail = (task: task) => {
+    setTask(task);
+  };
+
   return (
-    <div className="taskItem">
+    <div className="taskItem" onClick={() => handleShowTaskDetail(task)}>
       <div className="content">
         <div className="name">任务名：{taskName}</div>
         <div className="priority">
@@ -72,21 +82,26 @@ export default function TaskItem({ task }: TaskItemProps) {
         style={{ width: 720 }}
       >
         <Form className="editForm">
-          {/* 名称 */}
-          <FormItem label="任务名称：" field="taskName">
+          <FormItem
+            label="任务名称："
+            field="taskName"
+            required
+            rules={[{ required: true }]}
+          >
             <Input type="text" />
           </FormItem>
           {/* 描述 */}
           <FormItem label="任务描述：" field="taskDescription">
-            <Input.TextArea autoSize={{ minRows: 4, maxRows: 6 }} />
+            <Input.TextArea autoSize={{ minRows: 2, maxRows: 2 }} />
           </FormItem>
-
           <div className="formRow">
             {/* 优先级 */}
             <FormItem
               label="优先级："
               field="taskPriority"
               className="halfItem"
+              required
+              rules={[{ required: true }]}
             >
               <Radio.Group>
                 <Radio value="high">高</Radio>
@@ -95,13 +110,18 @@ export default function TaskItem({ task }: TaskItemProps) {
               </Radio.Group>
             </FormItem>
             {/* 负责人 */}
-            <FormItem label="负责人：" field="assignee" className="halfItem">
+            <FormItem
+              label="负责人："
+              field="assignee"
+              className="halfItem"
+              required
+              rules={[{ required: true }]}
+            >
               <Select>
                 <Option value={1}>1</Option>
               </Select>
             </FormItem>
           </div>
-
           <div className="formRow">
             {/* 截止日期 */}
             <FormItem
@@ -109,14 +129,36 @@ export default function TaskItem({ task }: TaskItemProps) {
               field="taskDeadline"
               className="halfItem"
             >
-              <DatePicker />
+              <DatePicker style={{ width: "100%" }} />
             </FormItem>
             {/* 参与研发 */}
             <FormItem label="参与研发：" field="members" className="halfItem">
               <Input type="text" />
             </FormItem>
           </div>
-
+          <div className="formRow">
+            <FormItem
+              label="任务状态："
+              field="taskStatus"
+              className="halfItem"
+              required
+              rules={[{ required: true }]}
+            >
+              <Select defaultValue={taskStatus}>
+                <Option value="pending">待处理</Option>
+                <Option value="processing">处理中</Option>
+                <Option value="testing">测试中</Option>
+                <Option value="completed">已完成</Option>
+              </Select>
+            </FormItem>
+            <FormItem
+              label="预估工时："
+              field="taskWorkTime"
+              className="halfItem"
+            >
+              <Input defaultValue={taskWorkTime} placeholder="例如：2h / 1d" />
+            </FormItem>
+          </div>
           {/* 子任务清单 */}
           <FormItem label="子任务清单：" field="subtasks">
             <Input type="text" />

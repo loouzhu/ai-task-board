@@ -12,7 +12,7 @@ export interface task {
   taskNumber: number;
   taskPriority: string;
   taskStatus: taskType;
-  taskWorkTime: Date;
+  taskWorkTime: string;
 }
 
 export type taskType = "pending" | "processing" | "testing" | "completed";
@@ -23,5 +23,8 @@ export interface taskFilterParams {
   keyword?: string;
   startDate?: string;
   endDate?: string;
-  taskStatus?:string;
+  taskStatus?: string;
+}
+export interface TaskItemProps {
+  task: task;
 }
