@@ -1,8 +1,10 @@
 import type { task, taskType } from "@/types/task";
-import { Empty, Message, Modal,Form } from "@arco-design/web-react";
+import { useState } from "react";
+import { Empty, Message, Modal, Form } from "@arco-design/web-react";
 import { useSearchParams } from "react-router-dom";
 import { IconPlus } from "@arco-design/web-react/icon";
 import { useAddTask } from "@/hooks/useTask";
+import TaskOptionModal from "../TaskOptionModal";
 import TaskItem from "../TaskItem";
 import "./index.less";
 
@@ -23,9 +25,9 @@ export default function TaskColumn({
 }: taskColumnProp) {
   //const [searchParams] = useSearchParams();
   //const boardId = searchParams.get("boardId") || "";
-
-  const handleAddTask = (status: taskType) => {
-    Message.info(`添加任务到状态: ${status}`);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const handleAddTask = () => {
+    setAddModalVisible(true);
   };
 
   return (
@@ -34,7 +36,7 @@ export default function TaskColumn({
       <div className="status">
         <div className="left">
           <div className="type">{columnLabel ?? columnStatus}</div>
-          <IconPlus onClick={() => handleAddTask(columnStatus)} />
+          <IconPlus onClick={handleAddTask} />
         </div>
         <div className="count">{count}个任务</div>
       </div>
@@ -49,6 +51,13 @@ export default function TaskColumn({
       ) : (
         <Empty description="暂无任务" />
       )}
+
+      <TaskOptionModal
+        type="add"
+        visible={addModalVisible}
+        addStatus={columnStatus}
+        onVisibleChange={setAddModalVisible}
+      />
     </div>
   );
 }

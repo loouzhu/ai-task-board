@@ -4,24 +4,14 @@ import { formatData, formatTaskPriority } from "@/utils/common";
 import type { TaskItemProps, task } from "@/types/task";
 import { useTaskStore } from "@/stores/taskStore";
 import { IconEdit, IconDelete, IconMore } from "@arco-design/web-react/icon";
-import {
-  Menu,
-  Dropdown,
-  Modal,
-  Message,
-} from "@arco-design/web-react";
+import { Menu, Dropdown, Modal, Message } from "@arco-design/web-react";
 import TaskOptionModal from "../TaskOptionModal";
 
 export default function TaskItem({ task }: TaskItemProps) {
   const MenuItem = Menu.Item;
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const {
-    taskName,
-    taskPriority,
-    taskDeadline,
-    members,
-  } = task;
+  const { taskName, taskPriority, taskDeadline, members } = task;
   const assignee = members?.[0] ?? "-";
 
   const handleDeleteOption = () => {
@@ -65,7 +55,12 @@ export default function TaskItem({ task }: TaskItemProps) {
         </Dropdown>
       </div>
       {/* 编辑任务 */}
-      <TaskOptionModal type="edit" visible={editModalVisible} />
+      <TaskOptionModal
+        type="edit"
+        visible={editModalVisible}
+        task={task}
+        onVisibleChange={setEditModalVisible}
+      />
       {/* 删除任务 */}
       <Modal
         visible={deleteModalVisible}
