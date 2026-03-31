@@ -3,6 +3,7 @@ import { useState } from "react";
 import { formatData, formatTaskPriority } from "@/utils/common";
 import type { TaskItemProps, task } from "@/types/task";
 import { useTaskStore } from "@/stores/taskStore";
+import { useBoardStore } from "@/stores/boardStore";
 import { IconEdit, IconDelete, IconMore } from "@arco-design/web-react/icon";
 import { Menu, Dropdown, Modal, Message } from "@arco-design/web-react";
 import TaskOptionModal from "../TaskOptionModal";
@@ -11,8 +12,8 @@ export default function TaskItem({ task }: TaskItemProps) {
   const MenuItem = Menu.Item;
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const { taskName, taskPriority, taskDeadline, members } = task;
-  const assignee = members?.[0] ?? "-";
+  const { taskName, taskPriority, taskDeadline, taskMembers } = task;
+  const boardMembers = useBoardStore((state) => state.boardMembers);
 
   const handleDeleteOption = () => {
     Message.info("删除任务");
@@ -32,7 +33,7 @@ export default function TaskItem({ task }: TaskItemProps) {
         <div className="priority">
           优先级：{formatTaskPriority(taskPriority)}
         </div>
-        <div className="principle">负责人：{assignee} </div>
+        <div className="principle">负责人：{taskMembers?.[0] || "-"} </div>
         <div className="deadline">截止日期：{formatData(taskDeadline)}</div>
       </div>
       <div className="options">
@@ -59,6 +60,7 @@ export default function TaskItem({ task }: TaskItemProps) {
         type="edit"
         visible={editModalVisible}
         task={task}
+        boardMembers={boardMembers}
         onVisibleChange={setEditModalVisible}
       />
       {/* 删除任务 */}

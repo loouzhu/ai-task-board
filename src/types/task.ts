@@ -7,7 +7,7 @@ export interface task {
   taskDeadline: string;
   taskDescription: string;
   taskId: string;
-  members: string[];
+  taskMembers: string[];
   taskName: string;
   taskNumber: number;
   taskPriority: string;
@@ -18,7 +18,7 @@ export interface task {
 export type taskType = "pending" | "processing" | "testing" | "completed";
 
 export interface taskFilterParams {
-  member?: string;
+  filterMember?: string;
   taskPriority?: string;
   keyword?: string;
   startDate?: string;
@@ -30,11 +30,12 @@ export interface TaskItemProps {
 }
 
 export interface CreateTaskPayload {
+  taskNumber: number;
   taskName: string;
   taskDescription?: string;
   taskPriority: string;
   taskDeadline?: string;
-  members: string[];
+  taskMembers: string[];
   taskStatus: taskType;
   taskWorkTime?: string;
   subtask?: string[];

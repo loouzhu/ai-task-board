@@ -10,11 +10,13 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 import type { CreateTaskPayload } from "@/types/task";
 import { useSearchParams } from "react-router-dom";
+import { formatInput } from "@/utils/common";
 import { useAddTask } from "@/hooks/useTask";
 import "./index.less";
 
 interface taskOption {
   type: string;
+  boardMembers?: string[];
   task?: CreateTaskPayload;
   addStatus?: string;
   visible: boolean;
@@ -26,6 +28,7 @@ export default function TaskOptionModal({
   visible = false,
   task,
   addStatus = "pending",
+  boardMembers = [],
   onVisibleChange,
 }: taskOption) {
   const Option = Select.Option;
@@ -39,10 +42,11 @@ export default function TaskOptionModal({
   const taskDeadline = task?.taskDeadline?.toString()
     ? dayjs(task.taskDeadline)
     : undefined;
-  const members = task?.members ?? "";
+  const taskMembers = task?.taskMembers;
   const taskStatus = task?.taskStatus ?? addStatus;
   const taskWorkTime = task?.taskWorkTime ?? "";
   const subtask = task?.subtask ?? "";
+  const taskNumber = task?.taskNumber;
   const addTaskMutation = useAddTask(boardId);
 
   const handleCancel = () => {
@@ -51,6 +55,7 @@ export default function TaskOptionModal({
 
   const handleConfirm = () => {
     const values = form.getFieldsValue();
+    values.subtask = formatInput(values.subtask);
     console.log(values);
     if (type === "add") {
       if (addTaskMutation.isPending) return;
@@ -69,10 +74,11 @@ export default function TaskOptionModal({
 
     form.setFieldsValue({
       taskName,
+      taskNumber,
       taskDescription,
       taskPriority,
       taskDeadline,
-      members,
+      taskMembers,
       taskStatus,
       taskWorkTime,
       subtask,
@@ -81,10 +87,11 @@ export default function TaskOptionModal({
     visible,
     form,
     taskName,
+    taskNumber,
     taskDescription,
     taskPriority,
     taskDeadline,
-    members,
+    taskMembers,
     taskStatus,
     taskWorkTime,
     subtask,
@@ -100,6 +107,15 @@ export default function TaskOptionModal({
       style={{ width: 750 }}
     >
       <Form className="optionForm" form={form}>
+        {/* 任务编号 */}
+        <FormItem
+          label="任务编号："
+          field="taskNumber"
+          required
+          rules={[{ required: true }]}
+        >
+          <Input type="number" />
+        </FormItem>
         {/* 任务名称 */}
         <FormItem
           label="任务名称："
@@ -128,13 +144,17 @@ export default function TaskOptionModal({
         </FormItem>
         {/* 任务成员 */}
         <FormItem
-          label="任务成员"
-          field="members"
+          label="任务成员："
+          field="taskMembers"
           required
           rules={[{ required: true }]}
         >
-          <Select placeholder="第一位成员为负责人">
-            <Option value={1}>1</Option>
+          <Select placeholder="第一位成员为负责人" mode="multiple">
+            {boardMembers?.map((member) => (
+              <Option key={member} value={member}>
+                {member}
+              </Option>
+            ))}
           </Select>
         </FormItem>
         {/* 截止日期 */}
@@ -164,7 +184,7 @@ export default function TaskOptionModal({
           <Input type="text" />
         </FormItem>
         {/* 附件 */}
-        <FormItem label="附件：" field="attachments">
+        <FormItem label="附件：" field="files">
           <Input type="file" />
         </FormItem>
       </Form>

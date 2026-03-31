@@ -6,17 +6,16 @@ import {
   IconDelete,
 } from "@arco-design/web-react/icon";
 import { useSearchParams } from "react-router-dom";
-import { useGetBoardInfo } from "@/hooks/useBoard";
 import { useTaskStore } from "@/stores/taskStore";
 import type { boardListProps } from "@/types/board";
 import "./index.less";
 
 export default function HeaderNav({
   boardList,
-  memberList,
+  boardMemberList,
 }: {
   boardList: boardListProps[];
-  memberList: { userId: string; username: string }[];
+  boardMemberList: string[];
 }) {
   const Option = Select.Option;
   const MenuItem = Menu.Item;
@@ -41,12 +40,6 @@ export default function HeaderNav({
       </MenuItem>
     </Menu>
   );
-
-  const currentBoardInfo = useGetBoardInfo(
-    searchParams.get("boardId") || "",
-  ).data;
-  console.log(currentBoardInfo, "info");
-
   return (
     <div className="headerNav">
       <div className="part">
@@ -77,11 +70,11 @@ export default function HeaderNav({
       <div className="part">
         <div className="title">参与研发：</div>
         <AvatarGroup className="memberList" maxCount={3}>
-          {memberList &&
-            memberList.map((member, index) => (
-              <div key={`${member.userId}-${index}`}>
+          {boardMemberList &&
+            boardMemberList.map((member, index) => (
+              <div key={`${member}-${index}`}>
                 <Avatar className="member">
-                  {member.username.slice(0, 1).toUpperCase()}
+                  {member.slice(0, 1).toUpperCase()}
                 </Avatar>
               </div>
             ))}

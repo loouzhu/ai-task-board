@@ -16,7 +16,13 @@ export const useGetBoardTasks = (
 
 export const useAddTask = (boardId: string) => {
   return useMutation({
-    mutationFn: (task: CreateTaskPayload) => addTask(boardId, task),
+    mutationFn: (task: CreateTaskPayload) => {
+      if (!boardId || boardId.trim() === "") {
+        throw new Error("boardId不能为空");
+      }
+
+      return addTask(boardId, task);
+    },
     onSuccess: () => Message.success("创建任务成功"),
     onError: (error: Error) => Message.error(error.message),
   });

@@ -7,36 +7,32 @@ interface RawMember {
   username?: string;
 }
 
-interface RawTask extends Omit<task, "members"> {
-  members?: Array<string | RawMember>;
+interface RawTask extends Omit<task, "taskMembers"> {
   taskMembers?: Array<string | RawMember>;
   principle?: string;
 }
 
-const normalizeMembers = (members?: Array<string | RawMember>) => {
-  if (!Array.isArray(members)) {
+const normalizeTaskMembers = (taskMembers?: Array<string | RawMember>) => {
+  if (!Array.isArray(taskMembers)) {
     return [];
   }
-
-  return members
+  return taskMembers
     .map((member) => {
       if (typeof member === "string") {
         return member;
       }
-
       return member.username || member.userId || "";
     })
     .filter(Boolean);
 };
 
 const normalizeTask = (rawTask: RawTask): task => {
-  const members = normalizeMembers(rawTask.members ?? rawTask.taskMembers);
-
+  const taskMembers = normalizeTaskMembers(rawTask.taskMembers);
   return {
     ...rawTask,
-    members:
-      members.length > 0
-        ? members
+    taskMembers:
+      taskMembers.length > 0
+        ? taskMembers
         : rawTask.principle
           ? [rawTask.principle]
           : [],
@@ -81,11 +77,15 @@ export const getBoardTasks = async (
 };
 
 // 添加任务
-export const addTask = async (boardId: string, task: CreateTaskPayload, files?: File[]) => {
-  const formData = new FormData()
-  formData.append("task", JSON.stringify(task))
+export const addTask = async (
+  boardId: string,
+  task: CreateTaskPayload,
+  files?: File[],
+) => {
+  const formData = new FormData();
+  formData.append("task", JSON.stringify(task));
   if (files) {
-    files.forEach(file => formData.append("files", file))
+    files.forEach((file) => formData.append("files", file));
   }
   const response = await fetch(`${BASE_URL}/add-task/${boardId}`, {
     method: "POST",

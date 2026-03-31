@@ -33,3 +33,9 @@ export const formatTaskPriority = (priority: string) => {
       return "未知";
   }
 };
+
+// Input输入框格式化
+export const formatInput = (value:string)=>{
+  if(Array.isArray(value)) return value;
+  return value.split(',').map(item=>item.trim()).filter(item=>item)
+}

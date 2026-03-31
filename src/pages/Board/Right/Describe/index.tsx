@@ -2,10 +2,13 @@ import "./index.less";
 
 interface DescribeProps {
   taskDescription?: string;
-  members?: string[];
+  taskMembers?: string[];
 }
 
-export default function Describe({ taskDescription, members }: DescribeProps) {
+export default function Describe({
+  taskDescription,
+  taskMembers,
+}: DescribeProps) {
   return (
     <div className="describe">
       <div className="part">
@@ -14,7 +17,7 @@ export default function Describe({ taskDescription, members }: DescribeProps) {
       </div>
       <div className="part">
         <div className="title">参与研发</div>
-        <div className="participants">{members?.join("、") || "-"}</div>
+        <div className="participants">{taskMembers?.join("、") || "-"}</div>
       </div>
     </div>
   );

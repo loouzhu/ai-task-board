@@ -12,11 +12,11 @@ const InputSearch = Input.Search;
 import "./index.less";
 
 interface FilterProps {
-  memberList: { userId: string; username: string }[];
+  boardMemberList: string[];
   onFilterChange: (params: taskFilterParams) => void;
 }
 
-export default function Filter({ memberList, onFilterChange }: FilterProps) {
+export default function Filter({ boardMemberList, onFilterChange }: FilterProps) {
   const Option = Select.Option;
   const priorityList = [
     {
@@ -52,7 +52,7 @@ export default function Filter({ memberList, onFilterChange }: FilterProps) {
 
   useEffect(() => {
     onFilterChange({
-      member: selectedPrincipal,
+      filterMember: selectedPrincipal,
       taskPriority:
         selectedPriority && selectedPriority !== "all"
           ? selectedPriority
@@ -100,10 +100,10 @@ export default function Filter({ memberList, onFilterChange }: FilterProps) {
           <Option key="all" value="all">
             全部
           </Option>
-          {memberList &&
-            memberList.map((item, index) => (
-              <Option key={`member-${index}`} value={item.userId}>
-                {item.username}
+          {boardMemberList &&
+            boardMemberList.map((item, index) => (
+              <Option key={`member-${index}`} value={item}>
+                {item}
               </Option>
             ))}
         </Select>

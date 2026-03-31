@@ -20,14 +20,14 @@ export default function RightSide() {
           taskStatus={task?.taskStatus}
         />
         <Tag
-          members={task?.members}
+          taskMembers={task?.taskMembers}
           taskDeadline={task?.taskDeadline}
           taskPriority={task?.taskPriority}
           taskWorkTime={task?.taskWorkTime}
         />
         <Describe
           taskDescription={task?.taskDescription}
-          members={task?.members}
+          taskMembers={task?.taskMembers}
         />
         <TaskList subtasks={task?.subtask} />
         <Attachment files={task?.files} />

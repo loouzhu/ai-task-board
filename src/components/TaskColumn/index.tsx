@@ -4,6 +4,7 @@ import { Empty } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
 import TaskOptionModal from "../TaskOptionModal";
 import TaskItem from "../TaskItem";
+import { useBoardStore } from "@/stores/boardStore";
 import "./index.less";
 
 interface taskColumnProp {
@@ -24,6 +25,7 @@ export default function TaskColumn({
   //const [searchParams] = useSearchParams();
   //const boardId = searchParams.get("boardId") || "";
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const boardMembers = useBoardStore((state) => state.boardMembers);
   const handleAddTask = () => {
     setAddModalVisible(true);
   };
@@ -54,6 +56,7 @@ export default function TaskColumn({
         type="add"
         visible={addModalVisible}
         addStatus={columnStatus}
+        boardMembers={boardMembers}
         onVisibleChange={setAddModalVisible}
       />
     </div>
