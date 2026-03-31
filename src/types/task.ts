@@ -28,3 +28,15 @@ export interface taskFilterParams {
 export interface TaskItemProps {
   task: task;
 }
+
+export interface CreateTaskPayload {
+  taskName: string;
+  taskDescription?: string;
+  taskPriority: string;
+  taskDeadline?: string;
+  members: string[];
+  taskStatus: taskType;
+  taskWorkTime?: string;
+  subtask?: string[];
+  files?: [];
+}

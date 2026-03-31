@@ -8,16 +8,17 @@ import {
 } from "@arco-design/web-react";
 import { useEffect } from "react";
 import dayjs from "dayjs";
-import type { task } from "@/types/task";
+import type { CreateTaskPayload } from "@/types/task";
+import { useSearchParams } from "react-router-dom";
+import { useAddTask } from "@/hooks/useTask";
 import "./index.less";
 
 interface taskOption {
   type: string;
-  task?: task;
+  task?: CreateTaskPayload;
   addStatus?: string;
   visible: boolean;
   onVisibleChange?: (visible: boolean) => void;
-  onConfirm?: () => void;
 }
 
 export default function TaskOptionModal({
@@ -26,29 +27,38 @@ export default function TaskOptionModal({
   task,
   addStatus = "pending",
   onVisibleChange,
-  onConfirm,
 }: taskOption) {
   const Option = Select.Option;
   const FormItem = Form.Item;
   const [form] = Form.useForm();
+  const [searchParams] = useSearchParams();
+  const boardId = searchParams.get("boardId") || "";
   const taskName = task?.taskName ?? "";
   const taskDescription = task?.taskDescription ?? "";
   const taskPriority = task?.taskPriority ?? "low";
-  const assignee = task?.members?.[0] ?? "";
-  const taskDeadline = task?.taskDeadline
+  const taskDeadline = task?.taskDeadline?.toString()
     ? dayjs(task.taskDeadline)
     : undefined;
-  const members = task?.members?.join(", ") ?? "";
+  const members = task?.members ?? "";
   const taskStatus = task?.taskStatus ?? addStatus;
   const taskWorkTime = task?.taskWorkTime ?? "";
-  const subtasks = task?.subtask?.join(", ") ?? "";
+  const subtask = task?.subtask ?? "";
+  const addTaskMutation = useAddTask(boardId);
 
   const handleCancel = () => {
     onVisibleChange?.(false);
   };
 
   const handleConfirm = () => {
-    onConfirm?.();
+    const values = form.getFieldsValue();
+    console.log(values);
+    if (type === "add") {
+      if (addTaskMutation.isPending) return;
+      addTaskMutation.mutate(values as CreateTaskPayload, {
+        onSuccess: () => onVisibleChange?.(false),
+      });
+      return;
+    }
     onVisibleChange?.(false);
   };
 
@@ -61,12 +71,11 @@ export default function TaskOptionModal({
       taskName,
       taskDescription,
       taskPriority,
-      assignee,
       taskDeadline,
       members,
       taskStatus,
       taskWorkTime,
-      subtasks,
+      subtask,
     });
   }, [
     visible,
@@ -74,12 +83,11 @@ export default function TaskOptionModal({
     taskName,
     taskDescription,
     taskPriority,
-    assignee,
     taskDeadline,
     members,
     taskStatus,
     taskWorkTime,
-    subtasks,
+    subtask,
   ]);
 
   return (
@@ -92,6 +100,7 @@ export default function TaskOptionModal({
       style={{ width: 750 }}
     >
       <Form className="optionForm" form={form}>
+        {/* 任务名称 */}
         <FormItem
           label="任务名称："
           field="taskName"
@@ -117,15 +126,14 @@ export default function TaskOptionModal({
             <Radio value="low">低</Radio>
           </Radio.Group>
         </FormItem>
-        {/* 负责人 */}
+        {/* 任务成员 */}
         <FormItem
-          label="负责人："
-          field="assignee"
+          label="任务成员"
+          field="members"
           required
           rules={[{ required: true }]}
         >
-          <Select>
-            {assignee ? <Option value={assignee}>{assignee}</Option> : null}
+          <Select placeholder="第一位成员为负责人">
             <Option value={1}>1</Option>
           </Select>
         </FormItem>
@@ -133,10 +141,7 @@ export default function TaskOptionModal({
         <FormItem label="截止日期：" field="taskDeadline">
           <DatePicker style={{ width: "100%" }} />
         </FormItem>
-        {/* 参与研发 */}
-        <FormItem label="参与研发：" field="members">
-          <Input type="text" />
-        </FormItem>
+        {/* 任务状态 */}
         <FormItem
           label="任务状态："
           field="taskStatus"
@@ -150,11 +155,12 @@ export default function TaskOptionModal({
             <Option value="completed">已完成</Option>
           </Select>
         </FormItem>
+        {/* 预估工时 */}
         <FormItem label="预估工时：" field="taskWorkTime">
           <Input placeholder="例如：2h / 1d" />
         </FormItem>
         {/* 子任务清单 */}
-        <FormItem label="子任务清单：" field="subtasks">
+        <FormItem label="子任务清单：" field="subtask">
           <Input type="text" />
         </FormItem>
         {/* 附件 */}

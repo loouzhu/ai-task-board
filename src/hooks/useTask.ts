@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getBoardTasks, addTask } from "@/api/task";
-import type { taskFilterParams, task } from "@/types/task";
+import type { taskFilterParams, CreateTaskPayload } from "@/types/task";
+import { Message } from "@arco-design/web-react";
 
 export const useGetBoardTasks = (
   boardId: string,
@@ -13,8 +14,10 @@ export const useGetBoardTasks = (
   });
 };
 
-export const useAddTask = (boardId: string, task: task) => {
+export const useAddTask = (boardId: string) => {
   return useMutation({
-    mutationFn: () => addTask(boardId, task),
+    mutationFn: (task: CreateTaskPayload) => addTask(boardId, task),
+    onSuccess: () => Message.success("创建任务成功"),
+    onError: (error: Error) => Message.error(error.message),
   });
 };

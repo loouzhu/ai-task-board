@@ -1,4 +1,3 @@
-import React from "react";
 import { Layout } from "@arco-design/web-react";
 import { Outlet } from "react-router-dom";
 import Header from "../Header";

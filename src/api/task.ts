@@ -1,4 +1,4 @@
-import type { task, taskFilterParams } from "@/types/task";
+import type { task, taskFilterParams, CreateTaskPayload } from "@/types/task";
 
 const BASE_URL = "/api/task";
 
@@ -81,15 +81,31 @@ export const getBoardTasks = async (
 };
 
 // 添加任务
-export const addTask = async (boardId: string, task: task) => {
+export const addTask = async (boardId: string, task: CreateTaskPayload, files?: File[]) => {
+  const formData = new FormData()
+  formData.append("task", JSON.stringify(task))
+  if (files) {
+    files.forEach(file => formData.append("files", file))
+  }
   const response = await fetch(`${BASE_URL}/add-task/${boardId}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(task),
+    // headers: {
+    //   "Content-Type": "application/json",
+    // },
+    body: formData,
     credentials: "include",
   });
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("添加任务失败：请求参数错误");
+    } else if (response.status === 401) {
+      throw new Error("添加任务失败：未授权");
+    } else if (response.status === 500) {
+      throw new Error("添加任务失败：服务器错误");
+    } else {
+      throw new Error("添加任务失败");
+    }
+  }
   const data = await response.json();
   return normalizeTask(data);
 };

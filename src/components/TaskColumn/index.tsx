@@ -1,9 +1,7 @@
 import type { task, taskType } from "@/types/task";
 import { useState } from "react";
-import { Empty, Message, Modal, Form } from "@arco-design/web-react";
-import { useSearchParams } from "react-router-dom";
+import { Empty } from "@arco-design/web-react";
 import { IconPlus } from "@arco-design/web-react/icon";
-import { useAddTask } from "@/hooks/useTask";
 import TaskOptionModal from "../TaskOptionModal";
 import TaskItem from "../TaskItem";
 import "./index.less";
