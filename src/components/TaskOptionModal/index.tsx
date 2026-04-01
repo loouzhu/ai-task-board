@@ -5,8 +5,9 @@ import {
   Select,
   Radio,
   DatePicker,
+  Message,
 } from "@arco-design/web-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import type { CreateTaskPayload } from "@/types/task";
 import { useSearchParams } from "react-router-dom";
@@ -34,6 +35,7 @@ export default function TaskOptionModal({
   const Option = Select.Option;
   const FormItem = Form.Item;
   const [form] = Form.useForm();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [searchParams] = useSearchParams();
   const boardId = searchParams.get("boardId") || "";
   const taskName = task?.taskName ?? "";
@@ -53,18 +55,64 @@ export default function TaskOptionModal({
     onVisibleChange?.(false);
   };
 
-  const handleConfirm = () => {
-    const values = form.getFieldsValue();
-    values.subtask = formatInput(values.subtask);
-    console.log(values);
-    if (type === "add") {
-      if (addTaskMutation.isPending) return;
-      addTaskMutation.mutate(values as CreateTaskPayload, {
-        onSuccess: () => onVisibleChange?.(false),
-      });
+  const handleConfirm = async () => {
+    try {
+      const values = await form.validate();
+      const parsedTaskNumber = Number.parseInt(String(values.taskNumber), 10);
+
+      if (Number.isNaN(parsedTaskNumber)) {
+        Message.error("请输入有效的任务编号");
+        return;
+      }
+
+      const payload: CreateTaskPayload = {
+        taskNumber: parsedTaskNumber,
+        taskName: String(values.taskName).trim(),
+        taskPriority: values.taskPriority,
+        taskMembers: Array.isArray(values.taskMembers)
+          ? values.taskMembers
+          : [],
+        taskStatus: values.taskStatus,
+      };
+
+      const taskDescription = String(values.taskDescription ?? "").trim();
+      const taskWorkTime = String(values.taskWorkTime ?? "").trim();
+      const subtask = formatInput(values.subtask ?? "");
+
+      if (taskDescription) {
+        payload.taskDescription = taskDescription;
+      }
+
+      if (taskWorkTime) {
+        payload.taskWorkTime = taskWorkTime;
+      }
+
+      if (subtask.length > 0) {
+        payload.subtask = subtask;
+      }
+
+      if (values.taskDeadline) {
+        payload.taskDeadline = dayjs(values.taskDeadline).format("YYYY-MM-DD");
+      }
+
+      if (type === "add") {
+        if (addTaskMutation.isPending) return;
+        addTaskMutation.mutate(
+          { task: payload, files: selectedFiles },
+          {
+            onSuccess: () => onVisibleChange?.(false),
+          },
+        );
+        return;
+      }
+      onVisibleChange?.(false);
+    } catch {
       return;
     }
-    onVisibleChange?.(false);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFiles(Array.from(event.target.files ?? []));
   };
 
   useEffect(() => {
@@ -184,8 +232,8 @@ export default function TaskOptionModal({
           <Input type="text" />
         </FormItem>
         {/* 附件 */}
-        <FormItem label="附件：" field="files">
-          <Input type="file" />
+        <FormItem label="附件：">
+          <input type="file" multiple onChange={handleFileChange} />
         </FormItem>
       </Form>
     </Modal>

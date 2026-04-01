@@ -34,7 +34,9 @@ export default function TaskItem({ task }: TaskItemProps) {
           优先级：{formatTaskPriority(taskPriority)}
         </div>
         <div className="principle">负责人：{taskMembers?.[0] || "-"} </div>
-        <div className="deadline">截止日期：{formatData(taskDeadline)}</div>
+        <div className="deadline">
+          截止日期：{taskDeadline ? formatData(taskDeadline) : "暂无"}
+        </div>
       </div>
       <div className="options">
         <Dropdown

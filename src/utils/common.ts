@@ -9,14 +9,13 @@ export const getTitle = (mode: string) => {
 export const formatData = (date: string | Date) => {
   const targetDate = typeof date === "string" ? new Date(date) : date;
 
-  if (Number.isNaN(targetDate.getTime())) {
+  if (Number.isNaN(targetDate?.getTime())) {
     return "";
   }
 
-  const year = targetDate.getFullYear();
-  const month = String(targetDate.getMonth() + 1).padStart(2, "0");
-  const day = String(targetDate.getDate()).padStart(2, "0");
-
+  const year = targetDate?.getFullYear();
+  const month = String(targetDate?.getMonth() + 1).padStart(2, "0");
+  const day = String(targetDate?.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
 
@@ -35,7 +34,10 @@ export const formatTaskPriority = (priority: string) => {
 };
 
 // Input输入框格式化
-export const formatInput = (value:string)=>{
-  if(Array.isArray(value)) return value;
-  return value.split(',').map(item=>item.trim()).filter(item=>item)
-}
+export const formatInput = (value: string) => {
+  if (Array.isArray(value)) return value;
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item);
+};

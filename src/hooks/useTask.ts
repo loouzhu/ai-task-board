@@ -3,6 +3,11 @@ import { getBoardTasks, addTask } from "@/api/task";
 import type { taskFilterParams, CreateTaskPayload } from "@/types/task";
 import { Message } from "@arco-design/web-react";
 
+interface AddTaskMutationPayload {
+  task: CreateTaskPayload;
+  files?: File[];
+}
+
 export const useGetBoardTasks = (
   boardId: string,
   filterParams?: taskFilterParams,
@@ -16,12 +21,12 @@ export const useGetBoardTasks = (
 
 export const useAddTask = (boardId: string) => {
   return useMutation({
-    mutationFn: (task: CreateTaskPayload) => {
+    mutationFn: ({ task, files }: AddTaskMutationPayload) => {
       if (!boardId || boardId.trim() === "") {
         throw new Error("boardId不能为空");
       }
 
-      return addTask(boardId, task);
+      return addTask(boardId, task, files);
     },
     onSuccess: () => Message.success("创建任务成功"),
     onError: (error: Error) => Message.error(error.message),

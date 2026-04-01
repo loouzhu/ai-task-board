@@ -1,6 +1,8 @@
 .taskColumns {
   flex: 1;
   flex-shrink: 0;
+  min-width: 220px;
+  min-height: 0;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -29,6 +31,7 @@
   .status {
     display: flex;
     justify-content: space-between;
+    flex: 0 0 auto;
     height: 30px;
     line-height: 30px;
     color: #303031;
@@ -43,5 +46,19 @@
       font-size: 16px;
       font-weight: 500;
     }
+  }
+
+  .taskItems {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+  }
+
+  .arco-empty {
+    flex: 1;
+    min-height: 0;
+    justify-content: center;
   }
 }
