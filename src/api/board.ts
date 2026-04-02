@@ -1,5 +1,15 @@
 import type { boardListProps } from "@/types/board";
 
+interface AllBoardsResponse {
+  boards: boardListProps[];
+  [key: string]: unknown;
+}
+
+interface BoardInfoResponse {
+  board?: boardListProps;
+  [key: string]: unknown;
+}
+
 interface RawBoardMember {
   userId?: string;
   username?: string;
@@ -31,7 +41,7 @@ const normalizeBoard = (board: RawBoard): boardListProps => ({
 });
 
 //获取所有看板
-export const getAllBoards = async () => {
+export const getAllBoards = async (): Promise<AllBoardsResponse> => {
   const response = await fetch("/api/board/get-all-boards", {
     method: "GET",
     headers: {
@@ -48,11 +58,13 @@ export const getAllBoards = async () => {
     };
   }
 
-  return data;
+  return data as AllBoardsResponse;
 };
 
 // 获取单个看板信息
-export const getBoardInfo = async (boardId: string) => {
+export const getBoardInfo = async (
+  boardId: string,
+): Promise<BoardInfoResponse | boardListProps> => {
   const res = await fetch(`/api/board/get-board/${boardId}`, {
     method: "GET",
     headers: {
@@ -73,5 +85,5 @@ export const getBoardInfo = async (boardId: string) => {
     return normalizeBoard(data as RawBoard);
   }
 
-  return data;
+  return data as BoardInfoResponse;
 };

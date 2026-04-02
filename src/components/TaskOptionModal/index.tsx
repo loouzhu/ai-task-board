@@ -9,16 +9,17 @@ import {
 } from "@arco-design/web-react";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import type { CreateTaskPayload } from "@/types/task";
+import type { TaskPayload } from "@/types/task";
 import { useSearchParams } from "react-router-dom";
 import { formatInput } from "@/utils/common";
-import { useAddTask } from "@/hooks/useTask";
+import { useAddTask, useEditTask } from "@/hooks/useTask";
 import "./index.less";
 
 interface taskOption {
   type: string;
   boardMembers?: string[];
-  task?: CreateTaskPayload;
+  task?: TaskPayload;
+  taskId?: string;
   addStatus?: string;
   visible: boolean;
   onVisibleChange?: (visible: boolean) => void;
@@ -50,6 +51,7 @@ export default function TaskOptionModal({
   const subtask = task?.subtask ?? "";
   const taskNumber = task?.taskNumber;
   const addTaskMutation = useAddTask(boardId);
+  const editTaskMutation = useEditTask(boardId);
 
   const handleCancel = () => {
     onVisibleChange?.(false);
@@ -65,7 +67,7 @@ export default function TaskOptionModal({
         return;
       }
 
-      const payload: CreateTaskPayload = {
+      const payload: TaskPayload = {
         taskNumber: parsedTaskNumber,
         taskName: String(values.taskName).trim(),
         taskPriority: values.taskPriority,
@@ -99,6 +101,19 @@ export default function TaskOptionModal({
         if (addTaskMutation.isPending) return;
         addTaskMutation.mutate(
           { task: payload, files: selectedFiles },
+          {
+            onSuccess: () => onVisibleChange?.(false),
+          },
+        );
+        return;
+      } else if (type === "edit") {
+        if (editTaskMutation.isPending) return;
+        if (!task?.taskId) {
+          Message.error("任务ID不能为空");
+          return;
+        }
+        editTaskMutation.mutate(
+          { taskId: task.taskId, task: payload, files: selectedFiles },
           {
             onSuccess: () => onVisibleChange?.(false),
           },

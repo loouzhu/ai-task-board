@@ -1,6 +1,6 @@
 import { Layout } from "@arco-design/web-react";
 import { useAllBoards } from "@/hooks/useBoard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useGetBoardTasks } from "@/hooks/useTask";
 import type { task, taskFilterParams } from "@/types/task";
@@ -15,7 +15,10 @@ export default function Middle() {
   const Content = Layout.Content;
   const [searchParams, setSearchParams] = useSearchParams();
   const boardList = useAllBoards().data;
-  const boards = (boardList?.boards || []) as boardListProps[];
+  const boards = useMemo<boardListProps[]>(
+    () => boardList?.boards ?? [],
+    [boardList?.boards],
+  );
   const boardId = searchParams.get("boardId") || "";
   const setBoardMembers = useBoardStore((state) => state.setBoardMembers);
   const [filterParams, setFilterParams] = useState<taskFilterParams>({});

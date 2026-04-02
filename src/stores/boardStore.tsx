@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-interface BoardStore {
+interface boardStore {
   boardMembers: string[];
-  setBoardMembers: (boardMembers: string[]) => void;
+  setBoardMembers: (members: string[]) => void;
 }
 
-export const useBoardStore = create<BoardStore>((set) => ({
+export const useBoardStore = create<boardStore>((set) => ({
   boardMembers: [],
-  setBoardMembers: (boardMembers) => set({ boardMembers }),
+  setBoardMembers: (members: string[]) => set({ boardMembers: members }),
 }));

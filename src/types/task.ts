@@ -29,7 +29,8 @@ export interface TaskItemProps {
   task: task;
 }
 
-export interface CreateTaskPayload {
+export interface TaskPayload {
+  taskId?: string;
   taskNumber: number;
   taskName: string;
   taskDescription?: string;
@@ -39,5 +40,5 @@ export interface CreateTaskPayload {
   taskStatus: taskType;
   taskWorkTime?: string;
   subtask?: string[];
-  files?: [];
+  files?: File[];
 }
