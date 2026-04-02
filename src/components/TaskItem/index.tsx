@@ -1,26 +1,30 @@
 import "./index.less";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { formatData, formatTaskPriority } from "@/utils/common";
 import type { TaskItemProps, task } from "@/types/task";
+import { useDeleteTask } from "@/hooks/useTask";
 import { useTaskStore } from "@/stores/taskStore";
 import { useBoardStore } from "@/stores/boardStore";
 import { IconEdit, IconDelete, IconMore } from "@arco-design/web-react/icon";
-import { Menu, Dropdown, Modal, Message } from "@arco-design/web-react";
+import { Menu, Dropdown, Modal } from "@arco-design/web-react";
 import TaskOptionModal from "../TaskOptionModal";
 
 export default function TaskItem({ task }: TaskItemProps) {
   const MenuItem = Menu.Item;
+  const [searchParams] = useSearchParams();
+  const boardId = searchParams.get("boardId") || "";
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const { taskName, taskPriority, taskDeadline, taskMembers } = task;
   const boardMembers = useBoardStore((state) => state.boardMembers);
+  const setTask = useTaskStore((state) => state.setTask);
+  const deleteTask = useDeleteTask(boardId, task.taskId);
 
   const handleDeleteOption = () => {
-    Message.info("删除任务");
+    deleteTask.mutate();
     setDeleteModalVisible(false);
   };
-
-  const setTask = useTaskStore((state) => state.setTask);
 
   const handleShowTaskDetail = (task: task) => {
     setTask(task);

@@ -141,3 +141,26 @@ export const editTask = async (
   const data = await response.json();
   return normalizeTask(data);
 };
+
+// 删除任务
+export const deleteTask = async (boardId: string, taskId: string) => {
+  const response = await fetch(`${BASE_URL}/delete-task/${boardId}`, {
+    method: "DELETE",
+    body: JSON.stringify({ taskId }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("删除任务失败：请求参数错误");
+    } else if (response.status === 401) {
+      throw new Error("删除任务失败：未授权");
+    } else if (response.status === 500) {
+      throw new Error("删除任务失败：服务器错误");
+    } else {
+      throw new Error("删除任务失败");
+    }
+  }
+};

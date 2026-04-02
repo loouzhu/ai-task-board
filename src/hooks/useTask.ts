@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { getBoardTasks, addTask, editTask } from "@/api/task";
+import { useTaskStore } from "@/stores/taskStore";
+import { getBoardTasks, addTask, editTask, deleteTask } from "@/api/task";
 import type { taskFilterParams, TaskPayload } from "@/types/task";
 import { Message } from "@arco-design/web-react";
 
@@ -62,5 +63,29 @@ export const useEditTask = (boardId: string) => {
       queryClient.invalidateQueries({ queryKey: ["boardTasks", boardId] });
     },
     onError: (error: Error) => Message.error(error.message),
+  });
+};
+
+export const useDeleteTask = (boardId: string, taskId: string) => {
+  const queryClient = useQueryClient();
+  const currentTask = useTaskStore((state) => state.task);
+  const setTask = useTaskStore((state) => state.setTask);
+  return useMutation({
+    mutationFn: () => {
+      if (!boardId) {
+        throw new Error("没有看板Id");
+      }
+      return deleteTask(boardId, taskId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["boardTasks", boardId] });
+      Message.success("删除任务成功");
+      if (currentTask?.taskId === taskId) {
+        setTask(null);
+      }
+    },
+    onError: (error) => {
+      Message.error(error.message);
+    },
   });
 };
