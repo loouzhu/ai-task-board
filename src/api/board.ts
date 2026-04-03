@@ -87,3 +87,81 @@ export const getBoardInfo = async (
 
   return data as BoardInfoResponse;
 };
+
+// 创建看板
+export const createBoard = async (boardName: string, members: string[]) => {
+  const response = await fetch("/api/board/create-board", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ boardName, members }),
+  });
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("看板参数错误");
+    } else if (response.status === 401) {
+      throw new Error("未授权");
+    } else if (response.status === 500) {
+      throw new Error("服务器错误");
+    } else {
+      throw new Error("创建看板失败");
+    }
+  }
+  const data = await response.json();
+  return data;
+};
+
+// 编辑看板
+export const editBoard = async (
+  boardId: string,
+  boardName: string,
+  members: string[],
+) => {
+  const response = await fetch(`/api/board/edit-board/${boardId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ boardName, members }),
+  });
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("看板参数错误");
+    } else if (response.status === 401) {
+      throw new Error("未授权");
+    } else if (response.status === 500) {
+      throw new Error("服务器错误");
+    } else {
+      throw new Error("编辑看板失败");
+    }
+  }
+  const data = await response.json();
+  return data;
+};
+
+// 删除看板
+export const deleteBoard = async (boardId: string) => {
+  const response = await fetch(`/api/board/delete-board/${boardId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("看板参数错误");
+    } else if (response.status === 401) {
+      throw new Error("未授权");
+    } else if (response.status === 500) {
+      throw new Error("服务器错误");
+    } else {
+      throw new Error("删除看板失败");
+    }
+  }
+  const data = await response.json();
+  return data;
+};

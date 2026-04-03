@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IconUser, IconExport } from "@arco-design/web-react/icon";
 import { Layout, Avatar, Menu } from "@arco-design/web-react";
 import { pageList } from "@/types/common";
@@ -12,8 +13,11 @@ export default function Header() {
   const user = useMeQuery().data?.user;
   const [activeIndex, setActiveIndex] = useState(0);
   const [userMenu, setUserMenu] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const handleChangePage = (index: number) => {
     setActiveIndex(index);
+    navigate(`${pageList[index].path}`, { replace: true });
   };
 
   const handleLogout = () => {
