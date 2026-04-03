@@ -29,11 +29,11 @@ export const useCreateBoard = () => {
   return useMutation({
     mutationFn: ({
       boardName,
-      members,
+      boardMembers,
     }: {
       boardName: string;
-      members: string[];
-    }) => createBoard(boardName, members),
+      boardMembers: string[];
+    }) => createBoard(boardName, boardMembers),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allBoards"] });
       Message.success("看板创建成功");
@@ -50,12 +50,12 @@ export const useEditBoard = () => {
     mutationFn: ({
       boardId,
       boardName,
-      members,
+      boardMembers,
     }: {
       boardId: string;
       boardName: string;
-      members: string[];
-    }) => editBoard(boardId, boardName, members),
+      boardMembers: string[];
+    }) => editBoard(boardId, boardName, boardMembers),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allBoards"] });
       queryClient.invalidateQueries({ queryKey: ["boardInfo"] });

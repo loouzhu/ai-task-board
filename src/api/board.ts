@@ -89,14 +89,14 @@ export const getBoardInfo = async (
 };
 
 // 创建看板
-export const createBoard = async (boardName: string, members: string[]) => {
+export const createBoard = async (boardName: string, boardMembers: string[]) => {
   const response = await fetch("/api/board/create-board", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ boardName, members }),
+    body: JSON.stringify({ boardName, boardMembers }),
   });
   if (!response.ok) {
     if (response.status === 400) {
@@ -117,7 +117,7 @@ export const createBoard = async (boardName: string, members: string[]) => {
 export const editBoard = async (
   boardId: string,
   boardName: string,
-  members: string[],
+  boardMembers: string[],
 ) => {
   const response = await fetch(`/api/board/edit-board/${boardId}`, {
     method: "PUT",
@@ -125,7 +125,7 @@ export const editBoard = async (
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ boardName, members }),
+    body: JSON.stringify({ boardName, boardMembers }),
   });
   if (!response.ok) {
     if (response.status === 400) {
