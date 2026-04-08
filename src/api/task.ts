@@ -30,6 +30,8 @@ const normalizeTask = (rawTask: RawTask): task => {
   const taskMembers = normalizeTaskMembers(rawTask.taskMembers);
   return {
     ...rawTask,
+    isBlock: Boolean(rawTask.isBlock),
+    blockInfo: rawTask.blockInfo ?? "",
     taskMembers:
       taskMembers.length > 0
         ? taskMembers

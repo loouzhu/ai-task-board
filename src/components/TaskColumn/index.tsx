@@ -36,7 +36,7 @@ export default function TaskColumn({
       <div className="status">
         <div className="left">
           <div className="type">{columnLabel ?? columnStatus}</div>
-          <IconPlus onClick={handleAddTask} />
+          <IconPlus onClick={handleAddTask} style={{ cursor: "pointer" }} />
         </div>
         <div className="count">{count}个任务</div>
       </div>

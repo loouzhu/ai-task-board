@@ -1,8 +1,10 @@
 export interface task {
   boardId: string;
+  blockInfo: string;
   createdAt: string;
   createdBy: string;
   files: [];
+  isBlock: boolean;
   subtask: string[];
   taskDeadline: string;
   taskDescription: string;
@@ -33,6 +35,8 @@ export interface TaskPayload {
   taskId?: string;
   taskNumber: number;
   taskName: string;
+  isBlock: boolean;
+  blockInfo: string;
   taskDescription?: string;
   taskPriority: string;
   taskDeadline?: string;

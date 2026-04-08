@@ -7,7 +7,7 @@ import { useDeleteTask } from "@/hooks/useTask";
 import { useTaskStore } from "@/stores/taskStore";
 import { useBoardStore } from "@/stores/boardStore";
 import { IconEdit, IconDelete, IconMore } from "@arco-design/web-react/icon";
-import { Menu, Dropdown, Modal } from "@arco-design/web-react";
+import { Menu, Dropdown, Modal, Tag, Tooltip } from "@arco-design/web-react";
 import TaskOptionModal from "../TaskOptionModal";
 
 export default function TaskItem({ task }: TaskItemProps) {
@@ -16,7 +16,14 @@ export default function TaskItem({ task }: TaskItemProps) {
   const boardId = searchParams.get("boardId") || "";
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const { taskName, taskPriority, taskDeadline, taskMembers } = task;
+  const {
+    taskName,
+    taskPriority,
+    taskDeadline,
+    taskMembers,
+    isBlock,
+    blockInfo,
+  } = task;
   const boardMembers = useBoardStore((state) => state.boardMembers);
   const setTask = useTaskStore((state) => state.setTask);
   const deleteTask = useDeleteTask(boardId, task.taskId);
@@ -60,6 +67,11 @@ export default function TaskItem({ task }: TaskItemProps) {
         >
           <IconMore />
         </Dropdown>
+        {isBlock && (
+          <Tooltip content={blockInfo} color="#3491FA">
+            <Tag color="gold">阻塞</Tag>
+          </Tooltip>
+        )}
       </div>
       {/* 编辑任务 */}
       <TaskOptionModal

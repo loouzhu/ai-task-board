@@ -48,6 +48,8 @@ export default function TaskOptionModal({
   const taskMembers = task?.taskMembers;
   const taskStatus = task?.taskStatus ?? addStatus;
   const taskWorkTime = task?.taskWorkTime ?? "";
+  const isBlock = task?.isBlock ?? false;
+  const blockInfo = task?.blockInfo ?? "";
   const subtask = task?.subtask ?? "";
   const taskNumber = task?.taskNumber;
   const addTaskMutation = useAddTask(boardId);
@@ -70,6 +72,8 @@ export default function TaskOptionModal({
       const payload: TaskPayload = {
         taskNumber: parsedTaskNumber,
         taskName: String(values.taskName).trim(),
+        isBlock: Boolean(values.isBlock),
+        blockInfo: String(values.blockInfo ?? "").trim(),
         taskPriority: values.taskPriority,
         taskMembers: Array.isArray(values.taskMembers)
           ? values.taskMembers
@@ -144,6 +148,8 @@ export default function TaskOptionModal({
       taskMembers,
       taskStatus,
       taskWorkTime,
+      isBlock,
+      blockInfo,
       subtask,
     });
   }, [
@@ -157,6 +163,8 @@ export default function TaskOptionModal({
     taskMembers,
     taskStatus,
     taskWorkTime,
+    isBlock,
+    blockInfo,
     subtask,
   ]);
 
@@ -237,6 +245,15 @@ export default function TaskOptionModal({
             <Option value="testing">测试中</Option>
             <Option value="completed">已完成</Option>
           </Select>
+        </FormItem>
+        <FormItem label="是否阻塞：" field="isBlock" initialValue={false}>
+          <Radio.Group>
+            <Radio value={false}>否</Radio>
+            <Radio value={true}>是</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem label="阻塞说明：" field="blockInfo">
+          <Input.TextArea autoSize={{ minRows: 2, maxRows: 3 }} />
         </FormItem>
         {/* 预估工时 */}
         <FormItem label="预估工时：" field="taskWorkTime">
