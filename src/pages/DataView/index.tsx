@@ -1,4 +1,12 @@
 import "./index.less";
+import Left from "./Left";
+import Right from "./Right";
+
 export default function DataView() {
-  return <div>数据视图</div>;
+  return (
+    <div className="dataView">
+      <Left />
+      <Right />
+    </div>
+  );
 }
