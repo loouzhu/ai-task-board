@@ -1,4 +1,4 @@
-import TagItem from "@/components/TagItem";
+import { Tag as ArcoTag } from "@arco-design/web-react";
 import { formatData, formatTaskPriority } from "@/utils/common";
 import "./index.less";
 
@@ -37,11 +37,15 @@ export default function Tag({
     <div className="tag">
       {tagList &&
         tagList.map((item, index) => (
-          <TagItem
-            title={item.title}
-            data={item.data}
+          <ArcoTag
             key={index + item.title}
-          />
+            className="tag__item"
+            title={`${item.title}：${item.data}`}
+            bordered
+          >
+            <span className="tag__label">{item.title}：</span>
+            <span className="tag__value">{item.data}</span>
+          </ArcoTag>
         ))}
     </div>
   );
