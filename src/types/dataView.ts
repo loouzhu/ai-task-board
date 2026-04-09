@@ -13,6 +13,12 @@ export interface DayCellData {
   overdue: boolean;
 }
 
+export interface MonthWeekCellData {
+  task: number;
+  startDate: string;
+  endDate: string;
+}
+
 export type DayCellRecord = Record<WeekdayKey, DayCellData>;
 
 export interface WeekDataRecord extends DayCellRecord {
@@ -24,10 +30,10 @@ export interface WeekDataRecord extends DayCellRecord {
 export interface MonthDataRecord {
   key: string;
   name: string;
-  week1: number;
-  week2: number;
-  week3: number;
-  week4: number;
-  week5: number;
+  week1: MonthWeekCellData;
+  week2: MonthWeekCellData;
+  week3: MonthWeekCellData;
+  week4: MonthWeekCellData;
+  week5: MonthWeekCellData;
   total: number;
 }

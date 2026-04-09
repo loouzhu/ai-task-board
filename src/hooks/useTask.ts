@@ -7,8 +7,9 @@ import {
   editTask,
   deleteTask,
   getTaskMetrics,
+  getPeriodTask,
 } from "@/api/task";
-import type { taskFilterParams, TaskPayload } from "@/types/task";
+import type { taskFilterParams, TaskPayload, dateType } from "@/types/task";
 import { Message } from "@arco-design/web-react";
 
 interface AddTaskMutationPayload {
@@ -96,9 +97,16 @@ export const useDeleteTask = (boardId: string, taskId: string) => {
   });
 };
 
-export const useGetTaskMetrics = (dateType: "week" | "month") => {
+export const useGetTaskMetrics = (dateType: dateType) => {
   return useQuery({
     queryKey: ["taskMetrics", dateType],
     queryFn: () => getTaskMetrics(dateType),
+  });
+};
+
+export const useGetPeriodTask = (dateType: dateType) => {
+  return useQuery({
+    queryKey: ["periodTask", dateType],
+    queryFn: () => getPeriodTask(dateType),
   });
 };

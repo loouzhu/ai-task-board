@@ -2,8 +2,9 @@ import "./index.less";
 import CardHead from "@/components/CardHead";
 import DataCard from "@/components/DataCard";
 import { useGetTaskMetrics } from "@/hooks/useTask";
+import type { dateType } from "@/types/task";
 
-export default function Left({ dateType }: { dateType: "week" | "month" }) {
+export default function Left({ dateType }: { dateType: dateType }) {
   const taskMetrics = useGetTaskMetrics(dateType).data?.metrics;
   const periodLabel = dateType === "week" ? "周" : "月";
   const {

@@ -1,4 +1,9 @@
-import type { task, taskFilterParams, TaskPayload } from "@/types/task";
+import type {
+  task,
+  taskFilterParams,
+  TaskPayload,
+  dateType,
+} from "@/types/task";
 
 const BASE_URL = "/api/task";
 
@@ -41,6 +46,34 @@ const normalizeTask = (rawTask: RawTask): task => {
           ? [rawTask.principle]
           : [],
   };
+};
+
+const normalizeTaskCollection = (data: unknown) => {
+  if (Array.isArray(data)) {
+    return data.map((item) => normalizeTask(item as RawTask));
+  }
+
+  if (data && typeof data === "object") {
+    const result = { ...(data as Record<string, unknown>) };
+
+    if (Array.isArray(result.tasks)) {
+      result.tasks = result.tasks.map((item) => normalizeTask(item as RawTask));
+    }
+
+    if (Array.isArray(result.data)) {
+      result.data = result.data.map((item) => normalizeTask(item as RawTask));
+    }
+
+    if (Array.isArray(result.periodTasks)) {
+      result.periodTasks = result.periodTasks.map((item) =>
+        normalizeTask(item as RawTask),
+      );
+    }
+
+    return result;
+  }
+
+  return data;
 };
 
 // 根据当前看板获取任务
@@ -170,7 +203,7 @@ export const deleteTask = async (boardId: string, taskId: string) => {
 };
 
 // 获取任务指标
-export const getTaskMetrics = async (dateType: "week" | "month") => {
+export const getTaskMetrics = async (dateType: dateType) => {
   const response = await fetch(
     `${BASE_URL}/get-task-metrics?dateType=${dateType}`,
     {
@@ -194,4 +227,31 @@ export const getTaskMetrics = async (dateType: "week" | "month") => {
   }
   const data = await response.json();
   return data;
+};
+
+// 获取本周或本月任务
+export const getPeriodTask = async (dateType: dateType) => {
+  const response = await fetch(
+    `${BASE_URL}/get-period-task-data?dateType=${dateType}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("获取任务失败：请求参数错误");
+    } else if (response.status === 401) {
+      throw new Error("获取任务失败：未授权");
+    } else if (response.status === 500) {
+      throw new Error("获取任务失败：服务器错误");
+    } else {
+      throw new Error("获取任务失败");
+    }
+  }
+  const data = await response.json();
+  return normalizeTaskCollection(data);
 };

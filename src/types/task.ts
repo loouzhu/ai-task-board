@@ -50,3 +50,5 @@ export interface TaskPayload {
   subtask?: string[];
   files?: File[];
 }
+
+export type dateType = "week" | "month";
