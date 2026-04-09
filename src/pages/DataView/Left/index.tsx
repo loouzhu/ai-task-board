@@ -2,7 +2,8 @@ import "./index.less";
 import CardHead from "@/components/CardHead";
 import DataCard from "@/components/DataCard";
 
-export default function Left() {
+export default function Left({ dateType }: { dateType: string }) {
+  console.log("left:", dateType);
   const dataList = [
     {
       title: "任务总数",
