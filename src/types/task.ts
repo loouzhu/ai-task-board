@@ -5,8 +5,8 @@ export interface task {
   createdBy: string;
   files: [];
   isBlock: boolean;
-  isDelay: boolean;
-  delayInfo: string;
+  isOverdue: boolean;
+  overdueInfo: string;
   subtask: string[];
   taskDeadline: string;
   taskDescription: string;
@@ -39,8 +39,8 @@ export interface TaskPayload {
   taskName: string;
   isBlock: boolean;
   blockInfo: string;
-  isDelay: boolean;
-  delayInfo: string;
+  isOverdue: boolean;
+  overdueInfo: string;
   taskDescription?: string;
   taskPriority: string;
   taskDeadline?: string;

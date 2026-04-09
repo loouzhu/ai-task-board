@@ -32,8 +32,8 @@ const normalizeTask = (rawTask: RawTask): task => {
     ...rawTask,
     isBlock: Boolean(rawTask.isBlock),
     blockInfo: rawTask.blockInfo ?? "",
-    isDelay: Boolean(rawTask.isDelay),
-    delayInfo: rawTask.delayInfo ?? "",
+    isOverdue: Boolean(rawTask.isOverdue),
+    overdueInfo: rawTask.overdueInfo ?? "",
     taskMembers:
       taskMembers.length > 0
         ? taskMembers
@@ -167,4 +167,31 @@ export const deleteTask = async (boardId: string, taskId: string) => {
       throw new Error("删除任务失败");
     }
   }
+};
+
+// 获取任务指标
+export const getTaskMetrics = async (dateType: "week" | "month") => {
+  const response = await fetch(
+    `${BASE_URL}/get-task-metrics?dateType=${dateType}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    },
+  );
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("获取任务指标失败：请求参数错误");
+    } else if (response.status === 401) {
+      throw new Error("获取任务指标失败：未授权");
+    } else if (response.status === 500) {
+      throw new Error("获取任务指标失败：服务器错误");
+    } else {
+      throw new Error("获取任务指标失败");
+    }
+  }
+  const data = await response.json();
+  return data;
 };

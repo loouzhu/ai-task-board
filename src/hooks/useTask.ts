@@ -1,7 +1,13 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTaskStore } from "@/stores/taskStore";
-import { getBoardTasks, addTask, editTask, deleteTask } from "@/api/task";
+import {
+  getBoardTasks,
+  addTask,
+  editTask,
+  deleteTask,
+  getTaskMetrics,
+} from "@/api/task";
 import type { taskFilterParams, TaskPayload } from "@/types/task";
 import { Message } from "@arco-design/web-react";
 
@@ -87,5 +93,12 @@ export const useDeleteTask = (boardId: string, taskId: string) => {
     onError: (error) => {
       Message.error(error.message);
     },
+  });
+};
+
+export const useGetTaskMetrics = (dateType: "week" | "month") => {
+  return useQuery({
+    queryKey: ["taskMetrics", dateType],
+    queryFn: () => getTaskMetrics(dateType),
   });
 };

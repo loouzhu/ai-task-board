@@ -23,8 +23,8 @@ export default function TaskItem({ task }: TaskItemProps) {
     taskMembers,
     isBlock,
     blockInfo,
-    isDelay,
-    delayInfo,
+    isOverdue,
+    overdueInfo,
   } = task;
   const boardMembers = useBoardStore((state) => state.boardMembers);
   const setTask = useTaskStore((state) => state.setTask);
@@ -74,8 +74,8 @@ export default function TaskItem({ task }: TaskItemProps) {
             <Tag color="gold">阻塞</Tag>
           </Tooltip>
         )}
-        {isDelay && (
-          <Tooltip content={delayInfo} color="#FF4D4F">
+        {isOverdue && (
+          <Tooltip content={overdueInfo} color="#FF4D4F">
             <Tag color="red">逾期</Tag>
           </Tooltip>
         )}

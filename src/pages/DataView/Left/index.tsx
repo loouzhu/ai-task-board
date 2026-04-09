@@ -1,40 +1,70 @@
 import "./index.less";
 import CardHead from "@/components/CardHead";
 import DataCard from "@/components/DataCard";
+import { useGetTaskMetrics } from "@/hooks/useTask";
 
-export default function Left({ dateType }: { dateType: string }) {
-  console.log("left:", dateType);
+export default function Left({ dateType }: { dateType: "week" | "month" }) {
+  const taskMetrics = useGetTaskMetrics(dateType).data?.metrics;
+  const periodLabel = dateType === "week" ? "周" : "月";
+  const {
+    totalTaskCount,
+    completionRate,
+    overdueTaskCount,
+    completedTaskCount,
+    averageTaskLoad,
+    overdueMediumHighPriorityCount,
+    changes,
+  } = taskMetrics ?? {};
+
+  const formatTrend = (value?: number) => {
+    if (typeof value !== "number" || Number.isNaN(value)) {
+      return "0%";
+    }
+
+    const roundedValue = Number(value.toFixed(2));
+    return `${roundedValue > 0 ? "+" : ""}${roundedValue}%`;
+  };
+
+  const formatChangeText = (value?: number, unit = "个") => {
+    if (typeof value !== "number" || Number.isNaN(value) || value === 0) {
+      return `较上${periodLabel}持平`;
+    }
+
+    const prefix = value > 0 ? "增加" : "减少";
+    return `较上${periodLabel}${prefix}${Math.abs(value)}${unit}`;
+  };
+
   const dataList = [
     {
       title: "任务总数",
-      data: 100,
+      data: totalTaskCount ?? 0,
       unit: "个",
-      trend: "12%",
-      description: "较上周增加了12%",
+      trend: formatTrend(changes?.totalTaskCount?.changePercentage),
+      description: `${formatChangeText(changes?.totalTaskCount?.changeValue)}`,
       bcc: "linear-gradient(135deg, #ecf3ff 0%, #d9e9ff 100%)",
     },
     {
       title: "完成率",
-      data: 80,
+      data: completionRate ?? 0,
       unit: "%",
-      trend: "5%",
-      description: "本周已经完成30项任务",
+      trend: formatTrend(changes?.completionRate?.changePercentage),
+      description: `本${periodLabel}已完成${completedTaskCount ?? 0}项任务`,
       bcc: "linear-gradient(135deg, #e9fbef 0%, #d3f6df 100%)",
     },
     {
       title: "逾期任务",
-      data: 4,
+      data: overdueTaskCount ?? 0,
       unit: "个",
-      trend: "-3.5%",
-      description: "高优先级5项",
+      trend: formatTrend(changes?.overdueTaskCount?.changePercentage),
+      description: `中高优先级 ${overdueMediumHighPriorityCount ?? 0} 项`,
       bcc: "linear-gradient(135deg, #fff3e8 0%, #ffe2c2 100%)",
     },
     {
       title: "平均负载",
-      data: 6.5,
+      data: averageTaskLoad ?? 0,
       unit: "个",
-      trend: "-10%",
-      description: "本周人均任务数量",
+      trend: formatTrend(changes?.averageTaskLoad?.changePercentage),
+      description: `${formatChangeText(changes?.averageTaskLoad?.changeValue)}`,
       bcc: "linear-gradient(135deg, #f4efff 0%, #e7deff 100%)",
     },
   ];

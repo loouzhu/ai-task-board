@@ -5,11 +5,16 @@
   justify-content: space-between;
   gap: 14px;
   min-height: 132px;
+  min-width: 0;
   border-radius: 16px;
-  padding: 18px;
+  padding: 12px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  overflow: hidden;
 
   .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 14px;
     font-weight: 700;
     color: #475569;
@@ -31,15 +36,21 @@
     color: #172033;
     white-space: nowrap;
     width: 100%;
+    min-width: 0;
 
     .data__main {
       display: inline-flex;
       align-items: baseline;
       gap: 8px;
       min-width: 0;
+      flex: 1;
+      overflow: hidden;
     }
 
     .value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
       font-size: 36px;
       font-weight: 800;
       line-height: 1;
@@ -59,14 +70,25 @@
     justify-content: center;
     gap: 4px;
     margin-left: auto;
-    padding: 5px 10px;
+    padding: 5px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     line-height: 1;
+    max-width: 50%;
+    min-width: 0;
+    flex-shrink: 1;
 
     svg {
+      flex-shrink: 0;
       font-size: 12px;
+    }
+
+    .trendText {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
@@ -81,6 +103,9 @@
   }
 
   .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 12px;
     color: #5b6475;
     line-height: 1.6;

@@ -10,7 +10,7 @@ export type WeekdayKey =
 export interface DayCellData {
   task: number;
   blocked: boolean;
-  delay: boolean;
+  overdue: boolean;
 }
 
 export type DayCellRecord = Record<WeekdayKey, DayCellData>;

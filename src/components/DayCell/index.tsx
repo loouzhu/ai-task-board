@@ -8,7 +8,7 @@ interface DateCellProps {
 export default function DateCell({ dayData }: DateCellProps) {
   const completedCount = dayData.task || 0;
   const isBlocked = dayData.blocked;
-  const isDelay = dayData.delay;
+  const isOverdue = dayData.overdue;
 
   const getColorByCount = (count: number) => {
     if (count === 0) return "#ebedf0";
@@ -24,7 +24,7 @@ export default function DateCell({ dayData }: DateCellProps) {
         color: completedCount > 4 ? "#fff" : "#1f1f1f",
         backgroundColor: getColorByCount(completedCount),
       }}
-      title={`完成 ${completedCount} 个任务${isBlocked ? "，有阻塞任务" : ""}${isDelay ? "，有延期任务" : ""}`}
+      title={`完成 ${completedCount} 个任务${isBlocked ? "，有阻塞任务" : ""}${isOverdue ? "，有延期任务" : ""}`}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
       }}
@@ -36,7 +36,7 @@ export default function DateCell({ dayData }: DateCellProps) {
       {/* 阻塞标记：蓝点 */}
       {isBlocked && <span className="blocked" />}
       {/* 延期标记：红三角 */}
-      {isDelay && <span className="overDue" />}
+      {isOverdue && <span className="overDue" />}
     </div>
   );
 }

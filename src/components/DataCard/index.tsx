@@ -26,14 +26,16 @@ export default function DataCard({
       <div className="dataCard__meta">
         <div className="data">
           <div className="data__main">
-            <span className="value">{data}</span>
-            {unit && <span className="unit">{unit}</span>}
+            <span className="value" title={data.toString()}>
+              {data}
+            </span>
+            {unit && <span className="unit" title={unit}>{unit}</span>}
           </div>
           <span
             className={`trendTag ${isNegativeTrend ? "trendTag--down" : "trendTag--up"}`}
           >
             {isNegativeTrend ? <IconArrowFall /> : <IconArrowRise />}
-            <span>{trend}</span>
+            <span className="trendText">{trend}</span>
           </span>
         </div>
       </div>
