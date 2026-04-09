@@ -1,71 +1,181 @@
 import "./index.less";
-import { Table } from "@arco-design/web-react";
+import { Table, Message, Tag } from "@arco-design/web-react";
 import { formatData } from "@/utils/common";
-import { useGetAllUsers } from "@/hooks/useUser";
+//import { useGetAllUsers } from "@/hooks/useUser";
 import { Segmented } from "antd";
-import DateCell from "@/components/DateCell";
+import { useState } from "react";
+import DateCell from "@/components/DayCell";
+import WeekCell from "@/components/WeekCell";
+import type { MonthDataRecord, WeekDataRecord } from "@/types/dataView";
 
-export default function Right({
-  dateType,
-  setDateType,
-}: {
-  dateType: "week" | "month";
-  setDateType: React.Dispatch<React.SetStateAction<"week" | "month">>;
-}) {
+export default function Right() {
   const date = new Date();
-  const users = useGetAllUsers();
+  const [viewMode, setViewMode] = useState<"week" | "month">("week");
 
-  // 动态生成带 render 的列
-  const generateDateColumns = () => {
-    const dateConfigs = [
-      { date: "4/1", weekday: "周一", dataIndex: "day1", index: 1 },
-      { date: "4/2", weekday: "周二", dataIndex: "day2", index: 2 },
-      { date: "4/3", weekday: "周三", dataIndex: "day3", index: 3 },
-      { date: "4/4", weekday: "周四", dataIndex: "day4", index: 4 },
-      { date: "4/5", weekday: "周五", dataIndex: "day5", index: 5 },
-      { date: "4/6", weekday: "周六", dataIndex: "day6", index: 6 },
-      { date: "4/7", weekday: "周日", dataIndex: "day7", index: 7 },
-    ];
-
-    return [
-      {
-        title: "日期",
-        children: dateConfigs.map((config) => ({
-          title: (
-            <div>
-              <div>{config.date}</div>
-              <div
-                style={{ fontSize: 12, fontWeight: "normal", color: "#86909c" }}
-              >
-                {config.weekday}
-              </div>
-            </div>
-          ),
-          dataIndex: config.dataIndex,
-          key: config.dataIndex,
-          width: 70,
-          align: "center" as const,
-          render: (value: number, record: any) => (
-            <DateCell value={value} record={record} dayIndex={config.index} />
-          ),
-        })),
-      },
-    ];
-  };
-
-  const columns = [
+  // 周视图的列配置（原有的每日明细）
+  const weekColumns = [
     {
       title: "成员名",
       dataIndex: "name",
       fixed: "left" as const,
       width: 100,
       align: "center" as const,
-      render: (name: string) => <span>{name}</span>,
+      render: (name: string, record: WeekDataRecord) => (
+        <div>
+          <span
+            style={{ fontWeight: 500, cursor: "pointer" }}
+            onClick={() => Message.info(`筛选 ${name} 的任务`)}
+          >
+            {name}
+          </span>
+          <div style={{ fontSize: 12, color: "#86909c", marginTop: 4 }}>
+            总计: {record.weekTotal || 0}个
+          </div>
+        </div>
+      ),
     },
-    ...generateDateColumns(),
+    {
+      title: "4/1 (周一)",
+      dataIndex: "day1",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={1} />
+      ),
+    },
+    {
+      title: "4/2 (周二)",
+      dataIndex: "day2",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={2} />
+      ),
+    },
+    {
+      title: "4/3 (周三)",
+      dataIndex: "day3",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={3} />
+      ),
+    },
+    {
+      title: "4/4 (周四)",
+      dataIndex: "day4",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={4} />
+      ),
+    },
+    {
+      title: "4/5 (周五)",
+      dataIndex: "day5",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={5} />
+      ),
+    },
+    {
+      title: "4/6 (周六)",
+      dataIndex: "day6",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={6} />
+      ),
+    },
+    {
+      title: "4/7 (周日)",
+      dataIndex: "day7",
+      width: 60,
+      align: "center" as const,
+      render: (value: number, record: WeekDataRecord) => (
+        <DateCell value={value} record={record} dayIndex={7} />
+      ),
+    },
   ];
 
-  const data = [
+  // 月视图（热力图矩阵）的列配置
+  const monthColumns = [
+    {
+      title: "成员名",
+      dataIndex: "name",
+      fixed: "left" as const,
+      width: 120,
+      align: "center" as const,
+      render: (name: string, record: MonthDataRecord) => (
+        <div>
+          <span style={{ fontWeight: 500 }}>{name}</span>
+          <div style={{ fontSize: 12, color: "#86909c", marginTop: 4 }}>
+            <Tag
+              color={
+                record.total > 30
+                  ? "green"
+                  : record.total > 15
+                    ? "orange"
+                    : "red"
+              }
+              size="small"
+            >
+              总计: {record.total}
+            </Tag>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "第1周\n4/1-4/7",
+      dataIndex: "week1",
+      width: 90,
+      align: "center" as const,
+      render: (value: number, record: MonthDataRecord) => (
+        <WeekCell total={value} weekIndex={1} memberName={record.name} />
+      ),
+    },
+    {
+      title: "第2周\n4/8-4/14",
+      dataIndex: "week2",
+      width: 90,
+      align: "center" as const,
+      render: (value: number, record: MonthDataRecord) => (
+        <WeekCell total={value} weekIndex={2} memberName={record.name} />
+      ),
+    },
+    {
+      title: "第3周\n4/15-4/21",
+      dataIndex: "week3",
+      width: 90,
+      align: "center" as const,
+      render: (value: number, record: MonthDataRecord) => (
+        <WeekCell total={value} weekIndex={3} memberName={record.name} />
+      ),
+    },
+    {
+      title: "第4周\n4/22-4/28",
+      dataIndex: "week4",
+      width: 90,
+      align: "center" as const,
+      render: (value: number, record: MonthDataRecord) => (
+        <WeekCell total={value} weekIndex={4} memberName={record.name} />
+      ),
+    },
+    {
+      title: "第5周\n4/29-4/30",
+      dataIndex: "week5",
+      width: 90,
+      align: "center" as const,
+      render: (value: number, record: MonthDataRecord) => (
+        <WeekCell total={value} weekIndex={5} memberName={record.name} />
+      ),
+    },
+  ];
+
+  // 周视图数据（每日明细 + 周合计）
+  const weekData: WeekDataRecord[] = [
     {
       key: "1",
       name: "张三",
@@ -90,6 +200,7 @@ export default function Right({
       day5_overdue: false,
       day6_overdue: false,
       day7_overdue: false,
+      weekTotal: 15,
     },
     {
       key: "2",
@@ -115,6 +226,7 @@ export default function Right({
       day5_overdue: false,
       day6_overdue: false,
       day7_overdue: false,
+      weekTotal: 8,
     },
     {
       key: "3",
@@ -140,6 +252,7 @@ export default function Right({
       day5_overdue: false,
       day6_overdue: false,
       day7_overdue: false,
+      weekTotal: 2,
     },
     {
       key: "4",
@@ -165,6 +278,7 @@ export default function Right({
       day5_overdue: false,
       day6_overdue: false,
       day7_overdue: false,
+      weekTotal: 15,
     },
     {
       key: "5",
@@ -190,8 +304,123 @@ export default function Right({
       day5_overdue: false,
       day6_overdue: false,
       day7_overdue: false,
+      weekTotal: 4,
+    },
+    {
+      key: "6",
+      name: "小红",
+      day1: 2,
+      day2: 2,
+      day3: 2,
+      day4: 2,
+      day5: 2,
+      day6: 0,
+      day7: 0,
+      day1_blocked: false,
+      day2_blocked: false,
+      day3_blocked: true,
+      day4_blocked: false,
+      day5_blocked: false,
+      day6_blocked: false,
+      day7_blocked: false,
+      day1_overdue: false,
+      day2_overdue: false,
+      day3_overdue: false,
+      day4_overdue: false,
+      day5_overdue: false,
+      day6_overdue: false,
+      day7_overdue: false,
+      weekTotal: 10,
     },
   ];
+
+  // 月视图数据（按周聚合 + 月总计）
+  const monthData: MonthDataRecord[] = [
+    {
+      key: "1",
+      name: "张三",
+      week1: 15, // 4/1-4/7
+      week2: 18, // 4/8-4/14
+      week3: 22, // 4/15-4/21
+      week4: 20, // 4/22-4/28
+      week5: 5, // 4/29-4/30
+      total: 80, // 月度总计
+    },
+    {
+      key: "2",
+      name: "李四",
+      week1: 8,
+      week2: 12,
+      week3: 10,
+      week4: 14,
+      week5: 3,
+      total: 47,
+    },
+    {
+      key: "3",
+      name: "王五",
+      week1: 2,
+      week2: 0, // 这周请假了
+      week3: 1,
+      week4: 3,
+      week5: 0,
+      total: 6, // 明显不活跃
+    },
+    {
+      key: "4",
+      name: "赵六",
+      week1: 15,
+      week2: 20,
+      week3: 25,
+      week4: 22,
+      week5: 6,
+      total: 88, // 本月之星
+    },
+    {
+      key: "5",
+      name: "小明",
+      week1: 4,
+      week2: 6,
+      week3: 5,
+      week4: 7,
+      week5: 1,
+      total: 23,
+    },
+    {
+      key: "6",
+      name: "小红",
+      week1: 10,
+      week2: 8,
+      week3: 12,
+      week4: 9,
+      week5: 2,
+      total: 41,
+    },
+    {
+      key: "7",
+      name: "大熊（新成员）",
+      week1: 0, // 4月中旬才加入
+      week2: 0,
+      week3: 4,
+      week4: 8,
+      week5: 3,
+      total: 15,
+    },
+    {
+      key: "8",
+      name: "静香（已离职）",
+      week1: 12,
+      week2: 10,
+      week3: 5, // 第三周后半周离职
+      week4: 0,
+      week5: 0,
+      total: 27,
+    },
+  ];
+
+  // 根据视图模式选择数据和列
+  const currentColumns = viewMode === "week" ? weekColumns : monthColumns;
+  const currentData = viewMode === "week" ? weekData : monthData;
 
   return (
     <div className="right">
@@ -202,31 +431,27 @@ export default function Right({
             <div className="date">今天是 {formatData(date)}</div>
           </strong>
           <div className="options">
-            <Segmented
-              options={[
-                { label: "周", value: "week" },
-                { label: "月", value: "month" },
-              ]}
+            <Segmented<string>
+              options={["周", "月"]}
+              value={viewMode === "week" ? "周" : "月"}
               onChange={(value) => {
-                setDateType(value as "week" | "month");
+                setViewMode(value === "周" ? "week" : "month");
               }}
             />
           </div>
         </header>
       </section>
       <section className="content">
-        {dateType === "week" ? (
-          <Table
-            columns={columns}
-            border={{
-              wrapper: true,
-              cell: true,
-            }}
-            data={data}
-            pagination={false}
-            scroll={{ x: 700 }}
-          />
-        ) : null}
+        <Table
+          columns={currentColumns}
+          border={{
+            wrapper: true,
+            cell: true,
+          }}
+          data={currentData}
+          pagination={false}
+          scroll={{ y: 510 }}
+        />
       </section>
     </div>
   );

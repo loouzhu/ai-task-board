@@ -1,9 +1,10 @@
 import "./index.less";
+import type { DayCellRecord, DayIndex } from "@/types/dataView";
 
 interface DateCellProps {
   value: number;
-  record: any;
-  dayIndex: number;
+  record: DayCellRecord;
+  dayIndex: DayIndex;
 }
 
 export default function DateCell({ value, record, dayIndex }: DateCellProps) {
