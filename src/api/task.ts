@@ -32,6 +32,8 @@ const normalizeTask = (rawTask: RawTask): task => {
     ...rawTask,
     isBlock: Boolean(rawTask.isBlock),
     blockInfo: rawTask.blockInfo ?? "",
+    isDelay: Boolean(rawTask.isDelay),
+    delayInfo: rawTask.delayInfo ?? "",
     taskMembers:
       taskMembers.length > 0
         ? taskMembers

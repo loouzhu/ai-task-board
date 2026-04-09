@@ -1,16 +1,14 @@
 import "./index.less";
-import type { DayCellRecord, DayIndex } from "@/types/dataView";
+import type { DayCellData } from "@/types/dataView";
 
 interface DateCellProps {
-  value: number;
-  record: DayCellRecord;
-  dayIndex: DayIndex;
+  dayData: DayCellData;
 }
 
-export default function DateCell({ value, record, dayIndex }: DateCellProps) {
-  const completedCount = value || 0;
-  const isBlocked = record[`day${dayIndex}_blocked`];
-  const isOverdue = record[`day${dayIndex}_overdue`];
+export default function DateCell({ dayData }: DateCellProps) {
+  const completedCount = dayData.task || 0;
+  const isBlocked = dayData.blocked;
+  const isDelay = dayData.delay;
 
   const getColorByCount = (count: number) => {
     if (count === 0) return "#ebedf0";
@@ -26,7 +24,7 @@ export default function DateCell({ value, record, dayIndex }: DateCellProps) {
         color: completedCount > 4 ? "#fff" : "#1f1f1f",
         backgroundColor: getColorByCount(completedCount),
       }}
-      title={`完成 ${completedCount} 个任务${isBlocked ? "，有阻塞任务" : ""}${isOverdue ? "，有逾期任务" : ""}`}
+      title={`完成 ${completedCount} 个任务${isBlocked ? "，有阻塞任务" : ""}${isDelay ? "，有延期任务" : ""}`}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "scale(1.05)";
       }}
@@ -37,8 +35,8 @@ export default function DateCell({ value, record, dayIndex }: DateCellProps) {
       {completedCount}
       {/* 阻塞标记：蓝点 */}
       {isBlocked && <span className="blocked" />}
-      {/* 逾期标记：红三角 */}
-      {isOverdue && <span className="overDue" />}
+      {/* 延期标记：红三角 */}
+      {isDelay && <span className="overDue" />}
     </div>
   );
 }

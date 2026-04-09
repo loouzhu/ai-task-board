@@ -50,6 +50,8 @@ export default function TaskOptionModal({
   const taskWorkTime = task?.taskWorkTime ?? "";
   const isBlock = task?.isBlock ?? false;
   const blockInfo = task?.blockInfo ?? "";
+  const isDelay = task?.isDelay ?? false;
+  const delayInfo = task?.delayInfo ?? "";
   const subtask = task?.subtask ?? "";
   const taskNumber = task?.taskNumber;
   const addTaskMutation = useAddTask(boardId);
@@ -74,6 +76,8 @@ export default function TaskOptionModal({
         taskName: String(values.taskName).trim(),
         isBlock: Boolean(values.isBlock),
         blockInfo: String(values.blockInfo ?? "").trim(),
+        isDelay: Boolean(values.isDelay),
+        delayInfo: String(values.delayInfo ?? "").trim(),
         taskPriority: values.taskPriority,
         taskMembers: Array.isArray(values.taskMembers)
           ? values.taskMembers
@@ -150,6 +154,8 @@ export default function TaskOptionModal({
       taskWorkTime,
       isBlock,
       blockInfo,
+      isDelay,
+      delayInfo,
       subtask,
     });
   }, [
@@ -165,6 +171,8 @@ export default function TaskOptionModal({
     taskWorkTime,
     isBlock,
     blockInfo,
+    isDelay,
+    delayInfo,
     subtask,
   ]);
 
@@ -246,14 +254,37 @@ export default function TaskOptionModal({
             <Option value="completed">已完成</Option>
           </Select>
         </FormItem>
-        <FormItem label="是否阻塞：" field="isBlock" initialValue={false}>
+        {/* 是否阻塞 */}
+        <FormItem
+          label="是否阻塞："
+          field="isBlock"
+          initialValue={false}
+          required
+          rules={[{ required: true }]}
+        >
           <Radio.Group>
             <Radio value={false}>否</Radio>
             <Radio value={true}>是</Radio>
           </Radio.Group>
         </FormItem>
         <FormItem label="阻塞说明：" field="blockInfo">
-          <Input.TextArea autoSize={{ minRows: 2, maxRows: 3 }} />
+          <Input.TextArea autoSize={{ minRows: 1, maxRows: 1 }} />
+        </FormItem>
+        {/* 是否延期 */}
+        <FormItem
+          label="是否延期："
+          field="isDelay"
+          required
+          rules={[{ required: true }]}
+          initialValue={false}
+        >
+          <Radio.Group>
+            <Radio value={false}>否</Radio>
+            <Radio value={true}>是</Radio>
+          </Radio.Group>
+        </FormItem>
+        <FormItem label="延期说明：" field="delayInfo">
+          <Input.TextArea autoSize={{ minRows: 1, maxRows: 1 }} />
         </FormItem>
         {/* 预估工时 */}
         <FormItem label="预估工时：" field="taskWorkTime">

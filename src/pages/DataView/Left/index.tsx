@@ -43,17 +43,20 @@ export default function Left({ dateType }: { dateType: string }) {
     {
       name: "支付对账异常排查",
       tag: "高优先",
-      due: "今天",
+      deadline: "今天",
+      belong: "看板a",
     },
     {
       name: "消息中心筛选重构",
       tag: "测试中",
-      due: "明天",
+      deadline: "明天",
+      belong: "看板b",
     },
     {
       name: "AI 周报自动生成",
       tag: "已逾期",
-      due: "2 天前",
+      deadline: "2 天前",
+      belong: "看板c",
     },
   ];
 
@@ -82,11 +85,12 @@ export default function Left({ dateType }: { dateType: string }) {
           {focusList.map((item) => (
             <article key={item.name} className="focusItem">
               <div className="focusItem__main">
-                <strong>{item.name}</strong>
+                <strong className="name">{item.name}</strong>
+                <p className="belong">{item.belong}</p>
               </div>
               <div className="focusItem__meta">
                 <span className="focusItem__tag">{item.tag}</span>
-                <span className="focusItem__due">{item.due}截止</span>
+                <span className="focusItem__deadline">{item.deadline}截止</span>
               </div>
             </article>
           ))}

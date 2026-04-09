@@ -51,7 +51,7 @@ export default function WeekCell({
           color: total > 10 ? "rgba(255,255,255,0.8)" : "#86909c",
         }}
       >
-        个任务
+        任务量
       </span>
     </div>
   );

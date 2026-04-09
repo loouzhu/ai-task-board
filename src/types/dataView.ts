@@ -1,10 +1,19 @@
-export type DayIndex = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type WeekdayKey =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
 
-type DayValueKey = `day${DayIndex}`;
-type DayStatusKey = `day${DayIndex}_${"blocked" | "overdue"}`;
+export interface DayCellData {
+  task: number;
+  blocked: boolean;
+  delay: boolean;
+}
 
-export type DayCellRecord = Record<DayValueKey, number> &
-  Record<DayStatusKey, boolean>;
+export type DayCellRecord = Record<WeekdayKey, DayCellData>;
 
 export interface WeekDataRecord extends DayCellRecord {
   key: string;
