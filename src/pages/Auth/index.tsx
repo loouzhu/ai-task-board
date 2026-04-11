@@ -1,9 +1,9 @@
 import AuthForm from '@/pages/Auth/AuthForm'
-import './index.less'
+import styles from "./index.module.less";
 
 export default function Auth() {
   return (
-    <div className="auth">
+    <div className={styles.auth}>
       <AuthForm />
     </div>
   )

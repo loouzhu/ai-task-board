@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 import CardHead from "@/components/CardHead";
 import DataCard from "@/components/DataCard";
 import { useGetTaskMetrics } from "@/hooks/useTask";
@@ -98,10 +98,10 @@ export default function Left({ dateType }: { dateType: dateType }) {
   ];
 
   return (
-    <div className="left">
-      <section className="dataOverview">
+    <div className={styles.left}>
+      <section className={styles.dataOverview}>
         <CardHead title="数据总览" />
-        <div className="content">
+        <div className={styles.content}>
           {dataList &&
             dataList.map((item) => (
               <DataCard
@@ -116,18 +116,20 @@ export default function Left({ dateType }: { dateType: dateType }) {
             ))}
         </div>
       </section>
-      <section className="focusOn">
+      <section className={styles.focusOn}>
         <CardHead title="重点关注" />
-        <div className="content focusList">
+        <div className={`${styles.content} ${styles.focusList}`}>
           {focusList.map((item) => (
-            <article key={item.name} className="focusItem">
-              <div className="focusItem__main">
-                <strong className="name">{item.name}</strong>
-                <p className="belong">{item.belong}</p>
+            <article key={item.name} className={styles.focusItem}>
+              <div className={styles.focusItem__main}>
+                <strong>{item.name}</strong>
+                <p>{item.belong}</p>
               </div>
-              <div className="focusItem__meta">
-                <span className="focusItem__tag">{item.tag}</span>
-                <span className="focusItem__deadline">{item.deadline}截止</span>
+              <div className={styles.focusItem__meta}>
+                <span className={styles.focusItem__tag}>{item.tag}</span>
+                <span className={styles.focusItem__deadline}>
+                  {item.deadline}截止
+                </span>
               </div>
             </article>
           ))}

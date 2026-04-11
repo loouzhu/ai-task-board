@@ -1,5 +1,5 @@
 import { IconArrowFall, IconArrowRise } from "@arco-design/web-react/icon";
-import "./index.less";
+import styles from "./index.module.less";
 
 interface dataCardProps {
   title: string;
@@ -21,25 +21,25 @@ export default function DataCard({
   const isNegativeTrend = trend.trim().startsWith("-");
 
   return (
-    <div className="dataCard" style={bcc ? { background: bcc } : undefined}>
-      <div className="title">{title}</div>
-      <div className="dataCard__meta">
-        <div className="data">
-          <div className="data__main">
-            <span className="value" title={data.toString()}>
+    <div className={styles.dataCard} style={bcc ? { background: bcc } : undefined}>
+      <div className={styles.title}>{title}</div>
+      <div className={styles.dataCard__meta}>
+        <div className={styles.data}>
+          <div className={styles.data__main}>
+            <span className={styles.value} title={data.toString()}>
               {data}
             </span>
-            {unit && <span className="unit" title={unit}>{unit}</span>}
+            {unit && <span className={styles.unit} title={unit}>{unit}</span>}
           </div>
           <span
-            className={`trendTag ${isNegativeTrend ? "trendTag--down" : "trendTag--up"}`}
+            className={`${styles.trendTag} ${isNegativeTrend ? styles["trendTag--down"] : styles["trendTag--up"]}`}
           >
             {isNegativeTrend ? <IconArrowFall /> : <IconArrowRise />}
-            <span className="trendText">{trend}</span>
+            <span className={styles.trendText}>{trend}</span>
           </span>
         </div>
       </div>
-      <div className="description">{description}</div>
+      <div className={styles.description}>{description}</div>
     </div>
   );
 }

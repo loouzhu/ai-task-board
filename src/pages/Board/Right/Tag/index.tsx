@@ -1,6 +1,6 @@
 import { Tag as ArcoTag } from "@arco-design/web-react";
 import { formatData, formatTaskPriority } from "@/utils/common";
-import "./index.less";
+import styles from "./index.module.less";
 
 interface TagProps {
   taskMembers?: string[];
@@ -34,17 +34,17 @@ export default function Tag({
     },
   ];
   return (
-    <div className="tag">
+    <div className={styles.tag}>
       {tagList &&
         tagList.map((item, index) => (
           <ArcoTag
             key={index + item.title}
-            className="tag__item"
+            className={styles.tag__item}
             title={`${item.title}：${item.data}`}
             bordered
           >
-            <span className="tag__label">{item.title}：</span>
-            <span className="tag__value">{item.data}</span>
+            <span className={styles.tag__label}>{item.title}：</span>
+            <span className={styles.tag__value}>{item.data}</span>
           </ArcoTag>
         ))}
     </div>

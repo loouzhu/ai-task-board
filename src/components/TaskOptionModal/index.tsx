@@ -13,7 +13,7 @@ import type { TaskPayload } from "@/types/task";
 import { useSearchParams } from "react-router-dom";
 import { formatInput } from "@/utils/common";
 import { useAddTask, useEditTask } from "@/hooks/useTask";
-import "./index.less";
+import styles from "./index.module.less";
 
 interface taskOption {
   type: string;
@@ -182,10 +182,10 @@ export default function TaskOptionModal({
       onCancel={handleCancel}
       onOk={handleConfirm}
       title={type === "add" ? "添加任务" : "编辑任务"}
-      className="editModal"
+      className={styles.editModal}
       style={{ width: 750 }}
     >
-      <Form className="optionForm" form={form}>
+      <Form className={styles.optionForm} form={form}>
         {/* 任务编号 */}
         <FormItem
           label="任务编号："

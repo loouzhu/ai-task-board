@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 
 interface DescribeProps {
   taskDescription?: string;
@@ -10,14 +10,14 @@ export default function Describe({
   taskMembers,
 }: DescribeProps) {
   return (
-    <div className="describe">
-      <div className="part">
-        <div className="title">任务描述</div>
-        <textarea className="detail" value={taskDescription || ""} readOnly />
+    <div className={styles.describe}>
+      <div className={styles.part}>
+        <div className={styles.title}>任务描述</div>
+        <textarea className={styles.detail} value={taskDescription || ""} readOnly />
       </div>
-      <div className="part">
-        <div className="title">参与研发</div>
-        <div className="participants">{taskMembers?.join("、") || "-"}</div>
+      <div className={styles.part}>
+        <div className={styles.title}>参与研发</div>
+        <div className={styles.participants}>{taskMembers?.join("、") || "-"}</div>
       </div>
     </div>
   );

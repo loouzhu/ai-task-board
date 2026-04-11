@@ -17,7 +17,7 @@ import { useTaskStore } from "@/stores/taskStore";
 import type { boardListProps } from "@/types/board";
 import BoardOptionModal from "@/components/BoardOptionModal";
 import { useDeleteBoard } from "@/hooks/useBoard";
-import "./index.less";
+import styles from "./index.module.less";
 
 export default function HeaderNav({
   boardList,
@@ -80,40 +80,57 @@ export default function HeaderNav({
       </MenuItem>
     </Menu>
   );
+
+  const teamList = ["团队A", "团队B", "团队C"];
+
   return (
-    <div className="headerNav">
-      <div className="part">
-        <div className="title">看板名称：</div>
-        <Select
-          className="boardList"
-          value={searchParams.get("boardId") || boardList?.[0]?.boardId}
-          placeholder="暂无看板"
-          onChange={switchBoard}
-        >
-          {boardList?.map((board) => (
-            <Option
-              value={board.boardId}
-              key={board.boardId}
-              className="boardItem"
-            >
-              {board.boardName}
-            </Option>
-          ))}
-        </Select>
+    <div className={styles.headerNav}>
+      <div className={styles.part}>
+        {/* 当前团队 */}
+        <div className={styles.team}>
+          <div className={styles.title}>当前团队：</div>
+          <Select>
+            {teamList.map((team) => (
+              <Option key={team} value={team}>
+                {team}
+              </Option>
+            ))}
+          </Select>
+        </div>
+        {/* 看板名称 */}
+        <div className={styles.board}>
+          <div className={styles.title}>看板名称：</div>
+          <Select
+            className={styles.boardList}
+            value={searchParams.get("boardId") || boardList?.[0]?.boardId}
+            placeholder="暂无看板"
+            onChange={switchBoard}
+          >
+            {boardList?.map((board) => (
+              <Option
+                value={board.boardId}
+                key={board.boardId}
+                className={styles.boardItem}
+              >
+                {board.boardName}
+              </Option>
+            ))}
+          </Select>
+        </div>
         {/* 看板操作 */}
-        <div className="boardOptions">
+        <div className={styles.boardOptions}>
           <Dropdown droplist={dropList}>
             <IconMoreVertical />
           </Dropdown>
         </div>
       </div>
-      <div className="part">
-        <div className="title">参与研发：</div>
-        <AvatarGroup className="memberList" maxCount={3}>
+      <div className={styles.part}>
+        <div className={styles.title}>参与研发：</div>
+        <AvatarGroup className={styles.memberList} maxCount={3}>
           {boardMemberList &&
             boardMemberList.map((member, index) => (
               <div key={`${member}-${index}`}>
-                <Avatar className="member">
+                <Avatar className={styles.member}>
                   {member.slice(0, 1).toUpperCase()}
                 </Avatar>
               </div>

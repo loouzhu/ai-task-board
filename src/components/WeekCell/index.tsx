@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 import { Message } from "@arco-design/web-react";
 import type { MonthWeekCellData } from "@/types/dataView";
 import { formatData } from "@/utils/common";
@@ -30,7 +30,7 @@ export default function WeekCell({
 
   return (
     <div
-      className="weekCell"
+      className={styles.weekCell}
       style={{
         backgroundColor: getColorByCount(total),
       }}
@@ -46,7 +46,7 @@ export default function WeekCell({
       }}
     >
       <span
-        className="weekCellTotal"
+        className={styles.weekCellTotal}
         style={{
           color: total > 55 ? "#fff" : "#1f1f1f",
         }}
@@ -54,7 +54,7 @@ export default function WeekCell({
         {total}
       </span>
       <span
-        className="weekCellLabel"
+        className={styles.weekCellLabel}
         style={{
           color: total > 10 ? "rgba(255,255,255,0.8)" : "#86909c",
         }}

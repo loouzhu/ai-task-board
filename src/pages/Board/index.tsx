@@ -2,12 +2,12 @@ import { Layout, Empty } from "@arco-design/web-react";
 //import LeftSide from "./Left";
 import Middle from "./Middle";
 import RightSide from "./Right";
-import "./index.less";
+import styles from "./index.module.less";
 
 export default function Board() {
   const data = "1";
   return (
-    <Layout className="board">
+    <Layout className={styles.board}>
       {/* <LeftSide /> */}
       {data ? (
         <>

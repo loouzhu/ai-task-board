@@ -5,15 +5,15 @@ import Describe from "./Describe";
 import TaskList from "./TaskList";
 import Attachment from "./Attachment";
 import { useTaskStore } from "@/stores/taskStore";
-import "./index.less";
+import styles from "./index.module.less";
 
 export default function RightSide() {
   const Sider = Layout.Sider;
   const task = useTaskStore((state) => state.task);
 
   return (
-    <Sider className="rightSide">
-      <div className="content">
+    <Sider className={styles.rightSide}>
+      <div className={styles.content}>
         <Head
           taskNumber={task?.taskNumber}
           taskName={task?.taskName}

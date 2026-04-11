@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { taskFilterParams } from "@/types/task";
 const InputSearch = Input.Search;
-import "./index.less";
+import styles from "./index.module.less";
 
 interface FilterProps {
   boardMemberList: string[];
@@ -83,8 +83,8 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
   };
 
   return (
-    <div className="filter">
-      <div className="manager">
+    <div className={styles.filter}>
+      <div className={styles.manager}>
         <Select
           placeholder="负责人"
           style={{ width: 100 }}
@@ -130,7 +130,7 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
             ))}
         </Select>
       </div>
-      <div className="deadline">
+      <div className={styles.deadline}>
         <DatePicker.RangePicker
           style={{ width: 256 }}
           value={pickerValue}
@@ -151,7 +151,7 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
           allowClear={true}
         />
       </div>
-      <div className="search">
+      <div className={styles.search}>
         <InputSearch
           allowClear
           placeholder="搜索"
@@ -166,7 +166,7 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
           }}
         />
       </div>
-      <div className="options">
+      <div className={styles.options}>
         <Button onClick={cleanFilter} type="primary">
           清除筛选
         </Button>

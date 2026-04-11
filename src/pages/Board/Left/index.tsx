@@ -5,14 +5,14 @@ import {
   IconPen,
   IconDelete,
 } from "@arco-design/web-react/icon";
-import "./index.less";
+import styles from "./index.module.less";
 
 export default function LeftSide() {
   const Sider = Layout.Sider;
   const MenuItem = Menu.Item;
   const SubMenu = Menu.SubMenu;
   return (
-    <Sider className="leftSide">
+    <Sider className={styles.leftSide}>
       <Menu
         defaultOpenKeys={["1"]}
         defaultSelectedKeys={["0_1"]}

@@ -5,7 +5,7 @@ import { IconPlus } from "@arco-design/web-react/icon";
 import TaskOptionModal from "../TaskOptionModal";
 import TaskItem from "../TaskItem";
 import { useBoardStore } from "@/stores/boardStore";
-import "./index.less";
+import styles from "./index.module.less";
 
 interface taskColumnProp {
   className?: string;
@@ -31,19 +31,19 @@ export default function TaskColumn({
   };
 
   return (
-    <div className={`taskColumns ${className}`} key={columnStatus}>
+    <div className={`${styles.taskColumns} ${className}`} key={columnStatus}>
       {/* 列头 */}
-      <div className="status">
-        <div className="left">
-          <div className="type">{columnLabel ?? columnStatus}</div>
+      <div className={styles.status}>
+        <div className={styles.left}>
+          <div className={styles.type}>{columnLabel ?? columnStatus}</div>
           <IconPlus onClick={handleAddTask} style={{ cursor: "pointer" }} />
         </div>
-        <div className="count">{count}个任务</div>
+        <div className={styles.count}>{count}个任务</div>
       </div>
 
       {/* 任务列表 */}
       {tasks.length > 0 ? (
-        <div className="taskItems">
+        <div className={styles.taskItems}>
           {tasks.map((task) => (
             <TaskItem key={task.taskId} task={task} />
           ))}

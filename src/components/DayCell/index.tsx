@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 import type { DayCellData } from "@/types/dataView";
 
 interface DateCellProps {
@@ -19,7 +19,7 @@ export default function DateCell({ dayData }: DateCellProps) {
 
   return (
     <div
-      className="dateCell"
+      className={styles.dateCell}
       style={{
         color: completedCount > 4 ? "#fff" : "#1f1f1f",
         backgroundColor: getColorByCount(completedCount),
@@ -34,9 +34,9 @@ export default function DateCell({ dayData }: DateCellProps) {
     >
       {completedCount}
       {/* 阻塞标记：蓝点 */}
-      {isBlocked && <span className="blocked" />}
+      {isBlocked && <span className={styles.blocked} />}
       {/* 逾期标记：红三角 */}
-      {isOverdue && <span className="overDue" />}
+      {isOverdue && <span className={styles.overDue} />}
     </div>
   );
 }

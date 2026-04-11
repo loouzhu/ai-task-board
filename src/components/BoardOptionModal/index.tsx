@@ -78,7 +78,7 @@ export default function BoardOptionModal({
       visible={visible}
       onCancel={handleCancel}
       onConfirm={handleConfirm}
-      className="boardOptionModal"
+      className={styles.boardOptionModal}
     >
       <Form form={form}>
         <FormItem

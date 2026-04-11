@@ -9,7 +9,7 @@ import { useBoardStore } from "@/stores/boardStore";
 import HeaderNav from "./HeadNav";
 import Filter from "./Filter";
 import Tasks from "./Tasks";
-import "./index.less";
+import styles from "./index.module.less";
 
 export default function Middle() {
   const Content = Layout.Content;
@@ -45,7 +45,7 @@ export default function Middle() {
   }, [currentBoard, setBoardMembers]);
 
   return (
-    <Content className="middle">
+    <Content className={styles.middle}>
       <HeaderNav
         boardList={boards}
         boardMemberList={currentBoard?.boardMembers || []}

@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 import { Button } from "@arco-design/web-react";
 
 interface AttachmentFile {
@@ -15,14 +15,14 @@ export default function Attachment({ files = [] }: AttachmentProps) {
   const fileList = files as AttachmentFile[];
 
   return (
-    <div className="attachment">
-      <div className="header">
-        <div className="title">附件</div>
+    <div className={styles.attachment}>
+      <div className={styles.header}>
+        <div className={styles.title}>附件</div>
         <Button type="text" size="small">
           下载全部
         </Button>
       </div>
-      <div className="attachmentContent">
+      <div className={styles.attachmentContent}>
         {fileList.length > 0 ? (
           fileList.map((item, index) => (
             <div key={`${item.name || item.fileName || "file"}-${index}`}>

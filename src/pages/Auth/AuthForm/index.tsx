@@ -3,7 +3,7 @@ import { useState } from "react";
 import { usernameRules, passwordRules } from "@/rules/auth";
 import { getTitle } from "@/utils/common";
 import { useLogin, useRegister, useForgetPassword } from "@/hooks/useAuth";
-import "./index.less";
+import styles from "./index.module.less";
 
 const AuthForm = () => {
   const [form] = Form.useForm();
@@ -74,12 +74,12 @@ const AuthForm = () => {
 
   return (
     <Form
-      className="authForm"
+      className={styles.authForm}
       autoComplete="off"
       form={form}
       onSubmit={handleSubmit}
     >
-      <h2 className="title">{getTitle(mode)}</h2>
+      <h2 className={styles.title}>{getTitle(mode)}</h2>
 
       {/* 用户名字段 */}
       <FormItem label="用户名" field="username" rules={usernameRules}>
@@ -127,11 +127,11 @@ const AuthForm = () => {
       </FormItem>
 
       {/* 底部选项 */}
-      <div className="authOption">
-        <div className="forgetPsd" onClick={handleForgetPassword}>
+      <div className={styles.authOption}>
+        <div className={styles.forgetPsd} onClick={handleForgetPassword}>
           {mode === "change-password" ? "" : "忘记密码?"}
         </div>
-        <div className="changeAuth" onClick={handleChangeAuth}>
+        <div className={styles.changeAuth} onClick={handleChangeAuth}>
           {mode === "login" ? "前往注册" : "前往登录"}
         </div>
       </div>

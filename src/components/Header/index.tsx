@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { IconUser, IconExport } from "@arco-design/web-react/icon";
 import { Layout, Avatar, Menu, Message } from "@arco-design/web-react";
 import { pageList } from "@/types/common";
-import "./index.less";
+import styles from "./index.module.less";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
 
 export default function Header() {
@@ -30,13 +30,13 @@ export default function Header() {
   };
 
   return (
-    <Header className="headerContent">
-      <div className="title">AI智能任务看板</div>
-      <div className="list">
+    <Header className={styles.headerContent}>
+      <div className={styles.title}>AI智能任务看板</div>
+      <div className={styles.list}>
         {pageList.map((item, index) => (
           <span
             key={item.name + index}
-            className={`listItem ${item.path === currentPage ? "active" : ""}`}
+            className={`${styles.listItem} ${item.path === currentPage ? styles.active : ""}`}
             onClick={() => handleChangePage(index)}
           >
             {item.name}
@@ -44,21 +44,21 @@ export default function Header() {
         ))}
       </div>
       <div
-        className="userInfo"
+        className={styles.userInfo}
         onMouseEnter={() => setUserMenu(true)}
         onMouseLeave={() => setUserMenu(false)}
       >
         <Avatar size={35}>
           <IconUser />
         </Avatar>
-        <span className="username" title={user?.username}>
+        <span className={styles.username} title={user?.username}>
           {user?.username}
         </span>
         {userMenu && (
-          <Menu className="userMenu">
-            <MenuItem key="0" className="userMenuItem" onClick={handleLogout}>
-              <div className="icon">{<IconExport />}</div>
-              <div className="content">退出登录</div>
+          <Menu className={styles.userMenu}>
+            <MenuItem key="0" className={styles.userMenuItem} onClick={handleLogout}>
+              <div className={styles.icon}>{<IconExport />}</div>
+              <div className={styles.content}>退出登录</div>
             </MenuItem>
           </Menu>
         )}

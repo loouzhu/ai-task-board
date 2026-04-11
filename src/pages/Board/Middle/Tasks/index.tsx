@@ -1,7 +1,7 @@
 import TaskColumn from "@/components/TaskColumn";
 import { status } from "@/constants/common";
 import type { task, taskType } from "@/types/task";
-import "./index.less";
+import styles from "./index.module.less";
 
 const COLUMN_ORDER: taskType[] = [
   "pending",
@@ -29,7 +29,7 @@ export default function Tasks({ tasks }: TasksProps) {
   );
 
   return (
-    <div className="middleTasks">
+    <div className={styles.middleTasks}>
       {COLUMN_ORDER.map((columnStatus) => {
         const columnTasks = taskMap[columnStatus] ?? [];
 

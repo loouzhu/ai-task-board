@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 import { Table, Tag } from "@arco-design/web-react";
 import dayjs from "dayjs";
 import { formatData } from "@/utils/common";
@@ -239,14 +239,14 @@ export default function Right({
   ];
 
   return (
-    <div className="right">
-      <section className="header">
+    <div className={styles.right}>
+      <section className={styles.header}>
         <header>
-          <strong className="title">
+          <strong className={styles.title}>
             团队成员贡献日历
-            <div className="date">今天是 {formatData(date)}</div>
+            <div className={styles.date}>今天是 {formatData(date)}</div>
           </strong>
-          <div className="options">
+          <div className={styles.options}>
             <Segmented<string>
               options={["本周", "本月"]}
               value={dateType === "week" ? "本周" : "本月"}
@@ -257,7 +257,7 @@ export default function Right({
           </div>
         </header>
       </section>
-      <section className="content">
+      <section className={styles.content}>
         {dateType === "week" ? (
           <Table
             columns={weekColumns}

@@ -1,4 +1,4 @@
-import "./index.less";
+import styles from "./index.module.less";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { formatData, formatTaskPriority } from "@/utils/common";
@@ -40,18 +40,18 @@ export default function TaskItem({ task }: TaskItemProps) {
   };
 
   return (
-    <div className="taskItem" onClick={() => handleShowTaskDetail(task)}>
-      <div className="content">
-        <div className="name">任务名：{taskName}</div>
-        <div className="priority">
+    <div className={styles.taskItem} onClick={() => handleShowTaskDetail(task)}>
+      <div className={styles.content}>
+        <div className={styles.name}>任务名：{taskName}</div>
+        <div className={styles.priority}>
           优先级：{formatTaskPriority(taskPriority)}
         </div>
-        <div className="principle">负责人：{taskMembers?.[0] || "-"} </div>
-        <div className="deadline">
+        <div className={styles.principle}>负责人：{taskMembers?.[0] || "-"} </div>
+        <div className={styles.deadline}>
           截止日期：{taskDeadline ? formatData(taskDeadline) : "暂无"}
         </div>
       </div>
-      <div className="options">
+      <div className={styles.options}>
         <Dropdown
           droplist={
             <Menu>
