@@ -19,20 +19,26 @@ export default function Middle() {
     () => boardList?.boards ?? [],
     [boardList?.boards],
   );
-  const boardId = searchParams.get("boardId") || "";
+  const urlBoardId = searchParams.get("boardId") || "";
+  const fallbackBoardId = boards[0]?.boardId || "";
+  const boardId = urlBoardId || fallbackBoardId;
   const setBoardMembers = useBoardStore((state) => state.setBoardMembers);
   const [filterParams, setFilterParams] = useState<taskFilterParams>({});
-  const tasks = useGetBoardTasks(boardId, filterParams).data?.tasks as
-    | task[]
-    | undefined;
+  const tasks = useGetBoardTasks(boardId, filterParams).data?.tasks as task[];
   const currentBoard =
     boards.find((board) => board.boardId === boardId) ?? boards[0];
 
   useEffect(() => {
-    if (!boardId && boards.length > 0) {
-      setSearchParams({ boardId: boards[0].boardId }, { replace: true });
+    if (boards.length === 0) return;
+    const hasMatchedBoard = boards.some(
+      (board) => board.boardId === urlBoardId,
+    );
+    const nextBoardId = hasMatchedBoard ? urlBoardId : boards[0].boardId;
+
+    if (urlBoardId !== nextBoardId) {
+      setSearchParams({ boardId: nextBoardId }, { replace: true });
     }
-  }, [boardId, boards, setSearchParams]);
+  }, [urlBoardId, boards, setSearchParams]);
 
   useEffect(() => {
     setBoardMembers(currentBoard?.boardMembers ?? []);

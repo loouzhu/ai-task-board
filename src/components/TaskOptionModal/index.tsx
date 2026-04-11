@@ -270,9 +270,9 @@ export default function TaskOptionModal({
         <FormItem label="阻塞说明：" field="blockInfo">
           <Input.TextArea autoSize={{ minRows: 1, maxRows: 1 }} />
         </FormItem>
-        {/* 是否延期 */}
+        {/* 是否逾期 */}
         <FormItem
-          label="是否延期："
+          label="是否逾期："
           field="isOverdue"
           required
           rules={[{ required: true }]}

@@ -13,8 +13,17 @@ export const getSafeRedirectPath = (from: unknown): string => {
       : typeof from === "object" && from !== null && "pathname" in from
         ? String((from as { pathname?: unknown }).pathname ?? "")
         : "";
+  const search =
+    typeof from === "object" && from !== null && "search" in from
+      ? String((from as { search?: unknown }).search ?? "")
+      : "";
+  const hash =
+    typeof from === "object" && from !== null && "hash" in from
+      ? String((from as { hash?: unknown }).hash ?? "")
+      : "";
   if (!pathname.startsWith("/") || pathname.startsWith("//")) return fallback;
-  return pathname;
+  const path = `${pathname}${search}${hash}`;
+  return path;
 };
 
 export const useLogin = () => {
@@ -38,10 +47,8 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   return useMutation({
-    mutationFn: (userData: {
-      username: string;
-      password: string;
-    }) => register(userData),
+    mutationFn: (userData: { username: string; password: string }) =>
+      register(userData),
     onSuccess: () => {
       Message.success("注册成功");
     },

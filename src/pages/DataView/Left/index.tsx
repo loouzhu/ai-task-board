@@ -89,6 +89,12 @@ export default function Left({ dateType }: { dateType: dateType }) {
       deadline: "2 天前",
       belong: "看板c",
     },
+    {
+      name: "AI 周报自动生成1",
+      tag: "已逾期",
+      deadline: "3 天前",
+      belong: "看板d",
+    },
   ];
 
   return (

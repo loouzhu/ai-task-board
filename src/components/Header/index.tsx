@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { IconUser, IconExport } from "@arco-design/web-react/icon";
-import { Layout, Avatar, Menu } from "@arco-design/web-react";
+import { Layout, Avatar, Menu, Message } from "@arco-design/web-react";
 import { pageList } from "@/types/common";
 import "./index.less";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
@@ -11,13 +11,18 @@ export default function Header() {
   const MenuItem = Menu.Item;
   const logoutMutation = useLogout();
   const user = useMeQuery().data?.user;
-  const [activeIndex, setActiveIndex] = useState(0);
+  const location = useLocation();
+  const currentPage = location.pathname;
   const [userMenu, setUserMenu] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleChangePage = (index: number) => {
-    setActiveIndex(index);
-    navigate(`${pageList[index].path}`, { replace: true });
+    const targetPath = pageList[index].path;
+    if (!targetPath) {
+      Message.info("该功能正在开发中");
+      return;
+    }
+    navigate(targetPath, { replace: true });
   };
 
   const handleLogout = () => {
@@ -31,7 +36,7 @@ export default function Header() {
         {pageList.map((item, index) => (
           <span
             key={item.name + index}
-            className={`listItem ${index === activeIndex ? "active" : ""}`}
+            className={`listItem ${item.path === currentPage ? "active" : ""}`}
             onClick={() => handleChangePage(index)}
           >
             {item.name}
