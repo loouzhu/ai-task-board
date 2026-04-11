@@ -5,6 +5,7 @@ import { useGetAllUsers } from "@/hooks/useUser";
 import type { User } from "@/types/user";
 import type { boardPayload } from "@/types/board";
 import { useEffect } from "react";
+import styles from "./index.module.less";
 
 interface BoardOptionModalProps {
   type: "edit" | "create";
@@ -47,7 +48,9 @@ export default function BoardOptionModal({
       const values = await form.validate();
       const payload = {
         boardName: String(values.boardName ?? "").trim(),
-        boardMembers: Array.isArray(values.boardMembers) ? values.boardMembers : [],
+        boardMembers: Array.isArray(values.boardMembers)
+          ? values.boardMembers
+          : [],
       };
 
       if (type === "create") {

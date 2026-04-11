@@ -81,22 +81,9 @@ export default function HeaderNav({
     </Menu>
   );
 
-  const teamList = ["团队A", "团队B", "团队C"];
-
   return (
     <div className={styles.headerNav}>
       <div className={styles.part}>
-        {/* 当前团队 */}
-        <div className={styles.team}>
-          <div className={styles.title}>当前团队：</div>
-          <Select>
-            {teamList.map((team) => (
-              <Option key={team} value={team}>
-                {team}
-              </Option>
-            ))}
-          </Select>
-        </div>
         {/* 看板名称 */}
         <div className={styles.board}>
           <div className={styles.title}>看板名称：</div>
