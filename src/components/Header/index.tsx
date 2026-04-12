@@ -18,7 +18,10 @@ import {
 } from "@arco-design/web-react";
 import { pageList } from "@/types/common";
 import styles from "./index.module.less";
+import TeamOptionModal from "../TeamOptionModal";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
+import { useGetTeamList } from "@/hooks/useTeam";
+import type { team } from "@/types/team";
 
 export default function Header() {
   const Header = Layout.Header;
@@ -29,6 +32,10 @@ export default function Header() {
   const location = useLocation();
   const currentPage = location.pathname;
   const [userMenu, setUserMenu] = useState<boolean>(false);
+  const [createTeamModalVisible, setCreateTeamModalVisible] =
+    useState<boolean>(false);
+  const [editTeamModalVisible, setEditTeamModalVisible] =
+    useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleChangePage = (index: number) => {
@@ -44,17 +51,24 @@ export default function Header() {
     logoutMutation.mutate();
   };
 
-  const teamList = ["团队A", "团队B", "团队C"];
+  const handleDeleteTeam = () => {
+    Message.info("解散团队功能正在开发中");
+  };
+
+  const teamList = useGetTeamList()?.data?.team || [];
 
   const dropList = (
     <Menu>
-      <MenuItem key="createTeam">
+      <MenuItem
+        key="createTeam"
+        onClick={() => setCreateTeamModalVisible(true)}
+      >
         <IconPlus /> 创建团队
       </MenuItem>
-      <MenuItem key="editTeam">
+      <MenuItem key="editTeam" onClick={() => setEditTeamModalVisible(true)}>
         <IconEdit /> 编辑团队
       </MenuItem>
-      <MenuItem key="deleteTeam">
+      <MenuItem key="deleteTeam" onClick={() => handleDeleteTeam()}>
         <IconDelete /> 解散团队
       </MenuItem>
     </Menu>
@@ -69,9 +83,9 @@ export default function Header() {
           style={{ width: "120px", marginRight: "10px" }}
           placeholder="暂无团队"
         >
-          {teamList.map((team) => (
-            <Option key={team} value={team}>
-              {team}
+          {teamList.map((team: team) => (
+            <Option key={team.teamId} value={team.teamId}>
+              {team.teamName}
             </Option>
           ))}
         </Select>
@@ -118,6 +132,18 @@ export default function Header() {
           </Menu>
         )}
       </div>
+      {/* 创建团队 */}
+      <TeamOptionModal
+        type="create"
+        visible={createTeamModalVisible}
+        onVisibleChange={setCreateTeamModalVisible}
+      />
+      {/* 编辑团队 */}
+      <TeamOptionModal
+        type="edit"
+        visible={editTeamModalVisible}
+        onVisibleChange={setEditTeamModalVisible}
+      />
     </Header>
   );
 }
