@@ -20,7 +20,7 @@ export const createTeam = async (team: Omit<team, "teamId">) => {
 
 // 编辑团队信息
 export const editTeam = async (team: team) => {
-  const response = await fetch(`${BASE_URL}/edit-team`, {
+  const response = await fetch(`${BASE_URL}/edit-team/${team.teamId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -40,12 +40,11 @@ export const editTeam = async (team: team) => {
 
 // 解散团队
 export const deleteTeam = async (teamId: string) => {
-  const response = await fetch(`${BASE_URL}/delete-team`, {
+  const response = await fetch(`${BASE_URL}/delete-team/${teamId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ teamId }),
     credentials: "include",
   });
   if (!response.ok) {
@@ -70,6 +69,21 @@ export const getTeamList = async (userId: string) => {
   });
   if (!response.ok) {
     throw new Error("获取团队列表失败");
+  }
+  return response.json();
+};
+
+// 获取当前团队信息
+export const getTeamInfo = async (teamId: string) => {
+  const response = await fetch(`${BASE_URL}/get-team-info/${teamId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error("获取团队信息失败");
   }
   return response.json();
 };

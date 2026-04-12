@@ -10,7 +10,8 @@ import type { User } from "@/types/user";
 
 interface TeamOptionModalProps {
   type: "edit" | "create";
-  team?: teamPayload;
+  teamInfo?: teamPayload;
+  teams: teamPayload[];
   visible: boolean;
   onVisibleChange: (visible: boolean) => void;
 }
@@ -18,13 +19,14 @@ interface TeamOptionModalProps {
 export default function TeamOptionModal({
   type = "create",
   visible = false,
-  team,
+  teamInfo,
+  teams,
   onVisibleChange,
 }: TeamOptionModalProps) {
   const FormItem = Form.Item;
   const Option = Select.Option;
   const [form] = Form.useForm();
-  const teamName = team?.teamName || "";
+  const teamName = teamInfo?.teamName || "";
   const teamId = useParams().teamId;
   const useCreateTeamMutation = useCreateTeam();
   const useEditTeamMutation = useEditTeam();
@@ -32,14 +34,14 @@ export default function TeamOptionModal({
 
   useEffect(() => {
     if (!visible) return;
-    const teamMembers = Array.isArray(team?.teamMembers)
-      ? team.teamMembers
+    const teamMembers = Array.isArray(teamInfo?.teamMembers)
+      ? teamInfo.teamMembers
       : [];
     form.setFieldsValue({
       teamName,
       teamMembers,
     });
-  }, [visible, teamName, team, form]);
+  }, [visible, teamName, teamInfo, form]);
 
   const handleCancel = () => {
     onVisibleChange?.(false);
@@ -48,6 +50,12 @@ export default function TeamOptionModal({
   const handleConfirm = async () => {
     try {
       const values = await form.validate();
+      teams.forEach((team) => {
+        if (team.teamName === values.teamName) {
+          Message.error("团队名称已存在");
+        }
+        return;
+      });
       const payload = {
         teamName: String(values.teamName.trim()),
         teamMembers: Array.isArray(values.teamMembers)

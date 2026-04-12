@@ -5,6 +5,7 @@ import MainLayout from "@/components/MainLayout";
 import Auth from "@/pages/Auth";
 import Board from "@/pages/Board";
 import DataView from "@/pages/DataView";
+import TeamRedirect from "./TeamRedirect";
 
 const router = createBrowserRouter([
   {
@@ -16,30 +17,37 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/team",
     element: <MainLayout />,
     children: [
       {
         index: true,
-        element: <Navigate to="/board" replace />,
+        element: <TeamRedirect />,
       },
-      // 主看板
       {
-        path: "board",
-        element: (
-          <ProtectedRoute>
-            <Board />
-          </ProtectedRoute>
-        ),
-      },
-      // 数据页面
-      {
-        path: "data-view",
-        element: (
-          <ProtectedRoute>
-            <DataView />
-          </ProtectedRoute>
-        ),
+        path: ":teamId",
+        children: [
+          {
+            index: true,
+            element: <Navigate to="board" replace />,
+          },
+          {
+            path: "board/:boardId?",
+            element: (
+              <ProtectedRoute>
+                <Board />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "data-view/:boardId?",
+            element: (
+              <ProtectedRoute>
+                <DataView />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
     ],
   },

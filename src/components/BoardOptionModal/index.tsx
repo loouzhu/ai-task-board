@@ -1,7 +1,7 @@
 import { Modal, Form, Select, Message, Input } from "@arco-design/web-react";
 import { useCreateBoard, useEditBoard } from "@/hooks/useBoard";
-import { useSearchParams } from "react-router-dom";
-import { useGetAllUsers } from "@/hooks/useUser";
+import { useParams } from "react-router-dom";
+import { useGetTeamInfo } from "@/hooks/useTeam";
 import type { User } from "@/types/user";
 import type { boardPayload } from "@/types/board";
 import { useEffect } from "react";
@@ -23,11 +23,11 @@ export default function BoardOptionModal({
   const FormItem = Form.Item;
   const Option = Select.Option;
   const [form] = Form.useForm();
-  const [searchParams] = useSearchParams();
   const boardName = board?.boardName || "";
-  const boardId = searchParams.get("boardId") || "";
+  const { teamId, boardId } = useParams();
   const createBoardMutation = useCreateBoard();
-  const getAllUserQuery = useGetAllUsers();
+  const getTeamInfoQuery = useGetTeamInfo(teamId || "");
+  console.log(getTeamInfoQuery.data?.team?.teamMembers);
   const editBoardMutation = useEditBoard();
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function BoardOptionModal({
           rules={[{ required: true }]}
         >
           <Select placeholder="第一位成员为负责人" mode="multiple">
-            {getAllUserQuery.data?.users?.map((user: User) => (
+            {getTeamInfoQuery.data?.team?.teamMembers?.map((user: User) => (
               <Option key={user.userId} value={user.userId}>
                 {user.username}
               </Option>

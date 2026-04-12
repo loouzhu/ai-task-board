@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import type { TaskPayload } from "@/types/task";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { formatInput } from "@/utils/common";
 import { useAddTask, useEditTask } from "@/hooks/useTask";
 import styles from "./index.module.less";
@@ -37,8 +37,7 @@ export default function TaskOptionModal({
   const FormItem = Form.Item;
   const [form] = Form.useForm();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [searchParams] = useSearchParams();
-  const boardId = searchParams.get("boardId") || "";
+  const { boardId } = useParams()
   const taskName = task?.taskName ?? "";
   const taskDescription = task?.taskDescription ?? "";
   const taskPriority = task?.taskPriority ?? "low";
@@ -54,8 +53,8 @@ export default function TaskOptionModal({
   const overdueInfo = task?.overdueInfo ?? "";
   const subtask = task?.subtask ?? "";
   const taskNumber = task?.taskNumber;
-  const addTaskMutation = useAddTask(boardId);
-  const editTaskMutation = useEditTask(boardId);
+  const addTaskMutation = useAddTask(boardId||"");
+  const editTaskMutation = useEditTask(boardId||"");
 
   const handleCancel = () => {
     onVisibleChange?.(false);

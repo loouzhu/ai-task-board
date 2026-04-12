@@ -5,7 +5,7 @@ import { Message } from "@arco-design/web-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const getSafeRedirectPath = (from: unknown): string => {
-  const fallback = "/board";
+  const fallback = "/team";
   if (!from) return fallback;
   const pathname =
     typeof from === "string"

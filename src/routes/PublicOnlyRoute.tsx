@@ -17,7 +17,7 @@ export default function PublicOnlyRoute({ children }: ProtectedRouteProps) {
     );
   }
   if (isAuthenticated) {
-    return <Navigate to="/board" replace />;
+    return <Navigate to="/team" replace />;
   }
   if (isUnauthenticated) {
     return <>{children}</>;

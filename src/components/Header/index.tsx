@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
   IconUser,
   IconExport,
@@ -20,7 +20,7 @@ import { pageList } from "@/types/common";
 import styles from "./index.module.less";
 import TeamOptionModal from "../TeamOptionModal";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
-import { useGetTeamList } from "@/hooks/useTeam";
+import { useGetTeamList, useGetTeamInfo } from "@/hooks/useTeam";
 import type { team } from "@/types/team";
 
 export default function Header() {
@@ -30,13 +30,20 @@ export default function Header() {
   const logoutMutation = useLogout();
   const user = useMeQuery().data?.user;
   const location = useLocation();
-  const currentPage = location.pathname;
+  const { teamId } = useParams();
+  const currentPage = pageList.find((item) => {
+    if (!item.path) return false;
+    return location.pathname.includes(item.path);
+  })?.path;
   const [userMenu, setUserMenu] = useState<boolean>(false);
   const [createTeamModalVisible, setCreateTeamModalVisible] =
     useState<boolean>(false);
   const [editTeamModalVisible, setEditTeamModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
+  const teamList = useGetTeamList()?.data?.teams || [];
+  const currentTeamId = teamId || teamList[0]?.teamId || "";
+  const currentTeamInfo = useGetTeamInfo(currentTeamId)?.data?.team;
 
   const handleChangePage = (index: number) => {
     const targetPath = pageList[index].path;
@@ -44,7 +51,16 @@ export default function Header() {
       Message.info("该功能正在开发中");
       return;
     }
-    navigate(targetPath, { replace: true });
+    if (!currentTeamId) {
+      Message.info("请先选择团队");
+      return;
+    }
+    navigate(`/team/${currentTeamId}${targetPath}`, { replace: true });
+  };
+
+  const handleChangeTeam = (value: string) => {
+    const targetPath = currentPage || "/board";
+    navigate(`/team/${value}${targetPath}`, { replace: true });
   };
 
   const handleLogout = () => {
@@ -54,8 +70,6 @@ export default function Header() {
   const handleDeleteTeam = () => {
     Message.info("解散团队功能正在开发中");
   };
-
-  const teamList = useGetTeamList()?.data?.team || [];
 
   const dropList = (
     <Menu>
@@ -80,8 +94,10 @@ export default function Header() {
       <div className={styles.team}>
         <div className={styles.teamTitle}>当前团队：</div>
         <Select
+          value={currentTeamId || undefined}
           style={{ width: "120px", marginRight: "10px" }}
           placeholder="暂无团队"
+          onChange={handleChangeTeam}
         >
           {teamList.map((team: team) => (
             <Option key={team.teamId} value={team.teamId}>
@@ -101,7 +117,7 @@ export default function Header() {
         {pageList.map((item, index) => (
           <span
             key={item.name + index}
-            className={`${styles.listItem} ${item.path === currentPage ? styles.active : ""}`}
+            className={`${styles.listItem} ${item.path && item.path === currentPage ? styles.active : ""}`}
             onClick={() => handleChangePage(index)}
           >
             {item.name}
@@ -135,12 +151,15 @@ export default function Header() {
       {/* 创建团队 */}
       <TeamOptionModal
         type="create"
+        teams={teamList}
         visible={createTeamModalVisible}
         onVisibleChange={setCreateTeamModalVisible}
       />
       {/* 编辑团队 */}
       <TeamOptionModal
         type="edit"
+        teams={teamList}
+        teamInfo={currentTeamInfo}
         visible={editTeamModalVisible}
         onVisibleChange={setEditTeamModalVisible}
       />

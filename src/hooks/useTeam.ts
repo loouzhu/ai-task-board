@@ -1,15 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Message } from "@arco-design/web-react";
-import { createTeam, editTeam, deleteTeam, getTeamList } from "@/api/team";
+import {
+  createTeam,
+  editTeam,
+  deleteTeam,
+  getTeamList,
+  getTeamInfo,
+} from "@/api/team";
 import { useMeQuery } from "@/hooks/useAuth";
 
+// 创建团队
 export const useCreateTeam = () => {
   const queryClient = useQueryClient();
+  const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: createTeam,
-    onSuccess: () => {
+    onSuccess: async () => {
       Message.success("创建团队成功");
-      queryClient.invalidateQueries({ queryKey: ["teamList"] });
+      if (userId) {
+        await queryClient.invalidateQueries({ queryKey: ["teamList", userId] });
+        await queryClient.refetchQueries({
+          queryKey: ["teamList", userId],
+          type: "active",
+        });
+      }
     },
     onError: (err: Error) => {
       Message.error("创建团队失败");
@@ -18,13 +32,21 @@ export const useCreateTeam = () => {
   });
 };
 
+// 编辑团队
 export const useEditTeam = () => {
   const queryClient = useQueryClient();
+  const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: editTeam,
-    onSuccess: () => {
+    onSuccess: async () => {
       Message.success("编辑团队成功");
-      queryClient.invalidateQueries({ queryKey: ["teamList"] });
+      if (userId) {
+        await queryClient.invalidateQueries({ queryKey: ["teamList", userId] });
+        await queryClient.refetchQueries({
+          queryKey: ["teamList", userId],
+          type: "active",
+        });
+      }
     },
 
     onError: (err: Error) => {
@@ -34,13 +56,21 @@ export const useEditTeam = () => {
   });
 };
 
+// 删除团队
 export const useDeleteTeam = () => {
   const queryClient = useQueryClient();
+  const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: deleteTeam,
-    onSuccess: () => {
+    onSuccess: async () => {
       Message.success("删除团队成功");
-      queryClient.invalidateQueries({ queryKey: ["teamList"] });
+      if (userId) {
+        await queryClient.invalidateQueries({ queryKey: ["teamList", userId] });
+        await queryClient.refetchQueries({
+          queryKey: ["teamList", userId],
+          type: "active",
+        });
+      }
     },
     onError: (err: Error) => {
       Message.error("删除团队失败");
@@ -49,11 +79,21 @@ export const useDeleteTeam = () => {
   });
 };
 
+// 获取团队列表
 export const useGetTeamList = () => {
   const userId = useMeQuery().data?.user?.userId ?? "";
   return useQuery({
     queryKey: ["teamList", userId],
     queryFn: () => getTeamList(userId),
     enabled: !!userId,
+  });
+};
+
+// 获取当前团队信息
+export const useGetTeamInfo = (teamId: string) => {
+  return useQuery({
+    queryKey: ["teamInfo", teamId],
+    queryFn: () => getTeamInfo(teamId),
+    enabled: !!teamId,
   });
 };

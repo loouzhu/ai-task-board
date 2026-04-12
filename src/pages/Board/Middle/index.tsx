@@ -1,7 +1,7 @@
 import { Layout } from "@arco-design/web-react";
 import { useAllBoards } from "@/hooks/useBoard";
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetBoardTasks } from "@/hooks/useTask";
 import type { task, taskFilterParams } from "@/types/task";
 import type { boardListProps } from "@/types/board";
@@ -13,32 +13,32 @@ import styles from "./index.module.less";
 
 export default function Middle() {
   const Content = Layout.Content;
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { teamId, boardId } = useParams();
   const boardList = useAllBoards().data;
   const boards = useMemo<boardListProps[]>(
     () => boardList?.boards ?? [],
     [boardList?.boards],
   );
-  const urlBoardId = searchParams.get("boardId") || "";
   const fallbackBoardId = boards[0]?.boardId || "";
-  const boardId = urlBoardId || fallbackBoardId;
+  const activeBoardId = boardId || fallbackBoardId;
   const setBoardMembers = useBoardStore((state) => state.setBoardMembers);
   const [filterParams, setFilterParams] = useState<taskFilterParams>({});
-  const tasks = useGetBoardTasks(boardId, filterParams).data?.tasks as task[];
+  const tasks = useGetBoardTasks(activeBoardId, filterParams).data
+    ?.tasks as task[];
   const currentBoard =
-    boards.find((board) => board.boardId === boardId) ?? boards[0];
+    boards.find((board) => board.boardId === activeBoardId) ?? boards[0];
 
   useEffect(() => {
     if (boards.length === 0) return;
-    const hasMatchedBoard = boards.some(
-      (board) => board.boardId === urlBoardId,
-    );
-    const nextBoardId = hasMatchedBoard ? urlBoardId : boards[0].boardId;
+    const hasMatchedBoard = boards.some((item) => item.boardId === boardId);
+    const nextBoardId = hasMatchedBoard ? boardId : boards[0].boardId;
 
-    if (urlBoardId !== nextBoardId) {
-      setSearchParams({ boardId: nextBoardId }, { replace: true });
+    if (!teamId) return;
+    if (boardId !== nextBoardId) {
+      navigate(`/team/${teamId}/board/${nextBoardId}`, { replace: true });
     }
-  }, [urlBoardId, boards, setSearchParams]);
+  }, [boardId, boards, navigate, teamId]);
 
   useEffect(() => {
     setBoardMembers(currentBoard?.boardMembers ?? []);

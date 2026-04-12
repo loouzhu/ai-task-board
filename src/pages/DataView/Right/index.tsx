@@ -5,7 +5,10 @@ import { formatData } from "@/utils/common";
 import { Segmented } from "antd";
 import DateCell from "@/components/DayCell";
 import WeekCell from "@/components/WeekCell";
+import { useAllBoards } from "@/hooks/useBoard";
 import { useGetPeriodTask } from "@/hooks/useTask";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import type {
   MonthDataRecord,
   WeekDataRecord,
@@ -105,9 +108,25 @@ export default function Right({
   setDateType: (type: dateType) => void;
 }) {
   const date = new Date();
+  const navigate = useNavigate();
+  const { teamId, boardId } = useParams();
+  const boardList = useAllBoards().data;
+  const boards = useMemo(() => boardList?.boards ?? [], [boardList?.boards]);
   const periodTaskResponse = useGetPeriodTask(dateType).data as
     | PeriodTaskResponse
     | undefined;
+
+  useEffect(() => {
+    if (!teamId || boards.length === 0) return;
+
+    const hasMatchedBoard = boards.some((item) => item.boardId === boardId);
+    const nextBoardId = hasMatchedBoard ? boardId : boards[0].boardId;
+
+    if (boardId !== nextBoardId) {
+      navigate(`/team/${teamId}/data-view/${nextBoardId}`, { replace: true });
+    }
+  }, [boardId, boards, navigate, teamId]);
+
   const weekStart = periodTaskResponse?.startDate
     ? getWeekStart(dayjs(periodTaskResponse.startDate))
     : getWeekStart(dayjs());

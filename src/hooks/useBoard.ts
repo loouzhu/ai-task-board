@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Message } from "@arco-design/web-react";
 import {
   getAllBoards,
@@ -69,12 +69,12 @@ export const useEditBoard = () => {
 
 export const useDeleteBoard = () => {
   const queryClient = useQueryClient();
-  const [searchParams] = useSearchParams();
+  const { boardId } = useParams();
   return useMutation({
     mutationFn: (boardId: string) => deleteBoard(boardId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["allBoards"] });
-      if (searchParams.get("boardId") === variables) {
+      if (boardId === variables) {
         queryClient.invalidateQueries({ queryKey: ["boardInfo"] });
       }
       Message.success("看板删除成功");

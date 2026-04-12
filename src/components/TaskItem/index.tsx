@@ -1,6 +1,6 @@
 import styles from "./index.module.less";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { formatData, formatTaskPriority } from "@/utils/common";
 import type { TaskItemProps, task } from "@/types/task";
 import { useDeleteTask } from "@/hooks/useTask";
@@ -12,8 +12,8 @@ import TaskOptionModal from "../TaskOptionModal";
 
 export default function TaskItem({ task }: TaskItemProps) {
   const MenuItem = Menu.Item;
-  const [searchParams] = useSearchParams();
-  const boardId = searchParams.get("boardId") || "";
+  const { boardId } = useParams();
+  const safeBoardId = boardId ?? "";
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const {
@@ -28,7 +28,7 @@ export default function TaskItem({ task }: TaskItemProps) {
   } = task;
   const boardMembers = useBoardStore((state) => state.boardMembers);
   const setTask = useTaskStore((state) => state.setTask);
-  const deleteTask = useDeleteTask(boardId, task.taskId);
+  const deleteTask = useDeleteTask(safeBoardId, task.taskId);
 
   const handleDeleteOption = () => {
     deleteTask.mutate();
@@ -46,7 +46,9 @@ export default function TaskItem({ task }: TaskItemProps) {
         <div className={styles.priority}>
           优先级：{formatTaskPriority(taskPriority)}
         </div>
-        <div className={styles.principle}>负责人：{taskMembers?.[0] || "-"} </div>
+        <div className={styles.principle}>
+          负责人：{taskMembers?.[0] || "-"}{" "}
+        </div>
         <div className={styles.deadline}>
           截止日期：{taskDeadline ? formatData(taskDeadline) : "暂无"}
         </div>

@@ -12,7 +12,7 @@ import {
   IconDelete,
 } from "@arco-design/web-react/icon";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTaskStore } from "@/stores/taskStore";
 import type { boardListProps } from "@/types/board";
 import BoardOptionModal from "@/components/BoardOptionModal";
@@ -29,18 +29,20 @@ export default function HeaderNav({
   const Option = Select.Option;
   const MenuItem = Menu.Item;
   const AvatarGroup = Avatar.Group;
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { teamId, boardId } = useParams();
   const [createBoardVisible, setCreateBoardVisible] = useState(false);
   const [editBoardVisible, setEditBoardVisible] = useState(false);
   const clearTask = useTaskStore((state) => state.setTask);
   const deleteBoardMutation = useDeleteBoard();
-  const currentBoardId = searchParams.get("boardId") || boardList?.[0]?.boardId;
+  const currentBoardId = boardId || boardList?.[0]?.boardId;
   const currentBoard =
     boardList.find((board) => board.boardId === currentBoardId) ??
     boardList?.[0];
 
   const switchBoard = (value: string) => {
-    setSearchParams({ boardId: value });
+    if (!teamId) return;
+    navigate(`/team/${teamId}/board/${value}`, { replace: true });
     clearTask(null);
   };
 
@@ -59,10 +61,16 @@ export default function HeaderNav({
       onSuccess: () => {
         clearTask(null);
         if (nextBoard?.boardId) {
-          setSearchParams({ boardId: nextBoard.boardId });
+          if (teamId) {
+            navigate(`/team/${teamId}/board/${nextBoard.boardId}`, {
+              replace: true,
+            });
+          }
           return;
         }
-        setSearchParams({}, { replace: true });
+        if (teamId) {
+          navigate(`/team/${teamId}/board`, { replace: true });
+        }
       },
     });
   };
@@ -89,7 +97,7 @@ export default function HeaderNav({
           <div className={styles.title}>看板名称：</div>
           <Select
             className={styles.boardList}
-            value={searchParams.get("boardId") || boardList?.[0]?.boardId}
+            value={currentBoardId}
             placeholder="暂无看板"
             onChange={switchBoard}
           >
