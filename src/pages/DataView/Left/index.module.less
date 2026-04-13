@@ -1,8 +1,9 @@
 .left {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 16px;
   height: 100%;
+  min-height: 0;
   min-width: 0;
 
   .dataOverview,
@@ -11,6 +12,7 @@
     flex-direction: column;
     gap: 8px;
     min-width: 0;
+    min-height: 0;
   }
 
   .dataOverview {
@@ -18,19 +20,21 @@
       display: grid;
       gap: 8px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: auto auto;
       min-width: 0;
     }
   }
 
   .focusOn {
     overflow: hidden;
+
     .content {
       display: flex;
       flex-direction: column;
       gap: 12px;
       flex: 1;
-      overflow: scroll;
+      min-height: 0;
+      overflow: auto;
     }
 
     .focusItem {
@@ -83,15 +87,6 @@
       color: #9a3412;
       font-size: 12px;
       font-weight: 600;
-    }
-
-    .focusList {
-    }
-
-    .name {
-    }
-
-    .belong {
     }
   }
 }

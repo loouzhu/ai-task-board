@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useGetTeamInfo } from "@/hooks/useTeam";
 import type { User } from "@/types/user";
 import type { boardPayload } from "@/types/board";
+import { boardNameRules, boardMembersRules } from "@/rules/board";
 import { useEffect } from "react";
 import styles from "./index.module.less";
 
@@ -52,19 +53,22 @@ export default function BoardOptionModal({
           ? values.boardMembers
           : [],
       };
-
+      if (!teamId) return Message.error("缺少团队Id");
       if (type === "create") {
         if (createBoardMutation.isPending) return;
-        createBoardMutation.mutate(payload, {
-          onSuccess: () => onVisibleChange?.(false),
-        });
+        createBoardMutation.mutate(
+          { ...payload, teamId },
+          {
+            onSuccess: () => onVisibleChange?.(false),
+          },
+        );
       } else if (type === "edit") {
         if (editBoardMutation.isPending) return;
         if (!boardId) {
           return Message.error("缺少看板Id");
         }
         editBoardMutation.mutate(
-          { ...payload, boardId },
+          { ...payload, boardId, teamId },
           {
             onSuccess: () => onVisibleChange?.(false),
           },
@@ -88,7 +92,7 @@ export default function BoardOptionModal({
           label="看板名称"
           field="boardName"
           required
-          rules={[{ required: true }]}
+          rules={boardNameRules}
         >
           <Input />
         </FormItem>
@@ -96,7 +100,7 @@ export default function BoardOptionModal({
           label="看板成员："
           field="boardMembers"
           required
-          rules={[{ required: true }]}
+          rules={boardMembersRules}
         >
           <Select placeholder="第一位成员为负责人" mode="multiple">
             {getTeamInfoQuery.data?.team?.teamMembers?.map((user: User) => (

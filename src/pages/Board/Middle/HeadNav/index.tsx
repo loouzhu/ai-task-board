@@ -57,22 +57,25 @@ export default function HeaderNav({
       (board) => board.boardId !== currentBoard.boardId,
     );
 
-    deleteBoardMutation.mutate(currentBoard.boardId, {
-      onSuccess: () => {
-        clearTask(null);
-        if (nextBoard?.boardId) {
-          if (teamId) {
-            navigate(`/team/${teamId}/board/${nextBoard.boardId}`, {
-              replace: true,
-            });
+    deleteBoardMutation.mutate(
+      { boardId: currentBoard.boardId, teamId: teamId || "" },
+      {
+        onSuccess: () => {
+          clearTask(null);
+          if (nextBoard?.boardId) {
+            if (teamId) {
+              navigate(`/team/${teamId}/board/${nextBoard.boardId}`, {
+                replace: true,
+              });
+            }
+            return;
           }
-          return;
-        }
-        if (teamId) {
-          navigate(`/team/${teamId}/board`, { replace: true });
-        }
+          if (teamId) {
+            navigate(`/team/${teamId}/board`, { replace: true });
+          }
+        },
       },
-    });
+    );
   };
 
   const dropList = (

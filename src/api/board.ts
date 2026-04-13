@@ -41,8 +41,8 @@ const normalizeBoard = (board: RawBoard): boardListProps => ({
 });
 
 //获取所有看板
-export const getAllBoards = async (): Promise<AllBoardsResponse> => {
-  const response = await fetch("/api/board/get-all-boards", {
+export const getAllBoards = async (teamId: string): Promise<AllBoardsResponse> => {
+  const response = await fetch(`/api/board/get-all-boards?teamId=${teamId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -89,14 +89,18 @@ export const getBoardInfo = async (
 };
 
 // 创建看板
-export const createBoard = async (boardName: string, boardMembers: string[]) => {
+export const createBoard = async (
+  boardName: string,
+  boardMembers: string[],
+  teamId: string,
+) => {
   const response = await fetch("/api/board/create-board", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ boardName, boardMembers }),
+    body: JSON.stringify({ boardName, boardMembers, teamId }),
   });
   if (!response.ok) {
     if (response.status === 400) {
@@ -118,8 +122,9 @@ export const editBoard = async (
   boardId: string,
   boardName: string,
   boardMembers: string[],
+  teamId: string,
 ) => {
-  const response = await fetch(`/api/board/edit-board/${boardId}`, {
+  const response = await fetch(`/api/board/edit-board/${teamId}/${boardId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -143,8 +148,8 @@ export const editBoard = async (
 };
 
 // 删除看板
-export const deleteBoard = async (boardId: string) => {
-  const response = await fetch(`/api/board/delete-board/${boardId}`, {
+export const deleteBoard = async (boardId: string, teamId: string) => {
+  const response = await fetch(`/api/board/delete-board/${teamId}/${boardId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

@@ -277,29 +277,31 @@ export default function Right({
         </header>
       </section>
       <section className={styles.content}>
-        {dateType === "week" ? (
-          <Table
-            columns={weekColumns}
-            border={{
-              wrapper: true,
-              cell: true,
-            }}
-            data={weekData}
-            pagination={false}
-            scroll={{ y: 510 }}
-          />
-        ) : (
-          <Table
-            columns={monthColumns}
-            border={{
-              wrapper: true,
-              cell: true,
-            }}
-            data={monthData}
-            pagination={false}
-            scroll={{ y: 510 }}
-          />
-        )}
+        <div className={styles.tableWrap}>
+          {dateType === "week" ? (
+            <Table
+              columns={weekColumns}
+              border={{
+                wrapper: true,
+                cell: true,
+              }}
+              data={weekData}
+              pagination={false}
+              scroll={{ y: 510 }}
+            />
+          ) : (
+            <Table
+              columns={monthColumns}
+              border={{
+                wrapper: true,
+                cell: true,
+              }}
+              data={monthData}
+              pagination={false}
+              scroll={{ y: 510 }}
+            />
+          )}
+        </div>
       </section>
     </div>
   );

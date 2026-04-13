@@ -15,7 +15,7 @@ export default function Middle() {
   const Content = Layout.Content;
   const navigate = useNavigate();
   const { teamId, boardId } = useParams();
-  const boardList = useAllBoards().data;
+  const boardList = useAllBoards(teamId || "").data;
   const boards = useMemo<boardListProps[]>(
     () => boardList?.boards ?? [],
     [boardList?.boards],

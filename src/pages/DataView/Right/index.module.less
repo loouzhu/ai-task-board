@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
+  min-height: 0;
 
   .header header {
     display: flex;
@@ -10,7 +12,17 @@
   }
 
   .content {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
     width: 100%;
     height: 100%;
+    overflow: auto;
+  }
+
+  .tableWrap {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
   }
 }

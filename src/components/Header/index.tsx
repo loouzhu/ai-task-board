@@ -59,8 +59,7 @@ export default function Header() {
   };
 
   const handleChangeTeam = (value: string) => {
-    const targetPath = currentPage || "/board";
-    navigate(`/team/${value}${targetPath}`, { replace: true });
+    navigate(`/team/${value}/board`, { replace: true });
   };
 
   const handleLogout = () => {

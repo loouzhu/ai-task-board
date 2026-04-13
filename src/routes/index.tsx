@@ -40,7 +40,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "data-view/:boardId?",
+            path: "data-view",
             element: (
               <ProtectedRoute>
                 <DataView />

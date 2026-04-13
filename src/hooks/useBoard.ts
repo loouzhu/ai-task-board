@@ -9,10 +9,10 @@ import {
   deleteBoard,
 } from "@/api/board";
 
-export const useAllBoards = () => {
+export const useAllBoards = (teamId: string) => {
   return useQuery({
-    queryKey: ["allBoards"],
-    queryFn: getAllBoards,
+    queryKey: ["allBoards", teamId],
+    queryFn: () => getAllBoards(teamId),
   });
 };
 
@@ -28,12 +28,14 @@ export const useCreateBoard = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
+      teamId,
       boardName,
       boardMembers,
     }: {
+      teamId: string;
       boardName: string;
       boardMembers: string[];
-    }) => createBoard(boardName, boardMembers),
+    }) => createBoard(boardName, boardMembers, teamId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allBoards"] });
       Message.success("看板创建成功");
@@ -48,14 +50,16 @@ export const useEditBoard = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
+      teamId,
       boardId,
       boardName,
       boardMembers,
     }: {
+      teamId: string;
       boardId: string;
       boardName: string;
       boardMembers: string[];
-    }) => editBoard(boardId, boardName, boardMembers),
+    }) => editBoard(boardId, boardName, boardMembers, teamId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allBoards"] });
       queryClient.invalidateQueries({ queryKey: ["boardInfo"] });
@@ -71,11 +75,14 @@ export const useDeleteBoard = () => {
   const queryClient = useQueryClient();
   const { boardId } = useParams();
   return useMutation({
-    mutationFn: (boardId: string) => deleteBoard(boardId),
+    mutationFn: ({ boardId, teamId }: { boardId: string; teamId: string }) =>
+      deleteBoard(boardId, teamId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["allBoards"] });
-      if (boardId === variables) {
-        queryClient.invalidateQueries({ queryKey: ["boardInfo"] });
+      if (boardId === variables.boardId) {
+        queryClient.invalidateQueries({
+          queryKey: ["boardInfo", variables.boardId],
+        });
       }
       Message.success("看板删除成功");
     },
