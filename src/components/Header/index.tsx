@@ -59,7 +59,16 @@ export default function Header() {
   };
 
   const handleChangeTeam = (value: string) => {
-    navigate(`/team/${value}/board`, { replace: true });
+    const restPath = location.pathname.replace(/^\/team\/[^/]+/, "");
+    const targetPath = `/team/${value}${restPath}`;
+    navigate(
+      {
+        pathname: targetPath,
+        search: location.search,
+        hash: location.hash,
+      },
+      { replace: true },
+    );
   };
 
   const handleLogout = () => {
