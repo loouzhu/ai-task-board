@@ -8,13 +8,13 @@ export type WeekdayKey =
   | "sunday";
 
 export interface DayCellData {
-  task: number;
+  completed_task: number;
   blocked: boolean;
   overdue: boolean;
 }
 
 export interface MonthWeekCellData {
-  task: number;
+  completed_task: number;
   startDate: string;
   endDate: string;
 }

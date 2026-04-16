@@ -97,16 +97,16 @@ export const useDeleteTask = (boardId: string, taskId: string) => {
   });
 };
 
-export const useGetTaskMetrics = (dateType: dateType) => {
+export const useGetTaskMetrics = (dateType: dateType, teamId: string) => {
   return useQuery({
-    queryKey: ["taskMetrics", dateType],
-    queryFn: () => getTaskMetrics(dateType),
+    queryKey: ["taskMetrics", dateType, teamId],
+    queryFn: () => getTaskMetrics(dateType, teamId),
   });
 };
 
-export const useGetPeriodTask = (dateType: dateType) => {
+export const useGetPeriodTask = (dateType: dateType, teamId: string) => {
   return useQuery({
-    queryKey: ["periodTask", dateType],
-    queryFn: () => getPeriodTask(dateType),
+    queryKey: ["periodTask", dateType, teamId],
+    queryFn: () => getPeriodTask(dateType, teamId ),
   });
 };

@@ -6,7 +6,7 @@ interface DateCellProps {
 }
 
 export default function DateCell({ dayData }: DateCellProps) {
-  const completedCount = dayData.task || 0;
+  const completedCount = dayData.completed_task || 0;
   const isBlocked = dayData.blocked;
   const isOverdue = dayData.overdue;
 

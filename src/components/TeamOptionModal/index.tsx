@@ -8,6 +8,29 @@ import { teamNameRules, teamMembersRules } from "@/rules/team";
 import { useParams } from "react-router-dom";
 import type { User } from "@/types/user";
 
+type TeamMemberValue = { userId?: string; username?: string };
+
+const normalizeTeamMembers = (members: unknown): string[] => {
+  if (!Array.isArray(members)) {
+    return [];
+  }
+
+  return members
+    .map((member) => {
+      if (typeof member === "string") {
+        return member;
+      }
+
+      if (member && typeof member === "object") {
+        const teamMember = member as TeamMemberValue;
+        return typeof teamMember.userId === "string" ? teamMember.userId : "";
+      }
+
+      return "";
+    })
+    .filter(Boolean);
+};
+
 interface TeamOptionModalProps {
   type: "edit" | "create";
   teamInfo?: teamPayload;
@@ -34,9 +57,7 @@ export default function TeamOptionModal({
 
   useEffect(() => {
     if (!visible) return;
-    const teamMembers = Array.isArray(teamInfo?.teamMembers)
-      ? teamInfo.teamMembers
-      : [];
+    const teamMembers = normalizeTeamMembers(teamInfo?.teamMembers);
     form.setFieldsValue({
       teamName,
       teamMembers,
@@ -47,20 +68,18 @@ export default function TeamOptionModal({
     onVisibleChange?.(false);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (type: "edit" | "create") => {
     try {
       const values = await form.validate();
       teams.forEach((team) => {
-        if (team.teamName === values.teamName) {
+        if (team.teamName === values.teamName && type === "create") {
           Message.error("团队名称已存在");
         }
         return;
       });
       const payload = {
         teamName: String(values.teamName.trim()),
-        teamMembers: Array.isArray(values.teamMembers)
-          ? values.teamMembers
-          : [],
+        teamMembers: normalizeTeamMembers(values.teamMembers),
       };
       if (type === "create") {
         if (useCreateTeamMutation.isPending) return;
@@ -88,7 +107,7 @@ export default function TeamOptionModal({
       title={type === "edit" ? "编辑团队" : "创建团队"}
       visible={visible}
       onCancel={handleCancel}
-      onConfirm={handleConfirm}
+      onConfirm={() => handleConfirm(type)}
     >
       <Form form={form}>
         <FormItem

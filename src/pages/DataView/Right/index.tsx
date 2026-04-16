@@ -51,7 +51,7 @@ const isDayCellData = (value: unknown): value is WeekDataRecord[WeekdayKey] => {
 
   const cell = value as Record<string, unknown>;
   return (
-    typeof cell.task === "number" &&
+    typeof cell.completed_task === "number" &&
     typeof cell.blocked === "boolean" &&
     typeof cell.overdue === "boolean"
   );
@@ -64,7 +64,7 @@ const isMonthWeekCellData = (value: unknown): value is MonthWeekCellData => {
 
   const cell = value as Record<string, unknown>;
   return (
-    typeof cell.task === "number" &&
+    typeof cell.completed_task === "number" &&
     typeof cell.startDate === "string" &&
     typeof cell.endDate === "string"
   );
@@ -110,11 +110,12 @@ export default function Right({
   const date = new Date();
   const navigate = useNavigate();
   const { teamId, boardId } = useParams();
-  const boardList = useAllBoards().data;
+  const boardList = useAllBoards(teamId?.toString() || "").data;
   const boards = useMemo(() => boardList?.boards ?? [], [boardList?.boards]);
-  const periodTaskResponse = useGetPeriodTask(dateType).data as
-    | PeriodTaskResponse
-    | undefined;
+  const periodTaskResponse = useGetPeriodTask(
+    dateType,
+    teamId?.toString() || "",
+  ).data as PeriodTaskResponse | undefined;
 
   useEffect(() => {
     if (!teamId || boards.length === 0) return;
@@ -123,7 +124,7 @@ export default function Right({
     const nextBoardId = hasMatchedBoard ? boardId : boards[0].boardId;
 
     if (boardId !== nextBoardId) {
-      navigate(`/team/${teamId}/data-view/${nextBoardId}`, { replace: true });
+      navigate(`/team/${teamId}/data-view`, { replace: true });
     }
   }, [boardId, boards, navigate, teamId]);
 

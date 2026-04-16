@@ -14,7 +14,7 @@ export default function WeekCell({
   weekIndex,
   memberName,
 }: WeekCellProps) {
-  const total = weekData?.task ?? 0;
+  const total = weekData?.completed_task ?? 0;
   const dateRangeText =
     weekData?.startDate && weekData?.endDate
       ? `${formatData(weekData.startDate)} - ${formatData(weekData.endDate)}`

@@ -94,7 +94,7 @@ export default function BoardOptionModal({
           required
           rules={boardNameRules}
         >
-          <Input />
+          <Input placeholder="请输入看板名称" />
         </FormItem>
         <FormItem
           label="看板成员："

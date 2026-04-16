@@ -203,9 +203,9 @@ export const deleteTask = async (boardId: string, taskId: string) => {
 };
 
 // 获取任务指标
-export const getTaskMetrics = async (dateType: dateType) => {
+export const getTaskMetrics = async (dateType: dateType, teamId: string) => {
   const response = await fetch(
-    `${BASE_URL}/get-task-metrics?dateType=${dateType}`,
+    `${BASE_URL}/get-task-metrics?dateType=${dateType}&teamId=${teamId}`,
     {
       method: "GET",
       headers: {
@@ -230,9 +230,9 @@ export const getTaskMetrics = async (dateType: dateType) => {
 };
 
 // 获取本周或本月任务
-export const getPeriodTask = async (dateType: dateType) => {
+export const getPeriodTask = async (dateType: dateType, teamId: string) => {
   const response = await fetch(
-    `${BASE_URL}/get-period-task-data?dateType=${dateType}`,
+    `${BASE_URL}/get-period-task-data?dateType=${dateType}&teamId=${teamId}`,
     {
       method: "GET",
       headers: {

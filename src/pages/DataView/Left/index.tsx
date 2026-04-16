@@ -2,10 +2,12 @@ import styles from "./index.module.less";
 import CardHead from "@/components/CardHead";
 import DataCard from "@/components/DataCard";
 import { useGetTaskMetrics } from "@/hooks/useTask";
+import { useParams } from "react-router-dom";
 import type { dateType } from "@/types/task";
 
 export default function Left({ dateType }: { dateType: dateType }) {
-  const taskMetrics = useGetTaskMetrics(dateType).data?.metrics;
+  const { teamId } = useParams();
+  const taskMetrics = useGetTaskMetrics(dateType, teamId || "").data?.metrics;
   const periodLabel = dateType === "week" ? "周" : "月";
   const {
     totalTaskCount,
