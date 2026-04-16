@@ -28,7 +28,6 @@ export default function BoardOptionModal({
   const { teamId, boardId } = useParams();
   const createBoardMutation = useCreateBoard();
   const getTeamInfoQuery = useGetTeamInfo(teamId || "");
-  console.log(getTeamInfoQuery.data?.team?.teamMembers);
   const editBoardMutation = useEditBoard();
 
   useEffect(() => {

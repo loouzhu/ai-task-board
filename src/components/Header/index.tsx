@@ -15,12 +15,13 @@ import {
   Message,
   Select,
   Dropdown,
+  Popconfirm,
 } from "@arco-design/web-react";
 import { pageList } from "@/types/common";
 import styles from "./index.module.less";
 import TeamOptionModal from "../TeamOptionModal";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
-import { useGetTeamList, useGetTeamInfo } from "@/hooks/useTeam";
+import { useGetTeamList, useGetTeamInfo, useDeleteTeam } from "@/hooks/useTeam";
 import type { team } from "@/types/team";
 
 export default function Header() {
@@ -44,11 +45,11 @@ export default function Header() {
   const teamList = useGetTeamList()?.data?.teams || [];
   const currentTeamId = teamId || teamList[0]?.teamId || "";
   const currentTeamInfo = useGetTeamInfo(currentTeamId)?.data?.team;
+  const deleteTeamMutation = useDeleteTeam();
 
   const handleChangePage = (index: number) => {
     const targetPath = pageList[index].path;
     if (!targetPath) {
-      Message.info("该功能正在开发中");
       return;
     }
     if (!currentTeamId) {
@@ -76,7 +77,12 @@ export default function Header() {
   };
 
   const handleDeleteTeam = () => {
-    Message.info("解散团队功能正在开发中");
+    if (!currentTeamId) {
+      Message.info("请先选择团队");
+      return;
+    }
+    deleteTeamMutation.mutate(currentTeamId);
+    navigate("/team");
   };
 
   const dropList = (
@@ -90,8 +96,22 @@ export default function Header() {
       <MenuItem key="editTeam" onClick={() => setEditTeamModalVisible(true)}>
         <IconEdit /> 编辑团队
       </MenuItem>
-      <MenuItem key="deleteTeam" onClick={() => handleDeleteTeam()}>
-        <IconDelete /> 解散团队
+      <MenuItem key="deleteTeam">
+        <Popconfirm
+          title="确定要解散该团队吗？"
+          okText="确定"
+          cancelText="取消"
+          onOk={handleDeleteTeam}
+          trigger="click"
+        >
+          <span
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <IconDelete /> 解散团队
+          </span>
+        </Popconfirm>
       </MenuItem>
     </Menu>
   );

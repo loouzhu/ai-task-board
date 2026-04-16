@@ -56,14 +56,14 @@ export const useEditTeam = () => {
   });
 };
 
-// 删除团队
+// 解散团队
 export const useDeleteTeam = () => {
   const queryClient = useQueryClient();
   const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: deleteTeam,
     onSuccess: async () => {
-      Message.success("删除团队成功");
+      Message.success("解散团队成功");
       if (userId) {
         await queryClient.invalidateQueries({ queryKey: ["teamList", userId] });
         await queryClient.refetchQueries({
@@ -73,8 +73,8 @@ export const useDeleteTeam = () => {
       }
     },
     onError: (err: Error) => {
-      Message.error("删除团队失败");
-      console.log("删除团队失败", err);
+      Message.error("解散团队失败");
+      console.log("解散团队失败", err);
     },
   });
 };

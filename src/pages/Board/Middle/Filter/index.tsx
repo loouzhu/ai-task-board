@@ -16,7 +16,10 @@ interface FilterProps {
   onFilterChange: (params: taskFilterParams) => void;
 }
 
-export default function Filter({ boardMemberList, onFilterChange }: FilterProps) {
+export default function Filter({
+  boardMemberList,
+  onFilterChange,
+}: FilterProps) {
   const Option = Select.Option;
   const priorityList = [
     {
@@ -91,10 +94,6 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
           value={selectedPrincipal}
           onChange={(value) => {
             setSelectedPrincipal(value);
-            Message.info({
-              content: `You select ${value}.`,
-              showIcon: true,
-            });
           }}
         >
           <Option key="all" value="all">
@@ -113,10 +112,6 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
           value={selectedPriority}
           onChange={(value) => {
             setSelectedPriority(value);
-            Message.info({
-              content: `You select ${value}.`,
-              showIcon: true,
-            });
           }}
         >
           <Option key="priority-all" value="all">
@@ -158,12 +153,6 @@ export default function Filter({ boardMemberList, onFilterChange }: FilterProps)
           style={{ width: 180 }}
           value={searchValue}
           onChange={(value) => setSearchValue(value)}
-          onSearch={(value) => {
-            Message.info({
-              content: `搜索: ${value}`,
-              showIcon: true,
-            });
-          }}
         />
       </div>
       <div className={styles.options}>
