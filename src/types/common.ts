@@ -3,20 +3,12 @@ export const pageList = [
   {
     id: 1,
     name: "任务看板",
-    path: '/board'
+    path: "/board",
   },
   {
     id: 2,
     name: "数据视图",
-    path: '/data-view'
-  },
-  {
-    id: 3,
-    name: "AI分析",
-  },
-  {
-    id: 4,
-    name: "任务统计",
+    path: "/data-view",
   },
 ];
 

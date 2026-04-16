@@ -1,40 +1,58 @@
 .headerNav {
-  height: 30px;
-  line-height: 30px;
-  font-size: 15px;
+  min-height: 46px;
+  font-size: 14px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(249, 252, 255, 0.95),
+    rgba(242, 247, 255, 0.95)
+  );
+  border: 1px solid rgba(203, 218, 238, 0.7);
 
   .part {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
 
     .team,
     .board {
       display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .title {
-      margin-left: 4px;
+      margin-left: 2px;
+      font-size: 13px;
+      color: #5a6780;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
 
     .boardList {
       width: 220px;
+
       .boardItem {
-        margin-bottom: 10px;
+        margin-bottom: 6px;
       }
     }
 
     .title,
     .memberList {
-      height: 30px;
-      line-height: 30px;
+      min-height: 30px;
       display: flex;
-      gap: 2px;
+      gap: 4px;
+      align-items: center;
 
       .member {
         height: 30px;
         width: 30px;
+        border: 2px solid rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 8px rgba(40, 58, 89, 0.15);
       }
     }
   }
@@ -48,5 +66,28 @@
   .boardOptions {
     display: flex;
     align-items: center;
+
+    :global(.arco-icon-more-vertical) {
+      border-radius: 8px;
+      padding: 2px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgba(60, 109, 213, 0.1);
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .headerNav {
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .part {
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 }

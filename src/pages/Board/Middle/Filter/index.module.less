@@ -1,13 +1,21 @@
 .filter {
-  height: 60px;
+  min-height: 56px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(210, 222, 239, 0.8);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(247, 250, 255, 0.92)
+  );
 
   .manager {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
   }
 
   .search {
@@ -19,13 +27,12 @@
     &::before {
       position: absolute;
       content: "";
-      height: 50%;
       top: 50%;
-      left: -10px;
-      height: 100%;
+      left: -8px;
+      height: 75%;
       transform: translateY(-50%);
       width: 1px;
-      background: rgba(213, 213, 213, 0.781);
+      background: rgba(186, 201, 224, 0.92);
     }
   }
 
@@ -36,5 +43,34 @@
   }
 
   .deadline {
+  }
+
+  :global(.arco-select-view),
+  :global(.arco-input-wrapper),
+  :global(.arco-picker) {
+    border-radius: 10px;
+    border-color: rgba(190, 206, 228, 0.95);
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+
+  :global(.arco-btn-primary) {
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(52, 94, 190, 0.2);
+  }
+}
+
+@media (max-width: 1320px) {
+  .filter {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding-bottom: 10px;
+
+    .search {
+      width: 100%;
+
+      &::before {
+        display: none;
+      }
+    }
   }
 }

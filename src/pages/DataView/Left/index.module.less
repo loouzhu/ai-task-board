@@ -1,7 +1,7 @@
 .left {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 16px;
+  gap: 14px;
   height: 100%;
   min-height: 0;
   min-width: 0;
@@ -10,7 +10,7 @@
   .focusOn {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     min-width: 0;
     min-height: 0;
   }
@@ -18,7 +18,7 @@
   .dataOverview {
     .content {
       display: grid;
-      gap: 8px;
+      gap: 10px;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-rows: auto auto;
       min-width: 0;
@@ -31,10 +31,29 @@
     .content {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       flex: 1;
       min-height: 0;
       overflow: auto;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(125, 148, 189, 0.45);
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .left {
+    .dataOverview {
+      .content {
+        grid-template-columns: 1fr;
+      }
     }
   }
 }

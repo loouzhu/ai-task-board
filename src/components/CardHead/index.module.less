@@ -2,12 +2,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 30px;
+  min-height: 32px;
   width: 100%;
 
   .title {
-    font-size: large;
-    font-weight: 500;
+    position: relative;
+    padding-left: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #25314a;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 16px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #2f80ff 0%, #24b4a3 100%);
+    }
   }
 }
 

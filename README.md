@@ -6,17 +6,21 @@
 
 ## 技术栈
 
-前端：Html,Css,React,Typescript,vite,ArcoDesign
+前端：Html,Css,React,Typescript,vite,ArcoDesign,AntDesign
 后端：Node.js
+AI：DeepSeek
 
 ## 使用说明
+
 点击此网址直接查看页面:
 
 ## 代码运行
+
 npm i
 npm run dev
 
 ## 一期遗留问题
+
 下载附件功能目前未设计
 上传附件名称不一致
 子任务完成状态目前不能调整

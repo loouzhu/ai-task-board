@@ -1,10 +1,36 @@
 .board {
+  position: relative;
   display: flex;
   flex: 1;
   min-width: 0;
   min-height: 0;
   flex-direction: row;
+  gap: 14px;
+  padding: 14px;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(35, 116, 255, 0.08) 0%,
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(10, 181, 145, 0.08) 0%,
+      transparent 34%
+    ),
+    linear-gradient(180deg, #f7fafc 0%, #f3f7fb 100%);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 1280px) {
+  .board {
+    padding: 10px;
+    gap: 10px;
+  }
 }

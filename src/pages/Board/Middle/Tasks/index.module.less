@@ -2,11 +2,26 @@
   display: flex;
   flex: 1;
   min-height: 0;
-  border-radius: 8px;
-  padding: 5px;
-  border: 1px solid rgb(208, 208, 208);
-  background-color: #ffffffe8;
-  gap: 6px;
+  border-radius: 14px;
+  padding: 10px;
+  border: 1px solid rgba(206, 220, 240, 0.86);
+  background:
+    radial-gradient(
+      circle at 85% 0%,
+      rgba(134, 180, 255, 0.08) 0%,
+      transparent 30%
+    ),
+    linear-gradient(180deg, #f9fbff 0%, #f5f8ff 100%);
+  gap: 10px;
   overflow-x: auto;
   overflow-y: hidden;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(133, 158, 201, 0.52);
+  }
 }
