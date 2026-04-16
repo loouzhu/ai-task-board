@@ -48,7 +48,7 @@ export default function Left({ dateType }: { dateType: dateType }) {
       unit: "个",
       trend: formatTrend(changes?.totalTaskCount?.changePercentage),
       description: `${formatChangeText(changes?.totalTaskCount?.changeValue)}`,
-      bcc: "linear-gradient(135deg, #ecf3ff 0%, #d9e9ff 100%)",
+      bcc: "var(--overview-card-1-bg)",
     },
     {
       title: "完成率",
@@ -56,7 +56,7 @@ export default function Left({ dateType }: { dateType: dateType }) {
       unit: "%",
       trend: formatTrend(changes?.completionRate?.changePercentage),
       description: `本${periodLabel}已完成${completedTaskCount ?? 0}项任务`,
-      bcc: "linear-gradient(135deg, #e9fbef 0%, #d3f6df 100%)",
+      bcc: "var(--overview-card-2-bg)",
     },
     {
       title: "逾期任务",
@@ -64,7 +64,7 @@ export default function Left({ dateType }: { dateType: dateType }) {
       unit: "个",
       trend: formatTrend(changes?.overdueTaskCount?.changePercentage),
       description: `中高优先级 ${overdueMediumHighPriorityCount ?? 0} 项`,
-      bcc: "linear-gradient(135deg, #fff3e8 0%, #ffe2c2 100%)",
+      bcc: "var(--overview-card-3-bg)",
     },
     {
       title: "平均负载",
@@ -72,7 +72,7 @@ export default function Left({ dateType }: { dateType: dateType }) {
       unit: "个",
       trend: formatTrend(changes?.averageTaskLoad?.changePercentage),
       description: `${formatChangeText(changes?.averageTaskLoad?.changeValue)}`,
-      bcc: "linear-gradient(135deg, #f4efff 0%, #e7deff 100%)",
+      bcc: "var(--overview-card-4-bg)",
     },
   ];
 

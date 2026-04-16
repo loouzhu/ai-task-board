@@ -5,8 +5,8 @@
   gap: 12px;
   padding: 8px 16px;
   border-radius: 18px;
-  background: #f7f9fc;
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: var(--app-surface-soft);
+  border: 1px solid var(--app-border);
 }
 
 .focusItem__main {
@@ -15,14 +15,14 @@
   strong {
     display: block;
     //margin-bottom: 6px;
-    color: #172033;
+    color: var(--app-text);
     font-size: 14px;
     font-weight: 700;
   }
 
   p {
     margin: 0;
-    color: #6b7280;
+    color: var(--app-subtext);
     font-size: 12px;
   }
 }
@@ -38,10 +38,32 @@
 .focusItem__tag {
   border-radius: 999px;
   padding: 4px 10px;
-  background: #172033;
+  background: var(--app-text);
   color: #fff;
   font-size: 12px;
   font-weight: 600;
+}
+
+.focusItem__tagHigh {
+  background: rgba(196, 77, 40, 0.2);
+  color: #c44d28;
+}
+
+.focusItem__tagOverdue {
+  background: rgba(207, 63, 78, 0.22);
+  color: #cf3f4e;
+}
+
+:global(body[arco-theme="dark"]) {
+  .focusItem__tagHigh {
+    background: rgba(241, 136, 94, 0.24);
+    color: #ffb18a;
+  }
+
+  .focusItem__tagOverdue {
+    background: rgba(242, 99, 118, 0.28);
+    color: #ffb4bf;
+  }
 }
 
 .focusItem__deadline {

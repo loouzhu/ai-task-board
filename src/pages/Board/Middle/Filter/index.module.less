@@ -5,11 +5,11 @@
   gap: 14px;
   padding: 8px 10px;
   border-radius: 12px;
-  border: 1px solid rgba(210, 222, 239, 0.8);
+  border: 1px solid var(--app-border-strong);
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.92),
-    rgba(247, 250, 255, 0.92)
+    var(--app-surface),
+    var(--app-surface-soft)
   );
 
   .manager {
@@ -32,7 +32,7 @@
       height: 75%;
       transform: translateY(-50%);
       width: 1px;
-      background: rgba(186, 201, 224, 0.92);
+      background: var(--app-border-strong);
     }
   }
 
@@ -49,8 +49,8 @@
   :global(.arco-input-wrapper),
   :global(.arco-picker) {
     border-radius: 10px;
-    border-color: rgba(190, 206, 228, 0.95);
-    background-color: rgba(255, 255, 255, 0.95);
+    border-color: var(--app-border-strong);
+    background-color: var(--app-surface);
   }
 
   :global(.arco-btn-primary) {

@@ -1,8 +1,7 @@
 import styles from "./index.module.less";
-import { Table, Tag } from "@arco-design/web-react";
+import { Switch, Table, Tag } from "@arco-design/web-react";
 import dayjs from "dayjs";
 import { formatData } from "@/utils/common";
-import { Segmented } from "antd";
 import DateCell from "@/components/DayCell";
 import WeekCell from "@/components/WeekCell";
 import { useAllBoards } from "@/hooks/useBoard";
@@ -267,13 +266,18 @@ export default function Right({
             <div className={styles.date}>今天是 {formatData(date)}</div>
           </strong>
           <div className={styles.options}>
-            <Segmented<string>
-              options={["本周", "本月"]}
-              value={dateType === "week" ? "本周" : "本月"}
-              onChange={(value) => {
-                setDateType(value === "本周" ? "week" : "month");
-              }}
-            />
+            <div className={styles.dateTypeSwitch}>
+              <Switch
+                checked={dateType === "month"}
+                type="round"
+                className={styles.dateTypeToggle}
+                checkedText="本月"
+                uncheckedText="本周"
+                onChange={(checked) => {
+                  setDateType(checked ? "month" : "week");
+                }}
+              />
+            </div>
           </div>
         </header>
       </section>

@@ -9,14 +9,18 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.7); // 更亮的边框
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), // 更柔和的阴影
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    // 更柔和的阴影
     inset 0 1px 2px rgba(255, 255, 255, 0.8); // 内部高光
   transition: all 0.3s ease;
 
   // 悬停时玻璃感增强
   &:hover {
     background-color: rgba(255, 255, 255, 0.65);
-    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.12), inset 0 1px 3px rgba(255, 255, 255, 0.9);
+    box-shadow:
+      0 30px 50px rgba(0, 0, 0, 0.12),
+      inset 0 1px 3px rgba(255, 255, 255, 0.9);
   }
 
   // 标题样式
@@ -25,7 +29,7 @@
     font-size: 28px;
     font-weight: 500;
     letter-spacing: -0.5px;
-    color: #1e2b37;
+    color: var(--app-text);
     text-align: center;
     position: relative;
   }
@@ -46,7 +50,7 @@
 
     // 标签文字样式
     :global(.arco-form-item-label) {
-      color: #2c3e50;
+      color: var(--app-subtext);
       font-weight: 500;
       font-size: 14px;
       opacity: 0.9;
@@ -85,7 +89,11 @@
     font-size: 16px;
     font-weight: 500;
     letter-spacing: 1px;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.7)
+    );
     border: 1px solid rgba(255, 255, 255, 0.8) !important;
     color: #1e2b37;
     backdrop-filter: blur(4px);
@@ -93,7 +101,11 @@
 
     &:hover {
       color: rgb(var(--primary-6)) !important;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.8));
+      background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0.8)
+      );
       transform: translateY(-2px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     }
@@ -125,7 +137,7 @@
 
         // 下划线动画
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           bottom: -2px;
           left: 0;
@@ -148,6 +160,62 @@
     to {
       width: 100%;
       opacity: 1;
+    }
+  }
+}
+
+:global(body[arco-theme="dark"]) {
+  .authForm {
+    background-color: rgba(35, 36, 40, 0.62);
+    border: 1px solid rgba(95, 101, 113, 0.55);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.06);
+
+    &:hover {
+      background-color: rgba(35, 36, 40, 0.75);
+      box-shadow:
+        0 30px 50px rgba(0, 0, 0, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.08);
+    }
+
+    input {
+      &::placeholder {
+        color: rgba(201, 205, 212, 0.6);
+      }
+
+      &:focus {
+        background: rgba(59, 62, 69, 0.8) !important;
+      }
+    }
+
+    :global(.arco-btn) {
+      background: linear-gradient(
+        145deg,
+        rgba(67, 70, 77, 0.9),
+        rgba(53, 56, 63, 0.9)
+      );
+      border: 1px solid rgba(98, 103, 115, 0.8) !important;
+      color: var(--app-text);
+
+      &:hover {
+        background: linear-gradient(
+          145deg,
+          rgba(80, 84, 93, 0.95),
+          rgba(60, 64, 72, 0.95)
+        );
+      }
+
+      &:active {
+        background: rgba(55, 59, 66, 0.95);
+      }
+    }
+
+    .authOption {
+      .forgetPsd,
+      .changeAuth {
+        color: rgba(201, 205, 212, 0.8);
+      }
     }
   }
 }

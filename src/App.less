@@ -5,15 +5,80 @@
   scrollbar-width: none;
 }
 
+:root {
+  --app-bg: #f5f6f8;
+  --app-surface: #ffffff;
+  --app-surface-soft: #f7f9fc;
+  --app-surface-muted: #edf2f8;
+  --app-text: #1d2129;
+  --app-subtext: #4e5969;
+  --app-border: #f2f3f5;
+  --app-border-strong: #c7d3e6;
+  --app-shadow-xs: 0 4px 10px rgba(62, 90, 138, 0.08);
+  --app-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --app-shadow-md: 0 10px 24px rgba(31, 56, 94, 0.12);
+  --app-inset-highlight: rgba(255, 255, 255, 0.55);
+  --app-scroll-thumb: rgba(126, 149, 191, 0.45);
+  --app-placeholder: #999999;
+  --overview-card-1-bg: linear-gradient(135deg, #ecf3ff 0%, #d9e9ff 100%);
+  --overview-card-2-bg: linear-gradient(135deg, #e9fbef 0%, #d3f6df 100%);
+  --overview-card-3-bg: linear-gradient(135deg, #fff3e8 0%, #ffe2c2 100%);
+  --overview-card-4-bg: linear-gradient(135deg, #f4efff 0%, #e7deff 100%);
+}
+
+body[arco-theme="dark"] {
+  --app-bg: #16171a;
+  --app-surface: #232324;
+  --app-surface-soft: #2b2d31;
+  --app-surface-muted: #1f2126;
+  --app-text: #f2f3f5;
+  --app-subtext: #c9cdd4;
+  --app-border: #3d3d3f;
+  --app-border-strong: #4a4f59;
+  --app-shadow-xs: 0 4px 12px rgba(0, 0, 0, 0.28);
+  --app-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --app-shadow-md: 0 12px 28px rgba(0, 0, 0, 0.4);
+  --app-inset-highlight: rgba(255, 255, 255, 0.06);
+  --app-scroll-thumb: rgba(127, 147, 181, 0.45);
+  --app-placeholder: #86909c;
+  --overview-card-1-bg: linear-gradient(135deg, #273248 0%, #1f2b3f 100%);
+  --overview-card-2-bg: linear-gradient(135deg, #22382e 0%, #1b3027 100%);
+  --overview-card-3-bg: linear-gradient(135deg, #3b3127 0%, #32271e 100%);
+  --overview-card-4-bg: linear-gradient(135deg, #312b45 0%, #29233b 100%);
+}
+
+body.theme-switching {
+  .arco-input,
+  .arco-input-wrapper,
+  .arco-textarea,
+  .arco-select-view,
+  .arco-picker,
+  .arco-switch,
+  .arco-radio-button,
+  .arco-radio-button-inner {
+    transition: none !important;
+  }
+}
+
 html,
 body {
   margin: 0;
   height: 100%;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  // transition:
+  //   background-color 0.2s ease,
+  //   color 0.2s ease;
 }
 
 #root {
   height: 100%;
   width: 100%;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 h1,
@@ -39,7 +104,7 @@ button {
 }
 
 ::placeholder {
-  color: #999 !important;
+  color: var(--app-placeholder) !important;
   opacity: 1;
 }
 
@@ -66,6 +131,8 @@ svg {
   max-height: 600px;
   overflow: scroll;
   scrollbar-width: none;
+  background-color: var(--app-surface);
+  color: var(--app-text);
 }
 
 .arco-select {
@@ -77,15 +144,20 @@ svg {
   flex-shrink: 0;
 }
 
+.arco-table tr:hover {
+  border-color: transparent !important;
+}
+
 .arco-empty {
   display: flex;
   height: 100%;
   align-items: center;
   text-align: center;
+  color: var(--app-subtext);
 }
 
 .arco-modal-header {
-  border-bottom: 1px solid #f2f3f5;
+  border-bottom: 1px solid var(--app-border);
   padding-bottom: 12px;
   margin-bottom: 8px;
 }
@@ -96,7 +168,7 @@ svg {
 
 .arco-form-item-label-col > label {
   font-weight: 600;
-  color: #4e5969;
+  color: var(--app-subtext);
 }
 
 .arco-input,

@@ -1,9 +1,9 @@
 .rightSide {
   width: 300px !important;
-  border: 1px solid rgba(186, 204, 230, 0.78);
+  border: 1px solid var(--app-border-strong);
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 24px rgba(31, 56, 94, 0.12);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow-md);
   overflow: hidden;
 
   .content {
@@ -18,11 +18,11 @@
       border-radius: 10px;
       background: linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.98),
-        rgba(248, 251, 255, 0.96)
+        var(--app-surface),
+        var(--app-surface-soft)
       );
-      border: 1px solid rgba(224, 234, 247, 0.8);
-      box-shadow: 0 4px 10px rgba(62, 90, 138, 0.06);
+      border: 1px solid var(--app-border);
+      box-shadow: var(--app-shadow-xs);
     }
   }
 }

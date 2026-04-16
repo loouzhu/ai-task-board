@@ -1,4 +1,4 @@
-.auth{
+.auth {
   display: flex;
   height: 100%;
   width: 100%;
@@ -6,7 +6,11 @@
   justify-content: center;
   background: linear-gradient(145deg, #b8e1fc 0%, #d0d9ff 50%, #fbc7d7 100%);
 
-  button{
+  button {
     width: 78px;
   }
+}
+
+:global(body[arco-theme="dark"]) .auth {
+  background: linear-gradient(145deg, #1f2734 0%, #1b2330 50%, #2a1f2d 100%);
 }

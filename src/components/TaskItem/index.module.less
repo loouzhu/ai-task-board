@@ -4,12 +4,16 @@
   justify-content: space-between;
   gap: 12px;
   z-index: 0;
-  border: 1px solid rgba(196, 211, 235, 0.82);
+  border: 1px solid var(--app-border-strong);
   padding: 12px;
   padding-right: 14px;
   margin-bottom: 8px;
   border-radius: 12px;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  background: linear-gradient(
+    180deg,
+    var(--app-surface) 0%,
+    var(--app-surface-soft) 100%
+  );
   transition:
     box-shadow 0.22s ease,
     transform 0.22s ease,
@@ -17,7 +21,7 @@
 
   &:hover {
     border-color: rgba(118, 151, 211, 0.72);
-    box-shadow: 0 8px 18px rgba(43, 73, 122, 0.16);
+    box-shadow: var(--app-shadow-md);
     transform: translateY(0);
     z-index: 2;
     cursor: pointer;
@@ -55,23 +59,23 @@
 .name {
   font-size: 14px;
   font-weight: 700;
-  color: #24324b;
+  color: var(--app-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .priority {
-  color: #40506e;
+  color: var(--app-subtext);
   font-size: 12px;
 }
 
 .principle {
-  color: #40506e;
+  color: var(--app-subtext);
   font-size: 12px;
 }
 
 .deadline {
-  color: #64748b;
+  color: var(--app-subtext);
   font-size: 12px;
 }

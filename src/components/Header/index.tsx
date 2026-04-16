@@ -7,6 +7,8 @@ import {
   IconPlus,
   IconEdit,
   IconDelete,
+  IconSun,
+  IconMoon,
 } from "@arco-design/web-react/icon";
 import {
   Layout,
@@ -16,7 +18,9 @@ import {
   Select,
   Dropdown,
   Popconfirm,
+  Switch,
 } from "@arco-design/web-react";
+import { useTheme } from "@/hooks/useTheme";
 import { pageList } from "@/types/common";
 import styles from "./index.module.less";
 import TeamOptionModal from "../TeamOptionModal";
@@ -29,6 +33,7 @@ export default function Header() {
   const MenuItem = Menu.Item;
   const Option = Select.Option;
   const logoutMutation = useLogout();
+  const { isDark, toggleTheme } = useTheme();
   const user = useMeQuery().data?.user;
   const location = useLocation();
   const { teamId } = useParams();
@@ -141,6 +146,7 @@ export default function Header() {
         </div>
       </div>
       <div className={styles.title}>AI智能任务看板</div>
+      {/* 页面列表 */}
       <div className={styles.list}>
         {pageList.map((item, index) => (
           <span
@@ -152,6 +158,17 @@ export default function Header() {
           </span>
         ))}
       </div>
+      {/* 主题切换 */}
+      <div className="changeTheme">
+        <Switch
+          checked={isDark}
+          checkedIcon={<IconMoon style={{ color: "#262626" }} />}
+          uncheckedIcon={<IconSun style={{ color: "#4e5969" }} />}
+          style={{ backgroundColor: isDark ? "#5f5f5f69" : "#d9dde5" }}
+          onChange={toggleTheme}
+        />
+      </div>
+      {/* 用户信息 */}
       <div
         className={styles.userInfo}
         onMouseEnter={() => setUserMenu(true)}

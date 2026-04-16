@@ -4,14 +4,18 @@
   min-height: 0;
   border-radius: 14px;
   padding: 10px;
-  border: 1px solid rgba(206, 220, 240, 0.86);
+  border: 1px solid var(--app-border-strong);
   background:
     radial-gradient(
       circle at 85% 0%,
       rgba(134, 180, 255, 0.08) 0%,
       transparent 30%
     ),
-    linear-gradient(180deg, #f9fbff 0%, #f5f8ff 100%);
+    linear-gradient(
+      180deg,
+      var(--app-surface-soft) 0%,
+      var(--app-surface-muted) 100%
+    );
   gap: 10px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -22,6 +26,6 @@
 
   &::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    background: rgba(133, 158, 201, 0.52);
+    background: var(--app-scroll-thumb);
   }
 }
