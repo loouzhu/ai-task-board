@@ -114,7 +114,7 @@ export default function Left({ dateType }: { dateType: dateType }) {
       <section className={styles.focusOn}>
         <CardHead title="重点关注" />
         <div className={`${styles.content} ${styles.focusList}`}>
-          {focusList ? (
+          {focusList.length > 0 ? (
             focusList.map((item) => <FocusItem item={item} />)
           ) : (
             <Empty description="暂无重点关注数据" />
