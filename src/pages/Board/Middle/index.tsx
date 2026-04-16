@@ -30,11 +30,18 @@ export default function Middle() {
     boards.find((board) => board.boardId === activeBoardId) ?? boards[0];
 
   useEffect(() => {
-    if (boards.length === 0) return;
+    if (!teamId) return;
+
+    if (boards.length === 0) {
+      if (boardId) {
+        navigate(`/team/${teamId}/board`, { replace: true });
+      }
+      return;
+    }
+
     const hasMatchedBoard = boards.some((item) => item.boardId === boardId);
     const nextBoardId = hasMatchedBoard ? boardId : boards[0].boardId;
 
-    if (!teamId) return;
     if (boardId !== nextBoardId) {
       navigate(`/team/${teamId}/board/${nextBoardId}`, { replace: true });
     }
