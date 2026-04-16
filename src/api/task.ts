@@ -17,6 +17,11 @@ interface RawTask extends Omit<task, "taskMembers"> {
   principle?: string;
 }
 
+interface FocusOnTaskResponse {
+  tasks: task[];
+  [key: string]: unknown;
+}
+
 const normalizeTaskMembers = (taskMembers?: Array<string | RawMember>) => {
   if (!Array.isArray(taskMembers)) {
     return [];
@@ -205,7 +210,7 @@ export const deleteTask = async (boardId: string, taskId: string) => {
 // 获取任务指标
 export const getTaskMetrics = async (dateType: dateType, teamId: string) => {
   const response = await fetch(
-    `${BASE_URL}/get-task-metrics?dateType=${dateType}&teamId=${teamId}`,
+    `${BASE_URL}/get-task-metrics/${teamId}?dateType=${dateType}`,
     {
       method: "GET",
       headers: {
@@ -232,7 +237,7 @@ export const getTaskMetrics = async (dateType: dateType, teamId: string) => {
 // 获取本周或本月任务
 export const getPeriodTask = async (dateType: dateType, teamId: string) => {
   const response = await fetch(
-    `${BASE_URL}/get-period-task-data?dateType=${dateType}&teamId=${teamId}`,
+    `${BASE_URL}/get-period-task-data/${teamId}?dateType=${dateType}`,
     {
       method: "GET",
       headers: {
@@ -254,4 +259,44 @@ export const getPeriodTask = async (dateType: dateType, teamId: string) => {
   }
   const data = await response.json();
   return normalizeTaskCollection(data);
+};
+
+// 获取重点关注任务
+export const getFocusOnTask = async (
+  teamId: string,
+): Promise<FocusOnTaskResponse> => {
+  const response = await fetch(`${BASE_URL}/focus-on-tasks/${teamId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (!response.ok) {
+    if (response.status === 400) {
+      throw new Error("获取重点关注任务失败：请求参数错误");
+    } else if (response.status === 401) {
+      throw new Error("获取重点关注任务失败：未授权");
+    } else if (response.status === 500) {
+      throw new Error("获取重点关注任务失败：服务器错误");
+    } else {
+      throw new Error("获取重点关注任务失败");
+    }
+  }
+  const data = await response.json();
+  const normalizedData = normalizeTaskCollection(data);
+
+  if (Array.isArray(normalizedData)) {
+    return { tasks: normalizedData };
+  }
+
+  if (normalizedData && typeof normalizedData === "object") {
+    const result = normalizedData as Record<string, unknown>;
+    return {
+      ...result,
+      tasks: Array.isArray(result.tasks) ? (result.tasks as task[]) : [],
+    };
+  }
+
+  return { tasks: [] };
 };

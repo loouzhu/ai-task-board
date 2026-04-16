@@ -17,6 +17,7 @@ export interface task {
   taskPriority: string;
   taskStatus: taskType;
   taskWorkTime: string;
+  boardName?: string;
 }
 
 export type taskType = "pending" | "processing" | "testing" | "completed";

@@ -41,3 +41,44 @@ export const formatInput = (value: string) => {
     .map((item) => item.trim())
     .filter((item) => item);
 };
+
+// 截止日期显示
+export const formatDeadline = (taskDeadline?: string) => {
+  if (!taskDeadline) {
+    return "无截止日期";
+  }
+
+  const deadlineDate = new Date(taskDeadline);
+  if (Number.isNaN(deadlineDate.getTime())) {
+    return taskDeadline;
+  }
+
+  const today = new Date();
+  const todayStart = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+  const deadlineStart = new Date(
+    deadlineDate.getFullYear(),
+    deadlineDate.getMonth(),
+    deadlineDate.getDate(),
+  );
+  const diffDays = Math.round(
+    (deadlineStart.getTime() - todayStart.getTime()) / (24 * 60 * 60 * 1000),
+  );
+
+  if (Math.abs(diffDays) > 3) {
+    return taskDeadline;
+  }
+
+  if (diffDays === 0) {
+    return "今天截止";
+  }
+
+  if (diffDays > 0) {
+    return `${diffDays}天后截止`;
+  }
+
+  return `${Math.abs(diffDays)}天前截止`;
+};

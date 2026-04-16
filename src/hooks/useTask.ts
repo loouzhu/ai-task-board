@@ -8,13 +8,24 @@ import {
   deleteTask,
   getTaskMetrics,
   getPeriodTask,
+  getFocusOnTask,
 } from "@/api/task";
-import type { taskFilterParams, TaskPayload, dateType } from "@/types/task";
+import type {
+  task,
+  taskFilterParams,
+  TaskPayload,
+  dateType,
+} from "@/types/task";
 import { Message } from "@arco-design/web-react";
 
 interface AddTaskMutationPayload {
   task: TaskPayload;
   files?: File[];
+}
+
+interface FocusOnTaskResponse {
+  tasks: task[];
+  [key: string]: unknown;
 }
 
 export const useGetBoardTasks = (
@@ -107,6 +118,13 @@ export const useGetTaskMetrics = (dateType: dateType, teamId: string) => {
 export const useGetPeriodTask = (dateType: dateType, teamId: string) => {
   return useQuery({
     queryKey: ["periodTask", dateType, teamId],
-    queryFn: () => getPeriodTask(dateType, teamId ),
+    queryFn: () => getPeriodTask(dateType, teamId),
+  });
+};
+
+export const useGetFocusOnTask = (teamId: string) => {
+  return useQuery<FocusOnTaskResponse>({
+    queryKey: ["focusOnTasks", teamId],
+    queryFn: () => getFocusOnTask(teamId),
   });
 };

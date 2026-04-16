@@ -1,13 +1,17 @@
 import styles from "./index.module.less";
 import CardHead from "@/components/CardHead";
 import DataCard from "@/components/DataCard";
-import { useGetTaskMetrics } from "@/hooks/useTask";
+import { useGetTaskMetrics, useGetFocusOnTask } from "@/hooks/useTask";
+import { Empty } from "@arco-design/web-react";
 import { useParams } from "react-router-dom";
 import type { dateType } from "@/types/task";
+import { formatDeadline } from "@/utils/common";
+import FocusItem from "@/components/FocusItem";
 
 export default function Left({ dateType }: { dateType: dateType }) {
   const { teamId } = useParams();
   const taskMetrics = useGetTaskMetrics(dateType, teamId || "").data?.metrics;
+  const focusOnTasks = useGetFocusOnTask(teamId || "").data?.tasks;
   const periodLabel = dateType === "week" ? "周" : "月";
   const {
     totalTaskCount,
@@ -72,39 +76,25 @@ export default function Left({ dateType }: { dateType: dateType }) {
     },
   ];
 
-  const focusList = [
-    {
-      name: "支付对账异常排查",
-      tag: "高优先",
-      deadline: "今天",
-      belong: "看板a",
-    },
-    {
-      name: "消息中心筛选重构",
-      tag: "测试中",
-      deadline: "明天",
-      belong: "看板b",
-    },
-    {
-      name: "AI 周报自动生成",
-      tag: "已逾期",
-      deadline: "2 天前",
-      belong: "看板c",
-    },
-    {
-      name: "AI 周报自动生成1",
-      tag: "已逾期",
-      deadline: "3 天前",
-      belong: "看板d",
-    },
-  ];
+  const focusList =
+    focusOnTasks?.map((task) => ({
+      name: task.taskName,
+      tag:
+        task.taskPriority === "high"
+          ? "高优先"
+          : task.isOverdue
+            ? "已逾期"
+            : "",
+      deadline: formatDeadline(task.taskDeadline),
+      belong: task.boardName || "未知看板",
+    })) || [];
 
   return (
     <div className={styles.left}>
       <section className={styles.dataOverview}>
         <CardHead title="数据总览" />
         <div className={styles.content}>
-          {dataList &&
+          {dataList ? (
             dataList.map((item) => (
               <DataCard
                 key={item.title}
@@ -115,26 +105,20 @@ export default function Left({ dateType }: { dateType: dateType }) {
                 description={item.description}
                 bcc={item.bcc}
               />
-            ))}
+            ))
+          ) : (
+            <Empty description="暂无数据" />
+          )}
         </div>
       </section>
       <section className={styles.focusOn}>
         <CardHead title="重点关注" />
         <div className={`${styles.content} ${styles.focusList}`}>
-          {focusList.map((item) => (
-            <article key={item.name} className={styles.focusItem}>
-              <div className={styles.focusItem__main}>
-                <strong>{item.name}</strong>
-                <p>{item.belong}</p>
-              </div>
-              <div className={styles.focusItem__meta}>
-                <span className={styles.focusItem__tag}>{item.tag}</span>
-                <span className={styles.focusItem__deadline}>
-                  {item.deadline}截止
-                </span>
-              </div>
-            </article>
-          ))}
+          {focusList ? (
+            focusList.map((item) => <FocusItem item={item} />)
+          ) : (
+            <Empty description="暂无重点关注数据" />
+          )}
         </div>
       </section>
     </div>
