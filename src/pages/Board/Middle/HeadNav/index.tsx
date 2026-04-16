@@ -35,7 +35,8 @@ export default function HeaderNav({
   const [editBoardVisible, setEditBoardVisible] = useState(false);
   const clearTask = useTaskStore((state) => state.setTask);
   const deleteBoardMutation = useDeleteBoard();
-  const currentBoardId = boardId || boardList?.[0]?.boardId;
+  const hasMatchedBoard = boardList.some((board) => board.boardId === boardId);
+  const currentBoardId = hasMatchedBoard ? boardId : boardList?.[0]?.boardId;
   const currentBoard =
     boardList.find((board) => board.boardId === currentBoardId) ??
     boardList?.[0];
@@ -100,7 +101,7 @@ export default function HeaderNav({
           <div className={styles.title}>看板名称：</div>
           <Select
             className={styles.boardList}
-            value={currentBoardId}
+            value={currentBoardId || undefined}
             placeholder="暂无看板"
             onChange={switchBoard}
           >
