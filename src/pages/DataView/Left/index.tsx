@@ -89,10 +89,22 @@ export default function Left({ dateType }: { dateType: dateType }) {
       belong: task.boardName || "未知看板",
     })) || [];
 
+  const AISummary = () => {
+    alert("这是AI简报内容");
+  };
+
+  const AIAnalysis = () => {
+    alert("这是AI分析内容");
+  };
+
   return (
     <div className={styles.left}>
       <section className={styles.dataOverview}>
-        <CardHead title="数据总览" />
+        <CardHead
+          title="数据总览"
+          AIOptionFn={AISummary}
+          AIOptionName="AI简报"
+        />
         <div className={styles.content}>
           {dataList ? (
             dataList.map((item) => (
@@ -112,7 +124,11 @@ export default function Left({ dateType }: { dateType: dateType }) {
         </div>
       </section>
       <section className={styles.focusOn}>
-        <CardHead title="重点关注" />
+        <CardHead
+          title="重点关注"
+          AIOptionName="AI分析"
+          AIOptionFn={AIAnalysis}
+        />
         <div className={`${styles.content} ${styles.focusList}`}>
           {focusList.length > 0 ? (
             focusList.map((item) => <FocusItem item={item} />)
