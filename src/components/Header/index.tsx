@@ -3,6 +3,7 @@ import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
   IconUser,
   IconExport,
+  IconHome,
   IconMoreVertical,
   IconPlus,
   IconEdit,
@@ -23,6 +24,7 @@ import {
 import { useTheme } from "@/hooks/useTheme";
 import { pageList } from "@/types/common";
 import styles from "./index.module.less";
+import UserMenuItem from "../UserMenuItem";
 import TeamOptionModal from "../TeamOptionModal";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
 import { useGetTeamList, useGetTeamInfo, useDeleteTeam } from "@/hooks/useTeam";
@@ -42,6 +44,8 @@ export default function Header() {
     return location.pathname.includes(item.path);
   })?.path;
   const [userMenu, setUserMenu] = useState<boolean>(false);
+  const [logoutConfirmVisible, setLogoutConfirmVisible] =
+    useState<boolean>(false);
   const [createTeamModalVisible, setCreateTeamModalVisible] =
     useState<boolean>(false);
   const [editTeamModalVisible, setEditTeamModalVisible] =
@@ -77,8 +81,21 @@ export default function Header() {
     );
   };
 
+  const goPersonalHomepage = () => {
+    navigate(`/user/${user?.userId}`);
+  };
+
   const handleLogout = () => {
     logoutMutation.mutate();
+    setLogoutConfirmVisible(false);
+    setUserMenu(false);
+  };
+
+  const handleLogoutConfirmVisibleChange = (visible: boolean) => {
+    setLogoutConfirmVisible(visible);
+    if (!visible) {
+      setUserMenu(false);
+    }
   };
 
   const handleDeleteTeam = () => {
@@ -172,7 +189,12 @@ export default function Header() {
       <div
         className={styles.userInfo}
         onMouseEnter={() => setUserMenu(true)}
-        onMouseLeave={() => setUserMenu(false)}
+        onMouseLeave={() => {
+          if (logoutConfirmVisible) {
+            return;
+          }
+          setUserMenu(false);
+        }}
       >
         <Avatar size={35}>
           <IconUser />
@@ -181,15 +203,27 @@ export default function Header() {
           {user?.username}
         </span>
         {userMenu && (
-          <Menu className={styles.userMenu}>
-            <MenuItem
-              key="0"
-              className={styles.userMenuItem}
-              onClick={handleLogout}
+          <Menu className={styles.userMenu} selectable={false}>
+            <UserMenuItem
+              menuItemKey="1"
+              icon={<IconHome />}
+              content="前往个人主页"
+              onClickFn={goPersonalHomepage}
+            />
+            <Popconfirm
+              title="确定要退出登录吗？"
+              okText="确定"
+              cancelText="取消"
+              onOk={handleLogout}
+              onVisibleChange={handleLogoutConfirmVisibleChange}
+              trigger="click"
             >
-              <div className={styles.icon}>{<IconExport />}</div>
-              <div className={styles.content}>退出登录</div>
-            </MenuItem>
+              <UserMenuItem
+                menuItemKey="2"
+                icon={<IconExport />}
+                content="退出登录"
+              />
+            </Popconfirm>
           </Menu>
         )}
       </div>

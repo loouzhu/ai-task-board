@@ -5,6 +5,7 @@ import MainLayout from "@/components/MainLayout";
 import Auth from "@/pages/Auth";
 import Board from "@/pages/Board";
 import DataView from "@/pages/DataView";
+import PersonalHomePage from "@/pages/PersonalHomepage";
 import TeamRedirect from "./TeamRedirect";
 
 const router = createBrowserRouter([
@@ -48,6 +49,20 @@ const router = createBrowserRouter([
             ),
           },
         ],
+      },
+    ],
+  },
+  {
+    path: "/user",
+    element: <MainLayout />,
+    children: [
+      {
+        path: ":userId",
+        element: (
+          <ProtectedRoute>
+            <PersonalHomePage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
