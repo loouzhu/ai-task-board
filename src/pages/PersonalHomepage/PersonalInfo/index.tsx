@@ -1,7 +1,14 @@
 import styles from "./index.module.less";
-import { Avatar, Select, Form, Button, Input } from "@arco-design/web-react";
+import {
+  Avatar,
+  Select,
+  Form,
+  Button,
+  Input,
+  Message,
+} from "@arco-design/web-react";
 import { IconCamera } from "@arco-design/web-react/icon";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMeQuery } from "@/hooks/useAuth";
 import {
   useAreaCities,
@@ -19,6 +26,7 @@ export default function PersonalInfo() {
   const [selectedProvince, setSelectedProvince] = useState<string | undefined>(
     undefined,
   );
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const TextArea = Input.TextArea;
   const { avatar, username, name, position, email, province, city, bio } =
     useGetUserInfoById(userId).data?.userInfo || {};
@@ -89,6 +97,36 @@ export default function PersonalInfo() {
     updateUserInfoMutation.mutate({ userId, userData: payload });
   };
 
+  const handleAvatarFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      Message.error("请选择图片文件");
+      event.target.value = "";
+      return;
+    }
+
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      Message.error("图片大小不能超过 2MB");
+      event.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result;
+      if (typeof result === "string") {
+        form.setFieldValue("avatar", result);
+      }
+    };
+    reader.readAsDataURL(file);
+    event.target.value = "";
+  };
+
   return (
     <div className={styles.personalInfo}>
       <header>
@@ -102,11 +140,37 @@ export default function PersonalInfo() {
             <div className={`${styles.formItem} ${styles.fullWidth}`}>
               <span className={styles.formLabel}>头像</span>
               <div className={styles.avatarRow} aria-label="用户头像">
-                <div className={styles.avatar}>
-                  <Avatar triggerIcon={<IconCamera />} triggerType="mask">
-                    <img alt="avatar" src={avatar || defaultAvatarUrl} />
-                  </Avatar>
-                </div>
+                <FormItem shouldUpdate noStyle>
+                  {() => {
+                    const avatarValue =
+                      form.getFieldValue("avatar") ||
+                      avatar ||
+                      defaultAvatarUrl;
+                    return (
+                      <button
+                        type="button"
+                        className={styles.avatarButton}
+                        onClick={() => avatarInputRef.current?.click()}
+                      >
+                        <div className={styles.avatar}>
+                          <Avatar
+                            triggerIcon={<IconCamera />}
+                            triggerType="mask"
+                          >
+                            <img alt="avatar" src={avatarValue} />
+                          </Avatar>
+                        </div>
+                      </button>
+                    );
+                  }}
+                </FormItem>
+                <input
+                  ref={avatarInputRef}
+                  className={styles.avatarInput}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarFileChange}
+                />
                 <FormItem field="avatar" noStyle>
                   <input type="hidden" />
                 </FormItem>

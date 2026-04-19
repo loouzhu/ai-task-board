@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
-  IconUser,
   IconExport,
   IconHome,
   IconMoreVertical,
@@ -28,6 +27,7 @@ import UserMenuItem from "../UserMenuItem";
 import TeamOptionModal from "../TeamOptionModal";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
 import { useGetTeamList, useGetTeamInfo, useDeleteTeam } from "@/hooks/useTeam";
+import { useGetUserInfoById } from "@/hooks/useUser";
 import type { team } from "@/types/team";
 
 export default function Header() {
@@ -36,7 +36,8 @@ export default function Header() {
   const Option = Select.Option;
   const logoutMutation = useLogout();
   const { isDark, toggleTheme } = useTheme();
-  const user = useMeQuery().data?.user;
+  const meQuery = useMeQuery();
+  const user = meQuery.data?.user;
   const location = useLocation();
   const { teamId } = useParams();
   const currentPage = pageList.find((item) => {
@@ -55,6 +56,9 @@ export default function Header() {
   const currentTeamId = teamId || teamList[0]?.teamId || "";
   const currentTeamInfo = useGetTeamInfo(currentTeamId)?.data?.team;
   const deleteTeamMutation = useDeleteTeam();
+  const currentUserId = user?.userId || "";
+  const userInfoQuery = useGetUserInfoById(currentUserId);
+  const { username, avatar } = userInfoQuery.data?.userInfo || {};
 
   const handleChangePage = (index: number) => {
     const targetPath = pageList[index].path;
@@ -197,10 +201,10 @@ export default function Header() {
         }}
       >
         <Avatar size={35}>
-          <IconUser />
+          <img src={avatar || ""} alt="" />
         </Avatar>
-        <span className={styles.username} title={user?.username}>
-          {user?.username}
+        <span className={styles.username} title={username || "用户名"}>
+          {username || "用户名"}
         </span>
         {userMenu && (
           <Menu className={styles.userMenu} selectable={false}>

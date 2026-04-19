@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getAllUsers,
   getAreaCities,
@@ -20,10 +20,12 @@ export const useGetUserInfoById = (userId: string) => {
   return useQuery({
     queryKey: ["userInfo", userId],
     queryFn: () => getUserInfo(userId),
+    enabled: Boolean(userId),
   });
 };
 
 export const useUpdateUserInfo = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({
       userId,
@@ -32,6 +34,22 @@ export const useUpdateUserInfo = () => {
       userId: string;
       userData: userInfo;
     }) => updateUserInfo(userId, userData),
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData(
+        ["userInfo", variables.userId],
+        (oldData: { userInfo?: userInfo } | undefined) => ({
+          ...(oldData || {}),
+          userInfo: {
+            ...(oldData?.userInfo || {}),
+            ...variables.userData,
+          },
+        }),
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["userInfo", variables.userId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
+    },
   });
 };
 
