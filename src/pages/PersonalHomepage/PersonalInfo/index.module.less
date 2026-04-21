@@ -8,7 +8,6 @@
   header,
   section {
     width: 100%;
-    padding: 0 8px;
     border: 1px solid var(--app-border-strong);
     border-radius: 18px;
     background:
@@ -43,189 +42,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
-    section {
-      flex: 1;
-      padding: 12px;
-    }
+    align-items: stretch;
   }
-}
-
-.baseInfoCard {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.cardTitle {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--app-text);
-}
-
-.avatar {
-  width: 64px;
-  height: 64px;
-
-  :global(.arco-avatar) {
-    width: 64px;
-    height: 64px;
-  }
-}
-
-.avatarButton {
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-}
-
-.avatarRow {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-}
-
-.avatarInput {
-  display: none;
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.formItem {
-  display: grid;
-  gap: 6px;
-}
-
-.fullWidth {
-  grid-column: 1 / -1;
-}
-
-.formLabel {
-  font-size: 12px;
-  color: var(--app-subtext);
-  font-weight: 600;
-}
-
-.formControl {
-  min-height: 38px;
-  width: 100%;
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid var(--app-border);
-  color: var(--app-text);
-  font-size: 14px;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.6);
-  outline: none;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.formControl::placeholder {
-  color: var(--app-subtext);
-  opacity: 0.85;
-}
-
-.formControl:hover {
-  border-color: rgba(31, 102, 229, 0.4);
-}
-
-.formControl:focus {
-  border-color: #1f66e5;
-  box-shadow: 0 0 0 3px rgba(31, 102, 229, 0.16);
-  background: #fff;
-}
-
-.formTextarea {
-  height: 86px;
-  resize: none;
-  padding-top: 9px;
-  padding-bottom: 9px;
-  line-height: 1.6;
-}
-
-.region {
-  display: flex;
-  gap: 6px;
-}
-
-.formSelect {
-  flex: 1;
-
-  :global(.arco-select-view) {
-    min-height: 38px;
-    height: 38px;
-    border-radius: 10px;
-    border: 1px solid var(--app-border);
-    background: rgba(255, 255, 255, 0.6);
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease,
-      background-color 0.2s ease;
-  }
-
-  :global(.arco-select-view:hover) {
-    border-color: rgba(31, 102, 229, 0.4);
-  }
-
-  :global(.arco-select-view-value) {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--app-text);
-  }
-
-  :global(.arco-select-view-placeholder) {
-    color: var(--app-subtext);
-    opacity: 0.85;
-  }
-
-  :global(.arco-select-view-focus) {
-    border-color: #1f66e5;
-    box-shadow: 0 0 0 3px rgba(31, 102, 229, 0.16);
-    background: #fff;
-  }
-}
-
-.updateBtn {
-  margin-top: 4px;
-  width: 100%;
-  height: 38px;
-  border: 1px solid rgba(31, 102, 229, 0.34);
-  border-radius: 10px;
-  background: linear-gradient(
-    180deg,
-    rgba(31, 102, 229, 0.14),
-    rgba(31, 102, 229, 0.08)
-  );
-  color: #1f66e5;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
-}
-
-.updateBtn:hover {
-  border-color: rgba(31, 102, 229, 0.48);
-  background: linear-gradient(
-    180deg,
-    rgba(31, 102, 229, 0.2),
-    rgba(31, 102, 229, 0.1)
-  );
-}
-
-.updateBtn:active {
-  transform: translateY(1px);
 }
 
 @media (max-width: 980px) {
@@ -233,9 +51,5 @@
     .section {
       grid-template-columns: 1fr;
     }
-  }
-
-  .formGrid {
-    grid-template-columns: 1fr;
   }
 }
