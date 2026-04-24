@@ -14,7 +14,6 @@ export default defineConfig({
   },
   server: {
     port: 3001,
-    open: true,
     proxy: {
       "/api": {
         target: "http://localhost:3000", // 代理到后端

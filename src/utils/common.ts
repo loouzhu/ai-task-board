@@ -69,7 +69,7 @@ export const formatDeadline = (taskDeadline?: string) => {
   );
 
   if (Math.abs(diffDays) > 3) {
-    return taskDeadline;
+    return `${Math.abs(diffDays)}天前截止`;
   }
 
   if (diffDays === 0) {

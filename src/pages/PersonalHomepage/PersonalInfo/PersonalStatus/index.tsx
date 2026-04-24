@@ -24,7 +24,6 @@ export default function PersonalStatus() {
 
   return (
     <section className={styles.statusCard}>
-      <div className={styles.cardTitle}>个人状态</div>
       <div className={styles.content}>
         {/* 工作卡片 */}
         <div className={styles.dataCardContent}>
@@ -34,7 +33,7 @@ export default function PersonalStatus() {
         </div>
         {/* 进度统计 */}
         <div className={styles.progressCard}>
-          <ProgressCard title="进度统计" percent={75}  />
+          <ProgressCard title="进度统计" percent={75} />
         </div>
       </div>
     </section>
