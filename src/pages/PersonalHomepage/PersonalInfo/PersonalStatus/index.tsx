@@ -1,5 +1,4 @@
 import styles from "./index.module.less";
-import ProgressCard from "@/components/ProgressCard";
 import DataCard from "@/components/DataCard";
 import CardTitle from "@/components/CardTitle";
 
@@ -32,10 +31,6 @@ export default function PersonalStatus() {
           {exampleData.map((item, index) => (
             <DataCard key={index} {...item} />
           ))}
-        </div>
-        {/* 进度统计 */}
-        <div className={styles.progressCard}>
-          <ProgressCard title="进度统计" percent={75} />
         </div>
       </div>
     </section>

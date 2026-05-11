@@ -2,6 +2,7 @@ import styles from "./index.module.less";
 import ContentHeader from "@/components/ContentHeader";
 import DataOverview from "./DataOverview";
 import TaskAggregation from "./TaskAggregation";
+import WorkCalendar from "./WorkCalendar";
 
 export default function WorkBench() {
   return (
@@ -11,8 +12,15 @@ export default function WorkBench() {
         description="聚合你在团队中的任务，节奏和风险点"
       />
       <div className={styles.content}>
-        <TaskAggregation />
-        <DataOverview />
+        <div className={styles.taskAggregation}>
+          <TaskAggregation />
+        </div>
+        <div className={styles.dataOverview}>
+          <DataOverview />
+        </div>
+        <div className={styles.workCalendar}>
+          <WorkCalendar />
+        </div>
       </div>
     </div>
   );
