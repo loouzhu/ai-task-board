@@ -1,6 +1,7 @@
 import styles from "./index.module.less";
 import ProgressCard from "@/components/ProgressCard";
 import DataCard from "@/components/DataCard";
+import CardTitle from "@/components/CardTitle";
 
 export default function PersonalStatus() {
   const exampleData = [
@@ -24,6 +25,7 @@ export default function PersonalStatus() {
 
   return (
     <section className={styles.statusCard}>
+      <CardTitle title="本周状态" />
       <div className={styles.content}>
         {/* 工作卡片 */}
         <div className={styles.dataCardContent}>

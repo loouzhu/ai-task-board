@@ -17,6 +17,7 @@ import {
   useUpdateUserInfo,
 } from "@/hooks/useUser";
 import { useParams } from "react-router-dom";
+import CardTitle from "@/components/CardTitle";
 
 export default function BaseInfo() {
   const [form] = Form.useForm();
@@ -129,7 +130,7 @@ export default function BaseInfo() {
 
   return (
     <section className={styles.baseInfoCard}>
-      <div className={styles.cardTitle}>基础信息</div>
+      <CardTitle title="基础信息" />
       <Form className={styles.formGrid} form={form} onSubmit={handleSubmit}>
         <div className={`${styles.formItem} ${styles.fullWidth}`}>
           <span className={styles.formLabel}>头像</span>

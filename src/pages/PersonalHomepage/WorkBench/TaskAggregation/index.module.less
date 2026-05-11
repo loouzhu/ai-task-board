@@ -1,0 +1,43 @@
+.taskAggregationCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  .taskStatusBlocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    height: 110px;
+    gap: 10px;
+  }
+  .todayFocus {
+    width: 100%;
+    height: 170px;
+    min-width: 0;
+    border: 1px solid var(--app-border-1);
+    border-radius: 12px;
+    padding: 6px;
+    gap: 8px;
+    display: flex;
+    flex-direction: column;
+
+    ul {
+      width: 100%;
+      padding: 0 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      overflow: hidden;
+      overflow-y: scroll;
+      scrollbar-width: none;
+
+      li {
+        width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        min-width: 0;
+      }
+    }
+  }
+}
