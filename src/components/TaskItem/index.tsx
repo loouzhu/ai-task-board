@@ -1,21 +1,12 @@
 import styles from "./index.module.less";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { formatData, formatTaskPriority } from "@/utils/common";
 import type { TaskItemProps, task } from "@/types/task";
-import { useDeleteTask } from "@/hooks/useTask";
 import { useTaskStore } from "@/stores/taskStore";
-import { useBoardStore } from "@/stores/boardStore";
 import { IconEdit, IconDelete, IconMore } from "@arco-design/web-react/icon";
-import { Menu, Dropdown, Modal, Tag, Tooltip } from "@arco-design/web-react";
-import TaskOptionModal from "../TaskOptionModal";
+import { Menu, Dropdown, Tag, Tooltip } from "@arco-design/web-react";
 
-export default function TaskItem({ task }: TaskItemProps) {
+export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
   const MenuItem = Menu.Item;
-  const { boardId } = useParams();
-  const safeBoardId = boardId ?? "";
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const {
     taskName,
     taskPriority,
@@ -26,15 +17,7 @@ export default function TaskItem({ task }: TaskItemProps) {
     isOverdue,
     overdueInfo,
   } = task;
-  const boardMembers = useBoardStore((state) => state.boardMembers);
   const setTask = useTaskStore((state) => state.setTask);
-  const deleteTask = useDeleteTask(safeBoardId, task.taskId);
-
-  const handleDeleteOption = () => {
-    deleteTask.mutate();
-    setDeleteModalVisible(false);
-  };
-
   const handleShowTaskDetail = (task: task) => {
     setTask(task);
   };
@@ -57,19 +40,22 @@ export default function TaskItem({ task }: TaskItemProps) {
         <Dropdown
           droplist={
             <Menu>
-              <MenuItem key="edit" onClick={() => setEditModalVisible(true)}>
+              <MenuItem key="edit" onClick={() => onEdit?.(task)}>
                 <IconEdit /> 编辑
               </MenuItem>
-              <MenuItem
-                key="delete"
-                onClick={() => setDeleteModalVisible(true)}
-              >
+              <MenuItem key="delete" onClick={() => onDelete?.(task)}>
                 <IconDelete /> 删除
               </MenuItem>
             </Menu>
           }
         >
-          <IconMore />
+          <span
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <IconMore />
+          </span>
         </Dropdown>
         {isBlock && (
           <Tooltip content={blockInfo} color="#3491FA">
@@ -82,23 +68,6 @@ export default function TaskItem({ task }: TaskItemProps) {
           </Tooltip>
         )}
       </div>
-      {/* 编辑任务 */}
-      <TaskOptionModal
-        type="edit"
-        visible={editModalVisible}
-        task={task}
-        boardMembers={boardMembers}
-        onVisibleChange={setEditModalVisible}
-      />
-      {/* 删除任务 */}
-      <Modal
-        visible={deleteModalVisible}
-        onCancel={() => setDeleteModalVisible(false)}
-        onConfirm={handleDeleteOption}
-        title="删除任务"
-      >
-        <div>确定要删除该任务吗？</div>
-      </Modal>
     </div>
   );
 }

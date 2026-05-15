@@ -82,3 +82,33 @@ export const formatDeadline = (taskDeadline?: string) => {
 
   return `${Math.abs(diffDays)}天前截止`;
 };
+
+// 防抖
+export const debounce = <T extends (...args: any[]) => void>(
+  fn: T,
+  delay: number,
+) => {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+};
+
+// 节流
+export const throttle = <T extends (...args: any[]) => void>(
+  fn: T,
+  delay: number,
+) => {
+  let timer: ReturnType<typeof setTimeout>;
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    if (!timer) {
+      fn.apply(this, args);
+      timer = setTimeout(() => {
+        fn.apply(this, args);
+      }, delay);
+    }
+  };
+};

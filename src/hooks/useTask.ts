@@ -112,6 +112,7 @@ export const useGetTaskMetrics = (dateType: dateType, teamId: string) => {
   return useQuery({
     queryKey: ["taskMetrics", dateType, teamId],
     queryFn: () => getTaskMetrics(dateType, teamId),
+    enabled: !!teamId,
   });
 };
 
@@ -119,6 +120,7 @@ export const useGetPeriodTask = (dateType: dateType, teamId: string) => {
   return useQuery({
     queryKey: ["periodTask", dateType, teamId],
     queryFn: () => getPeriodTask(dateType, teamId),
+    enabled: !!teamId,
   });
 };
 
@@ -126,5 +128,6 @@ export const useGetFocusOnTask = (teamId: string) => {
   return useQuery<FocusOnTaskResponse>({
     queryKey: ["focusOnTasks", teamId],
     queryFn: () => getFocusOnTask(teamId),
+    enabled: !!teamId,
   });
 };

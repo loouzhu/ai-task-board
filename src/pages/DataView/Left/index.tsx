@@ -6,10 +6,12 @@ import { Empty } from "@arco-design/web-react";
 import { useParams } from "react-router-dom";
 import type { dateType } from "@/types/task";
 import { formatDeadline } from "@/utils/common";
+import { useId } from "react";
 import FocusItem from "@/components/FocusItem";
 
 export default function Left({ dateType }: { dateType: dateType }) {
   const { teamId } = useParams();
+  const id = useId();
   const taskMetrics = useGetTaskMetrics(dateType, teamId || "").data?.metrics;
   const focusOnTasks = useGetFocusOnTask(teamId || "").data?.tasks;
   const periodLabel = dateType === "week" ? "周" : "月";
@@ -131,7 +133,9 @@ export default function Left({ dateType }: { dateType: dateType }) {
         />
         <div className={`${styles.content} ${styles.focusList}`}>
           {focusList.length > 0 ? (
-            focusList.map((item) => <FocusItem item={item} />)
+            focusList.map((item) => (
+              <FocusItem item={item} key={`${id}-${item.name}`} />
+            ))
           ) : (
             <Empty description="暂无重点关注数据" />
           )}

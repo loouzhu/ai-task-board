@@ -4,10 +4,8 @@ import dayjs from "dayjs";
 import { formatData } from "@/utils/common";
 import DateCell from "@/components/DayCell";
 import WeekCell from "@/components/WeekCell";
-import { useAllBoards } from "@/hooks/useBoard";
 import { useGetPeriodTask } from "@/hooks/useTask";
-import { useEffect, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type {
   MonthDataRecord,
   WeekDataRecord,
@@ -15,6 +13,7 @@ import type {
   MonthWeekCellData,
 } from "@/types/dataView";
 import type { dateType } from "@/types/task";
+import { useTheme } from "@/hooks/useTheme";
 
 const weekdayKeys: WeekdayKey[] = [
   "monday",
@@ -25,6 +24,9 @@ const weekdayKeys: WeekdayKey[] = [
   "saturday",
   "sunday",
 ];
+
+const monthWeekKeys = ["week1", "week2", "week3", "week4", "week5"] as const;
+type MonthWeekKey = (typeof monthWeekKeys)[number];
 
 const weekdayLabels = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 
@@ -107,25 +109,12 @@ export default function Right({
   setDateType: (type: dateType) => void;
 }) {
   const date = new Date();
-  const navigate = useNavigate();
-  const { teamId, boardId } = useParams();
-  const boardList = useAllBoards(teamId?.toString() || "").data;
-  const boards = useMemo(() => boardList?.boards ?? [], [boardList?.boards]);
+  const { isDark } = useTheme();
+  const { teamId } = useParams();
   const periodTaskResponse = useGetPeriodTask(
     dateType,
     teamId?.toString() || "",
   ).data as PeriodTaskResponse | undefined;
-
-  useEffect(() => {
-    if (!teamId || boards.length === 0) return;
-
-    const hasMatchedBoard = boards.some((item) => item.boardId === boardId);
-    const nextBoardId = hasMatchedBoard ? boardId : boards[0].boardId;
-
-    if (boardId !== nextBoardId) {
-      navigate(`/team/${teamId}/data-view`, { replace: true });
-    }
-  }, [boardId, boards, navigate, teamId]);
 
   const weekStart = periodTaskResponse?.startDate
     ? getWeekStart(dayjs(periodTaskResponse.startDate))
@@ -162,7 +151,7 @@ export default function Right({
       width: 60,
       align: "center" as const,
       render: (value: WeekDataRecord[typeof weekdayKey]) => (
-        <DateCell dayData={value} />
+        <DateCell dayData={value} isDark={isDark} />
       ),
     })),
   ];
@@ -210,51 +199,23 @@ export default function Right({
         </div>
       ),
     },
-    {
-      title: monthLabels[0],
-      dataIndex: "week1",
+    ...monthWeekKeys.map((weekKey, index) => ({
+      title: monthLabels[index],
+      dataIndex: weekKey,
       width: 90,
       align: "center" as const,
-      render: (value: MonthDataRecord["week1"], record: MonthDataRecord) => (
-        <WeekCell weekData={value} weekIndex={1} memberName={record.name} />
+      render: (
+        value: MonthDataRecord[MonthWeekKey],
+        record: MonthDataRecord,
+      ) => (
+        <WeekCell
+          weekData={value}
+          weekIndex={index + 1}
+          memberName={record.name}
+          isDark={isDark}
+        />
       ),
-    },
-    {
-      title: monthLabels[1],
-      dataIndex: "week2",
-      width: 90,
-      align: "center" as const,
-      render: (value: MonthDataRecord["week2"], record: MonthDataRecord) => (
-        <WeekCell weekData={value} weekIndex={2} memberName={record.name} />
-      ),
-    },
-    {
-      title: monthLabels[2],
-      dataIndex: "week3",
-      width: 90,
-      align: "center" as const,
-      render: (value: MonthDataRecord["week3"], record: MonthDataRecord) => (
-        <WeekCell weekData={value} weekIndex={3} memberName={record.name} />
-      ),
-    },
-    {
-      title: monthLabels[3],
-      dataIndex: "week4",
-      width: 90,
-      align: "center" as const,
-      render: (value: MonthDataRecord["week4"], record: MonthDataRecord) => (
-        <WeekCell weekData={value} weekIndex={4} memberName={record.name} />
-      ),
-    },
-    {
-      title: monthLabels[4],
-      dataIndex: "week5",
-      width: 90,
-      align: "center" as const,
-      render: (value: MonthDataRecord["week5"], record: MonthDataRecord) => (
-        <WeekCell weekData={value} weekIndex={5} memberName={record.name} />
-      ),
-    },
+    })),
   ];
 
   return (

@@ -74,8 +74,8 @@ export default function TeamOptionModal({
       teams.forEach((team) => {
         if (team.teamName === values.teamName && type === "create") {
           Message.error("团队名称已存在");
+          return;
         }
-        return;
       });
       const payload = {
         teamName: String(values.teamName.trim()),

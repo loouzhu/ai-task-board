@@ -5,9 +5,10 @@ import {
   DatePicker,
   Message,
 } from "@arco-design/web-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { taskFilterParams } from "@/types/task";
+import { debounce } from "@/utils/common";
 const InputSearch = Input.Search;
 import styles from "./index.module.less";
 
@@ -52,6 +53,11 @@ export default function Filter({
     undefined,
   );
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const updateDebouncedSearchValue = useMemo(
+    () => debounce((value: string) => setDebouncedSearchValue(value), 300),
+    [],
+  );
 
   useEffect(() => {
     onFilterChange({
@@ -60,14 +66,14 @@ export default function Filter({
         selectedPriority && selectedPriority !== "all"
           ? selectedPriority
           : undefined,
-      keyword: searchValue.trim() || undefined,
+      keyword: debouncedSearchValue.trim() || undefined,
       startDate: rangeValue[0],
       endDate: rangeValue[1],
     });
   }, [
     onFilterChange,
     rangeValue,
-    searchValue,
+    debouncedSearchValue,
     selectedPrincipal,
     selectedPriority,
   ]);
@@ -79,6 +85,7 @@ export default function Filter({
     setRangeValue([]);
     setPickerValue([]);
     setSearchValue("");
+    setDebouncedSearchValue("");
     Message.success({
       content: `筛选条件已清除`,
       showIcon: true,
@@ -152,7 +159,10 @@ export default function Filter({
           placeholder="搜索"
           style={{ width: 180 }}
           value={searchValue}
-          onChange={(value) => setSearchValue(value)}
+          onChange={(value) => {
+            setSearchValue(value);
+            updateDebouncedSearchValue(value);
+          }}
         />
       </div>
       <div className={styles.options}>

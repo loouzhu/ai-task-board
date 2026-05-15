@@ -2,21 +2,21 @@ import styles from "./index.module.less";
 import { Message } from "@arco-design/web-react";
 import type { MonthWeekCellData } from "@/types/dataView";
 import { formatData } from "@/utils/common";
-import { useIsDarkTheme } from "@/hooks/useIsDarkTheme";
 
 interface WeekCellProps {
   weekData: MonthWeekCellData;
   weekIndex: number;
   memberName: string;
+  isDark: boolean;
 }
 
 export default function WeekCell({
   weekData,
   weekIndex,
   memberName,
+  isDark,
 }: WeekCellProps) {
   const total = weekData?.completed_task ?? 0;
-  const isDark = useIsDarkTheme();
   const dateRangeText =
     weekData?.startDate && weekData?.endDate
       ? `${formatData(weekData.startDate)} - ${formatData(weekData.endDate)}`

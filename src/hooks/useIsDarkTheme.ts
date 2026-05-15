@@ -9,24 +9,19 @@ const getBodyDarkState = () => {
 
 export const useIsDarkTheme = () => {
   const [isDark, setIsDark] = useState(getBodyDarkState);
-
   useEffect(() => {
     if (typeof document === "undefined") {
       return;
     }
-
     const body = document.body;
     const observer = new MutationObserver(() => {
       setIsDark(getBodyDarkState());
     });
-
     observer.observe(body, {
       attributes: true,
       attributeFilter: ["arco-theme"],
     });
-
     setIsDark(getBodyDarkState());
-
     return () => {
       observer.disconnect();
     };

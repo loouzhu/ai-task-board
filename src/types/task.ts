@@ -1,9 +1,16 @@
+export interface TaskFile {
+  name?: string;
+  fileName?: string;
+  size?: string;
+  url?: string;
+}
+
 export interface task {
   boardId: string;
   blockInfo: string;
   createdAt: string;
   createdBy: string;
-  files: [];
+  files: TaskFile[];
   isBlock: boolean;
   isOverdue: boolean;
   overdueInfo: string;
@@ -32,6 +39,8 @@ export interface taskFilterParams {
 }
 export interface TaskItemProps {
   task: task;
+  onEdit?: (task: task) => void;
+  onDelete?: (task: task) => void;
 }
 
 export interface TaskPayload {

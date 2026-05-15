@@ -1,18 +1,13 @@
 import styles from "./index.module.less";
 import { Button } from "@arco-design/web-react";
-
-interface AttachmentFile {
-  name?: string;
-  size?: string;
-  fileName?: string;
-}
+import type { TaskFile } from "@/types/task";
 
 interface AttachmentProps {
-  files?: unknown[];
+  files?: TaskFile[];
 }
 
 export default function Attachment({ files = [] }: AttachmentProps) {
-  const fileList = files as AttachmentFile[];
+  const fileList = files;
 
   return (
     <div className={styles.attachment}>

@@ -32,7 +32,6 @@ export default function Tasks({ tasks }: TasksProps) {
     <div className={styles.middleTasks}>
       {COLUMN_ORDER.map((columnStatus) => {
         const columnTasks = taskMap[columnStatus] ?? [];
-
         return (
           <TaskColumn
             key={columnStatus}

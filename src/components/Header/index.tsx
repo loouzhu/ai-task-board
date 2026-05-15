@@ -107,8 +107,14 @@ export default function Header() {
       Message.info("请先选择团队");
       return;
     }
-    deleteTeamMutation.mutate(currentTeamId);
-    navigate("/team");
+    if (deleteTeamMutation.isPending) {
+      return;
+    }
+    deleteTeamMutation.mutate(currentTeamId, {
+      onSuccess: () => {
+        navigate("/team");
+      },
+    });
   };
 
   const dropList = (

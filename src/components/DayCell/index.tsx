@@ -1,16 +1,15 @@
 import styles from "./index.module.less";
 import type { DayCellData } from "@/types/dataView";
-import { useIsDarkTheme } from "@/hooks/useIsDarkTheme";
 
 interface DateCellProps {
   dayData: DayCellData;
+  isDark: boolean;
 }
 
-export default function DateCell({ dayData }: DateCellProps) {
+export default function DateCell({ dayData, isDark }: DateCellProps) {
   const completedCount = dayData.completed_task || 0;
   const isBlocked = dayData.blocked;
   const isOverdue = dayData.overdue;
-  const isDark = useIsDarkTheme();
 
   const getColorByCount = (count: number) => {
     if (isDark) {

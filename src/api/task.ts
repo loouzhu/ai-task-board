@@ -22,6 +22,14 @@ interface FocusOnTaskResponse {
   [key: string]: unknown;
 }
 
+const readJson = async (response: Response) => {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+};
+
 const normalizeTaskMembers = (taskMembers?: Array<string | RawMember>) => {
   if (!Array.isArray(taskMembers)) {
     return [];
@@ -106,7 +114,19 @@ export const getBoardTasks = async (
     },
     credentials: "include",
   });
-  const data = await response.json();
+  const data = await readJson(response);
+
+  if (!response.ok) {
+    const message =
+      data && typeof data === "object"
+        ? (data as { message?: string }).message
+        : undefined;
+    throw new Error(message || "获取任务失败");
+  }
+
+  if (!data) {
+    return { tasks: [] };
+  }
 
   if (Array.isArray(data?.tasks)) {
     return {

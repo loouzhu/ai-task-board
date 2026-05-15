@@ -19,6 +19,14 @@ interface RawBoard extends Omit<boardListProps, "boardMembers"> {
   boardMembers?: Array<string | RawBoardMember>;
 }
 
+const readJson = async (response: Response) => {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+};
+
 const normalizeBoardMembers = (
   boardMembers?: Array<string | RawBoardMember>,
 ) => {
@@ -30,7 +38,7 @@ const normalizeBoardMembers = (
       if (typeof member === "string") {
         return member;
       }
-      return member.username || member.userId || "";
+      return member.userId || "";
     })
     .filter(Boolean);
 };
@@ -41,7 +49,9 @@ const normalizeBoard = (board: RawBoard): boardListProps => ({
 });
 
 //获取所有看板
-export const getAllBoards = async (teamId: string): Promise<AllBoardsResponse> => {
+export const getAllBoards = async (
+  teamId: string,
+): Promise<AllBoardsResponse> => {
   const response = await fetch(`/api/board/get-all-boards?teamId=${teamId}`, {
     method: "GET",
     headers: {
@@ -49,7 +59,19 @@ export const getAllBoards = async (teamId: string): Promise<AllBoardsResponse> =
     },
     credentials: "include",
   });
-  const data = await response.json();
+  const data = await readJson(response);
+
+  if (!response.ok) {
+    const message =
+      data && typeof data === "object"
+        ? (data as { message?: string }).message
+        : undefined;
+    throw new Error(message || "获取看板列表失败");
+  }
+
+  if (!data) {
+    return { boards: [] };
+  }
 
   if (Array.isArray(data?.boards)) {
     return {
@@ -72,7 +94,19 @@ export const getBoardInfo = async (
     },
     credentials: "include",
   });
-  const data = await res.json();
+  const data = await readJson(res);
+
+  if (!res.ok) {
+    const message =
+      data && typeof data === "object"
+        ? (data as { message?: string }).message
+        : undefined;
+    throw new Error(message || "获取看板信息失败");
+  }
+
+  if (!data) {
+    return {} as BoardInfoResponse;
+  }
 
   if (data?.board) {
     return {
