@@ -22,6 +22,16 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
     setTask(task);
   };
 
+  const handleEdit = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onEdit?.(task);
+  };
+
+  const handleDelete = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onDelete?.(task);
+  };
+
   return (
     <div className={styles.taskItem} onClick={() => handleShowTaskDetail(task)}>
       <div className={styles.content}>
@@ -40,10 +50,10 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
         <Dropdown
           droplist={
             <Menu>
-              <MenuItem key="edit" onClick={() => onEdit?.(task)}>
+              <MenuItem key="edit" onClick={handleEdit}>
                 <IconEdit /> 编辑
               </MenuItem>
-              <MenuItem key="delete" onClick={() => onDelete?.(task)}>
+              <MenuItem key="delete" onClick={handleDelete}>
                 <IconDelete /> 删除
               </MenuItem>
             </Menu>

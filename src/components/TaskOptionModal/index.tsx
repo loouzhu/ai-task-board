@@ -12,6 +12,7 @@ import { IconDelete } from "@arco-design/web-react/icon";
 import { useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import type { TaskFile, TaskPayload } from "@/types/task";
+import { useTaskStore } from "@/stores/taskStore";
 import { useParams } from "react-router-dom";
 import { formatInput } from "@/utils/common";
 import { useAddTask, useEditTask } from "@/hooks/useTask";
@@ -82,8 +83,11 @@ export default function TaskOptionModal({
   const addTaskMutation = useAddTask(boardId || "");
   const editTaskMutation = useEditTask(boardId || "");
   const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL ?? "";
+  const currentTask = useTaskStore((state) => state.task);
+  const setTask = useTaskStore((state) => state.setTask);
 
   const getExistingFileId = (file: TaskFile, index: number) =>
+    file.fileId ||
     file.storedName ||
     file.url ||
     file.path ||
@@ -226,10 +230,41 @@ export default function TaskOptionModal({
           Message.error("任务ID不能为空");
           return;
         }
+        if (removedExistingIds.length > 0) {
+          payload.removeFileIds = removedExistingIds;
+        }
         editTaskMutation.mutate(
           { taskId: task.taskId, task: payload, files: selectedFiles },
           {
-            onSuccess: () => {
+            onSuccess: (updatedTask) => {
+              const updatedTaskId =
+                (updatedTask as typeof currentTask | undefined)?.taskId ||
+                task.taskId;
+              const shouldUpdateCurrent = currentTask?.taskId === updatedTaskId;
+
+              if (shouldUpdateCurrent && currentTask) {
+                const nextFiles = removedExistingIds.length
+                  ? currentTask.files.filter(
+                      (file, index) =>
+                        !removedExistingIds.includes(
+                          getExistingFileId(file, index),
+                        ),
+                    )
+                  : currentTask.files;
+
+                const fallbackTask = {
+                  ...currentTask,
+                  ...payload,
+                  taskId: currentTask.taskId,
+                  files: nextFiles,
+                };
+
+                setTask(
+                  (updatedTask as typeof currentTask | undefined) ??
+                    fallbackTask,
+                );
+              }
+
               resetAttachments();
               onVisibleChange?.(false);
             },

@@ -1,4 +1,5 @@
 export interface TaskFile {
+  fileId?: string;
   name?: string;
   filename?: string;
   originalname?: string;
@@ -63,6 +64,7 @@ export interface TaskPayload {
   taskStatus: taskType;
   taskWorkTime?: string;
   subtask?: string[];
+  removeFileIds?: string[];
   files?: File[];
 }
 
