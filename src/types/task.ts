@@ -1,7 +1,12 @@
 export interface TaskFile {
   name?: string;
-  fileName?: string;
-  size?: string;
+  filename?: string;
+  originalname?: string;
+  mimetype?: string;
+  path?: string;
+  storedName?: string;
+  uploadedAt?: string;
+  size?: number | string;
   url?: string;
 }
 

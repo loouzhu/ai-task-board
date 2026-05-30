@@ -10,6 +10,7 @@ import styles from "./index.module.less";
 export default function RightSide() {
   const Sider = Layout.Sider;
   const task = useTaskStore((state) => state.task);
+  console.log(task,'aaa')
 
   return (
     <Sider className={styles.rightSide}>

@@ -6,10 +6,12 @@ import {
   Radio,
   DatePicker,
   Message,
+  Button,
 } from "@arco-design/web-react";
-import { useEffect, useState } from "react";
+import { IconDelete } from "@arco-design/web-react/icon";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
-import type { TaskPayload } from "@/types/task";
+import type { TaskFile, TaskPayload } from "@/types/task";
 import { useParams } from "react-router-dom";
 import { formatInput } from "@/utils/common";
 import { useAddTask, useEditTask } from "@/hooks/useTask";
@@ -19,25 +21,49 @@ interface taskOption {
   type: string;
   boardMembers?: string[];
   task?: TaskPayload;
+  existingFiles?: TaskFile[];
   taskId?: string;
   addStatus?: string;
   visible: boolean;
   onVisibleChange?: (visible: boolean) => void;
 }
 
+type ExistingEntry = {
+  id: string;
+  name: string;
+  url?: string;
+  mimeType?: string;
+  isExisting: true;
+};
+
+type SelectedEntry = {
+  id: string;
+  name: string;
+  url: string;
+  mimeType?: string;
+  isExisting: false;
+  index: number;
+};
+
+type AttachmentEntry = ExistingEntry | SelectedEntry;
+
 export default function TaskOptionModal({
   type = "add",
   visible = false,
   task,
+  existingFiles,
   addStatus = "pending",
   boardMembers = [],
   onVisibleChange,
 }: taskOption) {
+  const maxFiles = 5;
   const Option = Select.Option;
   const FormItem = Form.Item;
   const [form] = Form.useForm();
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const { boardId } = useParams()
+  const [removedExistingIds, setRemovedExistingIds] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { boardId } = useParams();
   const taskName = task?.taskName ?? "";
   const taskDescription = task?.taskDescription ?? "";
   const taskPriority = task?.taskPriority ?? "low";
@@ -53,10 +79,88 @@ export default function TaskOptionModal({
   const overdueInfo = task?.overdueInfo ?? "";
   const subtask = task?.subtask ?? "";
   const taskNumber = task?.taskNumber;
-  const addTaskMutation = useAddTask(boardId||"");
-  const editTaskMutation = useEditTask(boardId||"");
+  const addTaskMutation = useAddTask(boardId || "");
+  const editTaskMutation = useEditTask(boardId || "");
+  const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL ?? "";
+
+  const getExistingFileId = (file: TaskFile, index: number) =>
+    file.storedName ||
+    file.url ||
+    file.path ||
+    file.filename ||
+    file.originalname ||
+    `file-${index}`;
+
+  const getExistingFileName = (file: TaskFile, index: number) =>
+    file.originalname || file.filename || file.name || `附件${index + 1}`;
+
+  const existingEntries = useMemo<ExistingEntry[]>(() => {
+    return (existingFiles ?? [])
+      .map((file, index) => {
+        const id = getExistingFileId(file, index);
+        const entry: ExistingEntry = {
+          id,
+          name: getExistingFileName(file, index),
+          url: file.url,
+          mimeType: file.mimetype,
+          isExisting: true,
+        };
+        return entry;
+      })
+      .filter((entry) => !removedExistingIds.includes(entry.id));
+  }, [existingFiles, removedExistingIds]);
+
+  const selectedEntries = useMemo<SelectedEntry[]>(() => {
+    return selectedFiles.map((file, index) => {
+      const entry: SelectedEntry = {
+        id: `local-${file.name}-${file.lastModified}-${index}`,
+        name: file.name,
+        url: URL.createObjectURL(file),
+        mimeType: file.type,
+        isExisting: false,
+        index,
+      };
+      return entry;
+    });
+  }, [selectedFiles]);
+
+  const resolveFileUrl = (url?: string) => {
+    if (!url) return undefined;
+    if (/^(https?:|blob:|data:)/i.test(url)) return url;
+    if (uploadBaseUrl) return `${uploadBaseUrl}${url}`;
+    return url;
+  };
+
+  const getFileExtension = (name?: string) => {
+    if (!name) return "";
+    const parts = name.split(".");
+    return parts.length > 1 ? (parts.at(-1)?.toUpperCase() ?? "") : "";
+  };
+
+  const isImageFile = (mimeType?: string, name?: string) => {
+    if (mimeType?.startsWith("image/")) return true;
+    const ext = getFileExtension(name);
+    return ["PNG", "JPG", "JPEG", "GIF", "WEBP", "SVG"].includes(ext);
+  };
+
+  const totalFileCount = existingEntries.length + selectedFiles.length;
+
+  useEffect(() => {
+    return () => {
+      selectedEntries.forEach((entry) => URL.revokeObjectURL(entry.url));
+    };
+  }, [selectedEntries]);
+
+  const resetAttachments = () => {
+    setSelectedFiles([]);
+    setRemovedExistingIds([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleCancel = () => {
+    resetAttachments();
     onVisibleChange?.(false);
   };
 
@@ -109,7 +213,10 @@ export default function TaskOptionModal({
         addTaskMutation.mutate(
           { task: payload, files: selectedFiles },
           {
-            onSuccess: () => onVisibleChange?.(false),
+            onSuccess: () => {
+              resetAttachments();
+              onVisibleChange?.(false);
+            },
           },
         );
         return;
@@ -122,11 +229,15 @@ export default function TaskOptionModal({
         editTaskMutation.mutate(
           { taskId: task.taskId, task: payload, files: selectedFiles },
           {
-            onSuccess: () => onVisibleChange?.(false),
+            onSuccess: () => {
+              resetAttachments();
+              onVisibleChange?.(false);
+            },
           },
         );
         return;
       }
+      resetAttachments();
       onVisibleChange?.(false);
     } catch {
       return;
@@ -134,7 +245,49 @@ export default function TaskOptionModal({
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFiles(Array.from(event.target.files ?? []));
+    const incomingFiles = Array.from(event.target.files ?? []);
+    if (incomingFiles.length === 0) {
+      return;
+    }
+
+    setSelectedFiles((prevFiles) => {
+      const remainingSlots =
+        maxFiles - (existingEntries.length + prevFiles.length);
+      if (remainingSlots <= 0) {
+        Message.warning(`单个任务最多添加${maxFiles}个附件`);
+        return prevFiles;
+      }
+
+      const nextFiles = prevFiles.concat(
+        incomingFiles.slice(0, remainingSlots),
+      );
+      if (incomingFiles.length > remainingSlots) {
+        Message.warning(`单个任务最多添加${maxFiles}个附件`);
+      }
+      return nextFiles;
+    });
+
+    event.target.value = "";
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles((prevFiles) =>
+      prevFiles.filter((_, fileIndex) => fileIndex !== index),
+    );
+  };
+
+  const handleRemoveExistingFile = (id: string) => {
+    setRemovedExistingIds((prevIds) =>
+      prevIds.includes(id) ? prevIds : [...prevIds, id],
+    );
+  };
+
+  const handlePickFiles = () => {
+    if (totalFileCount >= maxFiles) {
+      Message.warning(`单个任务最多添加${maxFiles}个附件`);
+      return;
+    }
+    fileInputRef.current?.click();
   };
 
   useEffect(() => {
@@ -295,7 +448,67 @@ export default function TaskOptionModal({
         </FormItem>
         {/* 附件 */}
         <FormItem label="附件：">
-          <input type="file" multiple onChange={handleFileChange} />
+          <div className={styles.attachmentRow}>
+            <div className={styles.fileList}>
+              {existingEntries.length + selectedEntries.length > 0 ? (
+                (
+                  [...existingEntries, ...selectedEntries] as AttachmentEntry[]
+                ).map((entry) => {
+                  const previewUrl = resolveFileUrl(entry.url);
+                  const showImage = isImageFile(entry.mimeType, entry.name);
+                  const label = getFileExtension(entry.name) || "FILE";
+                  return (
+                    <div key={entry.id} className={styles.fileItem}>
+                      <div className={styles.filePreview}>
+                        {previewUrl && showImage ? (
+                          <img src={previewUrl} alt={entry.name} />
+                        ) : (
+                          <div className={styles.fileFallback}>{label}</div>
+                        )}
+                      </div>
+                      <div className={styles.fileName} title={entry.name}>
+                        {entry.name}
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.deleteButton}
+                        onClick={() =>
+                          entry.isExisting
+                            ? handleRemoveExistingFile(entry.id)
+                            : handleRemoveFile(entry.index)
+                        }
+                        aria-label="删除附件"
+                      >
+                        <IconDelete />
+                      </button>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className={styles.emptyFiles}>暂无附件</div>
+              )}
+            </div>
+            <div className={styles.uploadArea}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileChange}
+                className={styles.fileInput}
+              />
+              <Button
+                size="small"
+                type="primary"
+                onClick={handlePickFiles}
+                disabled={totalFileCount >= maxFiles}
+              >
+                添加文件
+              </Button>
+              <div className={styles.uploadHint}>
+                {totalFileCount}/{maxFiles}
+              </div>
+            </div>
+          </div>
         </FormItem>
       </Form>
     </Modal>

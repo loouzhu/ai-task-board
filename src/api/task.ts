@@ -191,7 +191,7 @@ export const editTask = async (
   });
   if (!response.ok) {
     if (response.status === 400) {
-      throw new Error("编辑任务失败：请求参数错误");
+      throw new Error((await response.json()).message);
     } else if (response.status === 401) {
       throw new Error("编辑任务失败：未授权");
     } else if (response.status === 500) {
@@ -216,7 +216,7 @@ export const deleteTask = async (boardId: string, taskId: string) => {
   });
   if (!response.ok) {
     if (response.status === 400) {
-      throw new Error("删除任务失败：请求参数错误");
+      throw new Error((await response.json()).message);
     } else if (response.status === 401) {
       throw new Error("删除任务失败：未授权");
     } else if (response.status === 500) {

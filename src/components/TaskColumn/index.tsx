@@ -108,6 +108,7 @@ export default function TaskColumn({
         type="edit"
         visible={editModalVisible && !!activeTask}
         task={activeTaskPayload}
+        existingFiles={activeTask?.files}
         boardMembers={boardMembers}
         onVisibleChange={setEditModalVisible}
       />

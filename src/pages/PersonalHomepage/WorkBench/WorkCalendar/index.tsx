@@ -1,23 +1,37 @@
+import CalendarCell from "@/components/CalendarCell";
 import styles from "./index.module.less";
 
-const lastWeek = [
-  { date: "05/04", count: 3 },
-  { date: "05/05", count: 5 },
-  { date: "05/06", count: 2 },
-  { date: "05/07", count: 6 },
-  { date: "05/08", count: 4 },
-  { date: "05/09", count: 1 },
-  { date: "05/10", count: 0 },
-];
+const lastWeekCounts = [3, 5, 2, 6, 4, 1, 0];
+const thisWeekCounts = [4, 7, 3, 5, 2, 1, 0];
 
-const thisWeek = [
-  { date: "05/11", count: 4 },
-  { date: "05/12", count: 7 },
-  { date: "05/13", count: 3 },
-  { date: "05/14", count: 5 },
-  { date: "05/15", count: 2 },
-  { date: "05/16", count: 1 },
-  { date: "05/17", count: 0 },
+const formatDate = (date: Date) => {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${month}/${day}`;
+};
+
+const getWeekStart = (date: Date) => {
+  const start = new Date(date);
+  const dayOfWeek = start.getDay();
+  const offset = (dayOfWeek + 6) % 7;
+  start.setDate(start.getDate() - offset);
+  start.setHours(0, 0, 0, 0);
+  return start;
+};
+
+const buildWeekData = (weekOffset: number, counts: number[]) => {
+  const weekStart = getWeekStart(new Date());
+  weekStart.setDate(weekStart.getDate() + weekOffset * 7);
+  return counts.map((count, index) => {
+    const dayDate = new Date(weekStart);
+    dayDate.setDate(weekStart.getDate() + index);
+    return { date: formatDate(dayDate), count };
+  });
+};
+
+const weeks = [
+  { key: "last", days: buildWeekData(-1, lastWeekCounts) },
+  { key: "this", days: buildWeekData(0, thisWeekCounts) },
 ];
 
 export default function WorkCalendar() {
@@ -27,28 +41,19 @@ export default function WorkCalendar() {
         <div className={styles.title}>工作日历</div>
         <div className={styles.subTitle}>上周 / 本周任务量</div>
       </div>
-      <div className={styles.weekBlock}>
-        <div className={styles.weekGrid}>
-          {lastWeek.map((day) => (
-            <div key={`last-${day.date}`} className={styles.dayCell}>
-              <div className={styles.dayLabel}>{day.date}</div>
-              <div className={styles.dayCount}>{day.count}</div>
-              <div className={styles.dayCaption}>tasks</div>
-            </div>
-          ))}
+      {weeks.map((week) => (
+        <div key={week.key} className={styles.weekBlock}>
+          <div className={styles.weekGrid}>
+            {week.days.map((day) => (
+              <CalendarCell
+                key={`${week.key}-${day.date}`}
+                date={day.date}
+                count={day.count}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className={styles.weekBlock}>
-        <div className={styles.weekGrid}>
-          {thisWeek.map((day) => (
-            <div key={`this-${day.date}`} className={styles.dayCell}>
-              <div className={styles.dayLabel}>{day.date}</div>
-              <div className={styles.dayCount}>{day.count}</div>
-              <div className={styles.dayCaption}>tasks</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      ))}
     </section>
   );
 }
