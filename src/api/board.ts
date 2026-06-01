@@ -38,7 +38,7 @@ const normalizeBoardMembers = (
       if (typeof member === "string") {
         return member;
       }
-      return member.userId || "";
+      return member.username || "";
     })
     .filter(Boolean);
 };
@@ -60,6 +60,7 @@ export const getAllBoards = async (
     credentials: "include",
   });
   const data = await readJson(response);
+  console.log(data)
 
   if (!response.ok) {
     const message =

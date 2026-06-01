@@ -46,7 +46,6 @@ export default function HeaderNav({
     navigate(`/team/${teamId}/board/${value}`, { replace: true });
     clearTask(null);
   };
-
   const handleDeleteBoard = async () => {
     if (!currentBoard?.boardId) {
       Message.error("暂无可删除的看板");

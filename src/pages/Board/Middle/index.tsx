@@ -51,6 +51,7 @@ export default function Middle() {
     setBoardMembers(currentBoard?.boardMembers ?? []);
   }, [currentBoard, setBoardMembers]);
 
+
   return (
     <Content className={styles.middle}>
       <HeaderNav
