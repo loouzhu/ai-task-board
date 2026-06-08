@@ -46,6 +46,35 @@
       }
     }
   }
+
+  .aiPanel {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px dashed var(--app-border-strong);
+    background: var(--app-surface-soft);
+  }
+
+  .aiPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .aiPanelTitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--app-text);
+  }
+
+  .aiPanelBody {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--app-subtext);
+    white-space: pre-wrap;
+  }
 }
 
 @media (max-width: 640px) {
