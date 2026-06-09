@@ -1,12 +1,14 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicOnlyRoute from "./PublicOnlyRoute";
-import MainLayout from "@/components/MainLayout";
-import Auth from "@/pages/Auth";
-import Board from "@/pages/Board";
-import DataView from "@/pages/DataView";
-import PersonalHomePage from "@/pages/PersonalHomepage";
+import { LazyRoute } from "@/components/LazyRoute";
 import TeamRedirect from "./TeamRedirect";
+
+const Auth = LazyRoute(() => import("@/pages/Auth"));
+const Board = LazyRoute(() => import("@/pages/Board"));
+const MainLayout = LazyRoute(() => import("@/components/MainLayout"));
+const DataView = LazyRoute(() => import("@/pages/DataView"));
+const PersonalHomePage = LazyRoute(() => import("@/pages/PersonalHomepage"));
 
 const router = createBrowserRouter([
   {
