@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { login, register, queryMe, logout, forgetPassword } from "@/api/auth";
 import type { AuthStatus } from "@/types/common";
+import { preLoadPage } from "@/utils/common";
 import { Message } from "@arco-design/web-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -36,6 +37,7 @@ export const useLogin = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
       const from = getSafeRedirectPath(location.state?.from);
+      preLoadPage("@/pages/Board");
       Message.success("登陆成功");
       navigate(from, { replace: true });
     },

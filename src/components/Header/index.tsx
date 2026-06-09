@@ -22,6 +22,7 @@ import {
 } from "@arco-design/web-react";
 import { useTheme } from "@/hooks/useTheme";
 import { pageList } from "@/types/common";
+import { preLoadPage } from "@/utils/common";
 import styles from "./index.module.less";
 import UserMenuItem from "../UserMenuItem";
 import TeamOptionModal from "../TeamOptionModal";
@@ -60,16 +61,23 @@ export default function Header() {
   const userInfoQuery = useGetUserInfoById(currentUserId);
   const { username, avatar } = userInfoQuery.data?.userInfo || {};
 
-  const handleChangePage = (index: number) => {
-    const targetPath = pageList[index].path;
-    if (!targetPath) {
+  const handleChangePage = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!(e.target instanceof HTMLElement)) {
       return;
     }
-    if (!currentTeamId) {
-      Message.info("请先选择团队");
-      return;
+
+    const targetSpan = e.target.closest("span[data-path]");
+    if (targetSpan) {
+      const targetPath = targetSpan.getAttribute("data-path");
+      if (!targetPath) {
+        return;
+      }
+      if (!currentTeamId) {
+        Message.info("请先选择团队");
+        return;
+      }
+      navigate(`/team/${currentTeamId}${targetPath}`, { replace: true });
     }
-    navigate(`/team/${currentTeamId}${targetPath}`, { replace: true });
   };
 
   const handleChangeTeam = (value: string) => {
@@ -115,6 +123,20 @@ export default function Header() {
         navigate("/team");
       },
     });
+  };
+
+  const handlePreload = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!(e.target instanceof HTMLElement)) {
+      return;
+    }
+
+    const targetSpan = e.target.closest("span[data-preload]");
+    if (targetSpan) {
+      const element = targetSpan.getAttribute("data-preload");
+      if (element) {
+        preLoadPage(element);
+      }
+    }
   };
 
   const dropList = (
@@ -174,12 +196,17 @@ export default function Header() {
       </div>
       <div className={styles.title}>AI智能任务看板</div>
       {/* 页面列表 */}
-      <div className={styles.list}>
+      <div
+        className={styles.list}
+        onMouseOver={(e) => handlePreload(e)}
+        onClick={(e) => handleChangePage(e)}
+      >
         {pageList.map((item, index) => (
           <span
             key={item.name + index}
             className={`${styles.listItem} ${item.path && item.path === currentPage ? styles.active : ""}`}
-            onClick={() => handleChangePage(index)}
+            data-path={item.path}
+            data-preload={item.element || ""}
           >
             {item.name}
           </span>

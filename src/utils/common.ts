@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getTitle = (mode: string) => {
   if (mode === "login") return "登录";
   if (mode === "register") return "注册";
@@ -111,4 +112,10 @@ export const throttle = <T extends (...args: any[]) => void>(
       }, delay);
     }
   };
+};
+
+// 预加载页面内容
+export const preLoadPage = async (url: string) => {
+  const resources = [url];
+  return Promise.allSettled(resources.map((r) => import(r)));
 };
