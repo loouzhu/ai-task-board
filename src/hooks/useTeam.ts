@@ -7,12 +7,10 @@ import {
   getTeamList,
   getTeamInfo,
 } from "@/api/team";
-import { useMeQuery } from "@/hooks/useAuth";
 
 // 创建团队
-export const useCreateTeam = () => {
+export const useCreateTeam = (userId?: string) => {
   const queryClient = useQueryClient();
-  const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: createTeam,
     onSuccess: async () => {
@@ -33,9 +31,8 @@ export const useCreateTeam = () => {
 };
 
 // 编辑团队
-export const useEditTeam = () => {
+export const useEditTeam = (userId?: string) => {
   const queryClient = useQueryClient();
-  const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: editTeam,
     onSuccess: async () => {
@@ -57,9 +54,8 @@ export const useEditTeam = () => {
 };
 
 // 解散团队
-export const useDeleteTeam = () => {
+export const useDeleteTeam = (userId?: string) => {
   const queryClient = useQueryClient();
-  const userId = useMeQuery().data?.user?.userId ?? "";
   return useMutation({
     mutationFn: deleteTeam,
     onSuccess: async () => {
@@ -80,8 +76,8 @@ export const useDeleteTeam = () => {
 };
 
 // 获取团队列表
-export const useGetTeamList = () => {
-  const userId = useMeQuery().data?.user?.userId ?? "";
+export const useGetTeamList = (id: string) => {
+  const userId = id ?? "";
   return useQuery({
     queryKey: ["teamList", userId],
     queryFn: () => getTeamList(userId),

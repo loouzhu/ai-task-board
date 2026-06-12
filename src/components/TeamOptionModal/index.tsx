@@ -35,6 +35,7 @@ interface TeamOptionModalProps {
   type: "edit" | "create";
   teamInfo?: teamPayload;
   teams: teamPayload[];
+  userId: string;
   visible: boolean;
   onVisibleChange: (visible: boolean) => void;
 }
@@ -44,6 +45,7 @@ export default function TeamOptionModal({
   visible = false,
   teamInfo,
   teams,
+  userId,
   onVisibleChange,
 }: TeamOptionModalProps) {
   const FormItem = Form.Item;
@@ -51,8 +53,8 @@ export default function TeamOptionModal({
   const [form] = Form.useForm();
   const teamName = teamInfo?.teamName || "";
   const teamId = useParams().teamId;
-  const useCreateTeamMutation = useCreateTeam();
-  const useEditTeamMutation = useEditTeam();
+  const useCreateTeamMutation = useCreateTeam(userId);
+  const useEditTeamMutation = useEditTeam(userId);
   const getAllUserQuery = useGetAllUsers();
 
   useEffect(() => {

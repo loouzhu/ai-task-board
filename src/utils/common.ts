@@ -114,8 +114,18 @@ export const throttle = <T extends (...args: any[]) => void>(
   };
 };
 
+const preloadModules = {
+  "@/pages/Auth": () => import("@/pages/Auth"),
+  "@/pages/Board": () => import("@/pages/Board"),
+  "@/pages/DataView": () => import("@/pages/DataView"),
+  "@/pages/PersonalHomepage": () => import("@/pages/PersonalHomepage"),
+  "@/components/MainLayout": () => import("@/components/MainLayout"),
+} as const;
+
+export type PreloadResource = keyof typeof preloadModules;
+
 // 预加载页面内容
-export const preLoadPage = async (url: string) => {
-  const resources = [url];
-  return Promise.allSettled(resources.map((r) => import(r)));
+export const preLoadPage = async (resource: string) => {
+  const loader = preloadModules[resource as PreloadResource];
+  return loader ? loader() : Promise.resolve();
 };

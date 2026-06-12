@@ -21,7 +21,6 @@ export const useIsDarkTheme = () => {
       attributes: true,
       attributeFilter: ["arco-theme"],
     });
-    setIsDark(getBodyDarkState());
     return () => {
       observer.disconnect();
     };

@@ -6,8 +6,8 @@ import { useAuthStatus } from "@/hooks/useAuth";
 
 export default function TeamRedirect() {
   const navigate = useNavigate();
-  const { isLoading: authLoading, isAuthenticated } = useAuthStatus();
-  const teamQuery = useGetTeamList();
+  const { isLoading: authLoading, isAuthenticated, me } = useAuthStatus();
+  const teamQuery = useGetTeamList(me?.user?.userId);
   const teamList = teamQuery.data?.teams ?? [];
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function TeamRedirect() {
     navigate(`/team/${teamList[0].teamId}/board`, { replace: true });
   }, [isAuthenticated, navigate, teamList]);
 
-  if (authLoading || teamQuery.isLoading) {
+  if (authLoading) {
     return (
       <div>
         <Spin tip="加载中" />

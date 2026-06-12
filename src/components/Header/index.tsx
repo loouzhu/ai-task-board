@@ -28,7 +28,6 @@ import UserMenuItem from "../UserMenuItem";
 import TeamOptionModal from "../TeamOptionModal";
 import { useLogout, useMeQuery } from "@/hooks/useAuth";
 import { useGetTeamList, useGetTeamInfo, useDeleteTeam } from "@/hooks/useTeam";
-import { useGetUserInfoById } from "@/hooks/useUser";
 import type { team } from "@/types/team";
 
 export default function Header() {
@@ -39,6 +38,7 @@ export default function Header() {
   const { isDark, toggleTheme } = useTheme();
   const meQuery = useMeQuery();
   const user = meQuery.data?.user;
+  const { username, avatar, userId } = user || {};
   const location = useLocation();
   const { teamId } = useParams();
   const currentPage = pageList.find((item) => {
@@ -53,13 +53,13 @@ export default function Header() {
   const [editTeamModalVisible, setEditTeamModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
-  const teamList = useGetTeamList()?.data?.teams || [];
-  const currentTeamId = teamId || teamList[0]?.teamId || "";
-  const currentTeamInfo = useGetTeamInfo(currentTeamId)?.data?.team;
-  const deleteTeamMutation = useDeleteTeam();
-  const currentUserId = user?.userId || "";
-  const userInfoQuery = useGetUserInfoById(currentUserId);
-  const { username, avatar } = userInfoQuery.data?.userInfo || {};
+  const teamList = useGetTeamList(userId)?.data?.teams || [];
+  const currentTeamId = teamId || "";
+  const currentTeamInfoQuery = useGetTeamInfo(
+    editTeamModalVisible ? currentTeamId : "",
+  );
+  const currentTeamInfo = currentTeamInfoQuery.data?.team;
+  const deleteTeamMutation = useDeleteTeam(userId);
 
   const handleChangePage = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!(e.target instanceof HTMLElement)) {
@@ -181,11 +181,12 @@ export default function Header() {
           placeholder="暂无团队"
           onChange={handleChangeTeam}
         >
-          {teamList.map((team: team) => (
-            <Option key={team.teamId} value={team.teamId}>
-              {team.teamName}
-            </Option>
-          ))}
+          {teamList.length > 0 &&
+            teamList.map((team: team) => (
+              <Option key={team.teamId} value={team.teamId}>
+                {team.teamName}
+              </Option>
+            ))}
         </Select>
         {/* 团队操作 */}
         <div className={styles.boardOptions}>
@@ -268,6 +269,7 @@ export default function Header() {
       <TeamOptionModal
         type="create"
         teams={teamList}
+        userId={userId}
         visible={createTeamModalVisible}
         onVisibleChange={setCreateTeamModalVisible}
       />
@@ -276,6 +278,7 @@ export default function Header() {
         type="edit"
         teams={teamList}
         teamInfo={currentTeamInfo}
+        userId={userId}
         visible={editTeamModalVisible}
         onVisibleChange={setEditTeamModalVisible}
       />

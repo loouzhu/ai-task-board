@@ -89,14 +89,14 @@ export const useLogout = () => {
 
 export const useAuthStatus = () => {
   const meQuery = useMeQuery();
-  const user = meQuery.data ?? null;
+  const me = meQuery.data ?? null;
   const status: AuthStatus = meQuery.isPending
     ? "unknown"
-    : user
+    : me
       ? "authenticated"
       : "unauthenticated";
   return {
-    user,
+    me,
     status,
     // 后面这三个状态是冗余的，但是最好都提供
     isLoading: status === "unknown",
