@@ -12,8 +12,9 @@ export interface TaskFile {
 }
 
 export interface task {
-  boardId: string;
   blockInfo: string;
+  boardId: string;
+  boardName?: string;
   createdAt: string;
   createdBy: string;
   files: TaskFile[];
@@ -30,7 +31,6 @@ export interface task {
   taskPriority: string;
   taskStatus: taskType;
   taskWorkTime: string;
-  boardName?: string;
 }
 
 export type taskType = "pending" | "processing" | "testing" | "completed";
@@ -50,22 +50,26 @@ export interface TaskItemProps {
 }
 
 export interface TaskPayload {
-  taskId?: string;
-  taskNumber: number;
-  taskName: string;
-  isBlock: boolean;
   blockInfo: string;
+  files?: File[];
+  isBlock: boolean;
   isOverdue: boolean;
   overdueInfo: string;
-  taskDescription?: string;
-  taskPriority: string;
+  removeFileIds?: string[];
+  subtask?: string[];
   taskDeadline?: string;
+  taskDescription?: string;
+  taskId?: string;
   taskMembers: string[];
+  taskName: string;
+  taskNumber: number;
+  taskPriority: string;
   taskStatus: taskType;
   taskWorkTime?: string;
-  subtask?: string[];
-  removeFileIds?: string[];
-  files?: File[];
+}
+
+export interface TasksResponse {
+  tasks: task[];
 }
 
 export type dateType = "week" | "month";

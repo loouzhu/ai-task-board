@@ -80,7 +80,8 @@ export default function TaskOptionModal({
   const overdueInfo = task?.overdueInfo ?? "";
   const subtask = task?.subtask ?? "";
   const taskNumber = task?.taskNumber;
-  const addTaskMutation = useAddTask(boardId || "");
+  const filterParams = useTaskStore((state) => state.filterParams);
+  const addTaskMutation = useAddTask(boardId || "", filterParams);
   const editTaskMutation = useEditTask(boardId || "");
   const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL ?? "";
   const currentTask = useTaskStore((state) => state.task);

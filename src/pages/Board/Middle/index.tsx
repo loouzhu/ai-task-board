@@ -1,11 +1,12 @@
 import { Layout } from "@arco-design/web-react";
 import { useAllBoards } from "@/hooks/useBoard";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetBoardTasks } from "@/hooks/useTask";
-import type { task, taskFilterParams } from "@/types/task";
+import type { task } from "@/types/task";
 import type { boardListProps } from "@/types/board";
 import { useBoardStore } from "@/stores/boardStore";
+import { useTaskStore } from "@/stores/taskStore";
 import HeaderNav from "./HeadNav";
 import Filter from "./Filter";
 import Tasks from "./Tasks";
@@ -23,7 +24,8 @@ export default function Middle() {
   const fallbackBoardId = boards[0]?.boardId || "";
   const activeBoardId = boardId || fallbackBoardId;
   const setBoardMembers = useBoardStore((state) => state.setBoardMembers);
-  const [filterParams, setFilterParams] = useState<taskFilterParams>({});
+  const setTaskFilterParams = useTaskStore((state) => state.setFilterParams);
+  const filterParams = useTaskStore((state) => state.filterParams);
   const tasks = useGetBoardTasks(activeBoardId, filterParams).data
     ?.tasks as task[];
   const currentBoard =
@@ -51,6 +53,9 @@ export default function Middle() {
     setBoardMembers(currentBoard?.boardMembers ?? []);
   }, [currentBoard, setBoardMembers]);
 
+  useEffect(() => {
+    setTaskFilterParams(filterParams);
+  }, [filterParams, setTaskFilterParams]);
 
   return (
     <Content className={styles.middle}>
@@ -60,7 +65,7 @@ export default function Middle() {
       />
       <Filter
         boardMemberList={currentBoard?.boardMembers || []}
-        onFilterChange={setFilterParams}
+        onFilterChange={setTaskFilterParams}
       />
       <Tasks tasks={tasks ?? []} />
     </Content>

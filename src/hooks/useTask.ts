@@ -15,7 +15,9 @@ import type {
   taskFilterParams,
   TaskPayload,
   dateType,
+  TasksResponse,
 } from "@/types/task";
+import { taskKeys } from "@/utils/queryKeyFactory/task";
 import { Message } from "@arco-design/web-react";
 
 interface AddTaskMutationPayload {
@@ -28,40 +30,84 @@ interface FocusOnTaskResponse {
   [key: string]: unknown;
 }
 
+interface EditTaskMutationPayload {
+  taskId: string;
+  task: TaskPayload;
+  files?: File[];
+}
+
 export const useGetBoardTasks = (
   boardId: string,
-  filterParams?: taskFilterParams,
+  filterParams: taskFilterParams = {},
 ) => {
-  return useQuery({
-    queryKey: ["boardTasks", boardId, filterParams],
+  return useQuery<TasksResponse>({
+    queryKey: taskKeys.list(boardId, filterParams),
     queryFn: () => getBoardTasks(boardId, filterParams),
     enabled: !!boardId,
   });
 };
 
-export const useAddTask = (boardId: string) => {
+export const useAddTask = (boardId: string, filterParams: taskFilterParams) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ task, files }: AddTaskMutationPayload) => {
       if (!boardId || boardId.trim() === "") {
         throw new Error("boardId不能为空");
       }
-
       return addTask(boardId, task, files);
+    },
+    onMutate: async ({ task }) => {
+      await queryClient.cancelQueries({
+        queryKey: taskKeys.list(boardId, filterParams),
+      });
+      // const previousTasks =
+      //   queryClient.getQueriesData<TasksResponse>({
+      //     queryKey: taskKeys.list(boardId, filterParams),
+      //   }) ?? [];
+      const optimisticTask = {
+        taskId: `temp-${Date.now()}`,
+        boardId: boardId,
+        boardName: "temp-boardName",
+        createdAt: new Date().toISOString(),
+        createdBy: "me",
+        files: [],
+        subtask: [],
+        taskDeadline: "",
+        taskDescription: "",
+        taskWorkTime: "",
+        ...task,
+      };
+      const queryKey = taskKeys.list(boardId, filterParams);
+      const previousData = queryClient.getQueryData<TasksResponse>(queryKey);
+      if (!previousData) {
+        queryClient.setQueryData(taskKeys.list(boardId, filterParams), {
+          tasks: [optimisticTask],
+        });
+      } else {
+        const tasks = previousData.tasks ?? [];
+        queryClient.setQueryData(queryKey, {
+          tasks: [...tasks, optimisticTask],
+        });
+      }
+      return { queryKey, previousData };
     },
     onSuccess: () => {
       Message.success("创建任务成功");
-      queryClient.invalidateQueries({ queryKey: ["boardTasks", boardId] });
+      queryClient.invalidateQueries({ queryKey: taskKeys.board(boardId) });
     },
-    onError: (error: Error) => Message.error(error.message),
+    onError: (error: Error, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(context.queryKey, context.previousData);
+      } else {
+        queryClient.removeQueries({
+          queryKey: context?.queryKey,
+          exact: true,
+        });
+      }
+      Message.error(error.message);
+    },
   });
 };
-
-interface EditTaskMutationPayload {
-  taskId: string;
-  task: TaskPayload;
-  files?: File[];
-}
 
 export const useEditTask = (boardId: string) => {
   const queryClient = useQueryClient();
@@ -78,7 +124,7 @@ export const useEditTask = (boardId: string) => {
     },
     onSuccess: () => {
       Message.success("编辑任务成功");
-      queryClient.invalidateQueries({ queryKey: ["boardTasks", boardId] });
+      queryClient.invalidateQueries({ queryKey: taskKeys.board(boardId) });
     },
     onError: (error: Error) => Message.error(error.message),
   });
@@ -96,7 +142,7 @@ export const useDeleteTask = (boardId: string, taskId: string) => {
       return deleteTask(boardId, taskId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["boardTasks", boardId] });
+      queryClient.invalidateQueries({ queryKey: taskKeys.board(boardId) });
       Message.success("删除任务成功");
       if (currentTask?.taskId === taskId) {
         setTask(null);

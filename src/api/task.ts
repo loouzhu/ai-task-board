@@ -3,6 +3,7 @@ import type {
   taskFilterParams,
   TaskPayload,
   dateType,
+  TasksResponse,
 } from "@/types/task";
 
 const BASE_URL = "/api/task";
@@ -93,7 +94,7 @@ const normalizeTaskCollection = (data: unknown) => {
 export const getBoardTasks = async (
   boardId: string,
   filterParams?: taskFilterParams,
-) => {
+): Promise<TasksResponse> => {
   const searchParams = new URLSearchParams();
 
   Object.entries(filterParams ?? {}).forEach(([key, value]) => {
