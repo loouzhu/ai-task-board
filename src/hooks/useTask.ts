@@ -109,7 +109,10 @@ export const useAddTask = (boardId: string, filterParams: taskFilterParams) => {
   });
 };
 
-export const useEditTask = (boardId: string) => {
+export const useEditTask = (
+  boardId: string,
+  filterParams: taskFilterParams,
+) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ taskId, task, files }: EditTaskMutationPayload) => {
@@ -122,11 +125,43 @@ export const useEditTask = (boardId: string) => {
 
       return editTask(boardId, task, taskId, files);
     },
+    onMutate: async ({ task, taskId }) => {
+      const queryKey = taskKeys.task(taskId, filterParams);
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData<TasksResponse>(queryKey);
+      const optimisticTask = {
+        taskId: taskId,
+        boardId: boardId,
+        boardName: "temp-boardName",
+        createdAt: new Date().toISOString(),
+        createdBy: "me",
+        files: [],
+        subtask: [],
+        taskDeadline: "",
+        taskDescription: "",
+        taskWorkTime: "",
+        ...task,
+      };
+      queryClient.setQueryData(queryKey, {
+        task: [optimisticTask],
+      });
+      return { queryKey, previousData };
+    },
     onSuccess: () => {
       Message.success("编辑任务成功");
       queryClient.invalidateQueries({ queryKey: taskKeys.board(boardId) });
     },
-    onError: (error: Error) => Message.error(error.message),
+    onError: (error: Error, _variables, context) => {
+      Message.error(error.message);
+      if (context?.previousData) {
+        queryClient.setQueryData(context?.queryKey, context?.previousData);
+      } else {
+        queryClient.removeQueries({
+          queryKey: context?.queryKey,
+          exact: true,
+        });
+      }
+    },
   });
 };
 
