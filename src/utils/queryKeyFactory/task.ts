@@ -5,6 +5,4 @@ export const taskKeys = {
   board: (boardId: string) => [...taskKeys.all, boardId] as const,
   list: (boardId: string, filterParams: taskFilterParams = {}) =>
     [...taskKeys.board(boardId), filterParams] as const,
-  task: (taskId: string, filterParams: taskFilterParams = {}) =>
-    [taskId, filterParams] as const,
 };

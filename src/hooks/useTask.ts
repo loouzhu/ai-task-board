@@ -1,6 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTaskStore } from "@/stores/taskStore";
 import {
   getBoardTasks,
   addTask,
@@ -25,15 +24,19 @@ interface AddTaskMutationPayload {
   files?: File[];
 }
 
-interface FocusOnTaskResponse {
-  tasks: task[];
-  [key: string]: unknown;
-}
-
 interface EditTaskMutationPayload {
   taskId: string;
   task: TaskPayload;
   files?: File[];
+}
+
+interface DeleteTaskMutationPayLoad {
+  taskId: string;
+}
+
+interface FocusOnTaskResponse {
+  tasks: task[];
+  [key: string]: unknown;
 }
 
 export const useGetBoardTasks = (
@@ -125,26 +128,18 @@ export const useEditTask = (
 
       return editTask(boardId, task, taskId, files);
     },
-    onMutate: async ({ task, taskId }) => {
-      const queryKey = taskKeys.task(taskId, filterParams);
+    onMutate: async ({ taskId, task: payload }) => {
+      const queryKey = taskKeys.list(boardId, filterParams);
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData<TasksResponse>(queryKey);
-      const optimisticTask = {
-        taskId: taskId,
-        boardId: boardId,
-        boardName: "temp-boardName",
-        createdAt: new Date().toISOString(),
-        createdBy: "me",
-        files: [],
-        subtask: [],
-        taskDeadline: "",
-        taskDescription: "",
-        taskWorkTime: "",
-        ...task,
-      };
-      queryClient.setQueryData(queryKey, {
-        task: [optimisticTask],
-      });
+      if (previousData) {
+        queryClient.setQueryData<TasksResponse>(queryKey, {
+          ...previousData,
+          tasks: previousData?.tasks.map((item) =>
+            item.taskId === taskId ? { ...item, ...payload } : item,
+          ),
+        });
+      }
       return { queryKey, previousData };
     },
     onSuccess: () => {
@@ -165,25 +160,39 @@ export const useEditTask = (
   });
 };
 
-export const useDeleteTask = (boardId: string, taskId: string) => {
+export const useDeleteTask = (
+  boardId: string,
+  filterParams: taskFilterParams,
+) => {
   const queryClient = useQueryClient();
-  const currentTask = useTaskStore((state) => state.task);
-  const setTask = useTaskStore((state) => state.setTask);
   return useMutation({
-    mutationFn: () => {
+    mutationFn: ({ taskId }: DeleteTaskMutationPayLoad) => {
       if (!boardId) {
         throw new Error("没有看板Id");
       }
       return deleteTask(boardId, taskId);
     },
+    onMutate: async ({ taskId }) => {
+      const queryKey = taskKeys.list(boardId, filterParams);
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData<TasksResponse>(queryKey);
+      const filteredData = previousData?.tasks.filter(
+        (taskItem) => taskItem.taskId !== taskId,
+      );
+      if (previousData) {
+        queryClient.setQueryData(queryKey, { tasks: filteredData });
+      }
+
+      return { queryKey, previousData };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskKeys.board(boardId) });
       Message.success("删除任务成功");
-      if (currentTask?.taskId === taskId) {
-        setTask(null);
-      }
     },
-    onError: (error) => {
+    onError: (error: Error, _variable, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(context?.queryKey, context?.previousData);
+      }
       Message.error(error.message);
     },
   });

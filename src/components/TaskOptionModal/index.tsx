@@ -82,7 +82,7 @@ export default function TaskOptionModal({
   const taskNumber = task?.taskNumber;
   const filterParams = useTaskStore((state) => state.filterParams);
   const addTaskMutation = useAddTask(boardId || "", filterParams);
-  const editTaskMutation = useEditTask(boardId || "");
+  const editTaskMutation = useEditTask(boardId || "", filterParams);
   const uploadBaseUrl = import.meta.env.VITE_UPLOAD_BASE_URL ?? "";
   const currentTask = useTaskStore((state) => state.task);
   const setTask = useTaskStore((state) => state.setTask);

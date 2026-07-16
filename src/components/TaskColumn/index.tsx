@@ -6,6 +6,7 @@ import TaskOptionModal from "../TaskOptionModal";
 import TaskItem from "../TaskItem";
 import { useParams } from "react-router-dom";
 import { useBoardStore } from "@/stores/boardStore";
+import { useTaskStore } from "@/stores/taskStore";
 import { useDeleteTask } from "@/hooks/useTask";
 import styles from "./index.module.less";
 
@@ -30,16 +31,17 @@ export default function TaskColumn({
   const [activeTask, setActiveTask] = useState<task | null>(null);
   const { boardId } = useParams();
   const safeBoardId = boardId ?? "";
+  const filterParams = useTaskStore((state) => state.filterParams);
   const boardMembers = useBoardStore((state) => state.boardMembers);
   const handleAddTask = () => {
     setAddModalVisible(true);
   };
-  const deleteTask = useDeleteTask(safeBoardId, activeTask?.taskId ?? "");
+  const deleteTask = useDeleteTask(safeBoardId, filterParams);
   const handleDeleteOption = () => {
     if (!activeTask) {
       return;
     }
-    deleteTask.mutate();
+    deleteTask.mutate({ taskId: activeTask.taskId });
     setDeleteModalVisible(false);
   };
   const handleTaskEdit = (taskItem: task) => {

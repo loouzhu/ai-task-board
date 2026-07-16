@@ -72,4 +72,8 @@ export interface TasksResponse {
   tasks: task[];
 }
 
+export interface TaskResponse {
+  task: task;
+}
+
 export type dateType = "week" | "month";
