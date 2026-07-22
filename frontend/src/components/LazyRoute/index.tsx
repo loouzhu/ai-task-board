@@ -1,6 +1,6 @@
 import { lazy, Suspense, type ComponentType, type ReactNode } from "react";
 
-export function LazyRoute<T extends ComponentType<any>>(
+export function LazyRoute<T extends ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   fallback?: ReactNode,
 ) {
