@@ -8,12 +8,13 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import type { Dayjs } from "dayjs";
 import type { taskFilterParams } from "@/types/task";
+import type { User } from "@/types/user";
 import { debounce } from "@/utils/common";
 const InputSearch = Input.Search;
 import styles from "./index.module.less";
 
 interface FilterProps {
-  boardMemberList: string[];
+  boardMemberList: User[];
   onFilterChange: (params: taskFilterParams) => void;
 }
 
@@ -23,11 +24,6 @@ export default function Filter({
 }: FilterProps) {
   const Option = Select.Option;
   const priorityList = [
-    {
-      id: 0,
-      name: "全部",
-      value: "all",
-    },
     {
       id: 1,
       name: "低",
@@ -46,7 +42,7 @@ export default function Filter({
   ];
   const [rangeValue, setRangeValue] = useState<[string, string] | []>([]);
   const [pickerValue, setPickerValue] = useState<Dayjs[]>([]);
-  const [selectedPrincipal, setSelectedPrincipal] = useState<
+  const [selectedAssigneeId, setSelectedAssigneeId] = useState<
     string | undefined
   >(undefined);
   const [selectedPriority, setSelectedPriority] = useState<string | undefined>(
@@ -61,7 +57,7 @@ export default function Filter({
 
   useEffect(() => {
     onFilterChange({
-      filterMember: selectedPrincipal,
+      assigneeId: selectedAssigneeId,
       taskPriority:
         selectedPriority && selectedPriority !== "all"
           ? selectedPriority
@@ -74,13 +70,13 @@ export default function Filter({
     onFilterChange,
     rangeValue,
     debouncedSearchValue,
-    selectedPrincipal,
+    selectedAssigneeId,
     selectedPriority,
   ]);
 
   // 清除筛选条件
   const cleanFilter = () => {
-    setSelectedPrincipal(undefined);
+    setSelectedAssigneeId(undefined);
     setSelectedPriority(undefined);
     setRangeValue([]);
     setPickerValue([]);
@@ -97,19 +93,17 @@ export default function Filter({
       <div className={styles.manager}>
         <Select
           placeholder="负责人"
+          allowClear
           style={{ width: 100 }}
-          value={selectedPrincipal}
+          value={selectedAssigneeId}
           onChange={(value) => {
-            setSelectedPrincipal(value);
+            setSelectedAssigneeId(value);
           }}
         >
-          <Option key="all" value="all">
-            全部
-          </Option>
           {boardMemberList &&
-            boardMemberList.map((item, index) => (
-              <Option key={`member-${index}`} value={item}>
-                {item}
+            boardMemberList.map((member) => (
+              <Option key={member.userId} value={member.userId}>
+                {member.username}
               </Option>
             ))}
         </Select>

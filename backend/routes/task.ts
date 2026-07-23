@@ -209,17 +209,10 @@ const isTaskOverdue = (task: {
   Boolean(task.taskDeadline) &&
   new Date(task.taskDeadline as Date) < new Date();
 
-const getTaskAssigneeIds = (task: {
+const getTaskAssigneeId = (task: {
   createdBy: string;
-  taskMembers?: string[];
-}) => {
-  const memberIds =
-    Array.isArray(task.taskMembers) && task.taskMembers.length
-      ? task.taskMembers
-      : [task.createdBy];
-
-  return Array.from(new Set(memberIds.filter(Boolean)));
-};
+  assigneeId?: string;
+}) => task.assigneeId || task.createdBy;
 
 const getMonthWeekRanges = (referenceDate: Date) => {
   const monthStart = new Date(
@@ -278,11 +271,11 @@ const getMonthWeekRanges = (referenceDate: Date) => {
 
 type MetricTask = {
   createdBy: string;
+  assigneeId: string;
   taskStatus: string;
   taskPriority: string;
   isBlock: boolean;
   createdAt: Date;
-  taskMembers?: string[];
   taskDeadline?: Date | null;
   taskWorkTime?: string;
 };
@@ -342,7 +335,7 @@ const removeUploadedFiles = (
 
 const resolveAssigneeIdNormalizer = async (tasks: MetricTask[]) => {
   const identifiers = Array.from(
-    new Set(tasks.flatMap((task) => getTaskAssigneeIds(task))),
+    new Set(tasks.map((task) => getTaskAssigneeId(task)).filter(Boolean)),
   );
 
   if (!identifiers.length) {
@@ -368,13 +361,11 @@ const buildWeeklyMemberTaskRows = async (tasks: MetricTask[]) => {
   const normalizeAssigneeId = await resolveAssigneeIdNormalizer(tasks);
   const normalizedTasks = tasks.map((task) => ({
     ...task,
-    normalizedAssigneeIds: Array.from(
-      new Set(getTaskAssigneeIds(task).map(normalizeAssigneeId)),
-    ),
+    normalizedAssigneeId: normalizeAssigneeId(getTaskAssigneeId(task)),
   }));
 
   const memberIds = Array.from(
-    new Set(normalizedTasks.flatMap((task) => task.normalizedAssigneeIds)),
+    new Set(normalizedTasks.map((task) => task.normalizedAssigneeId)),
   );
   const userMap = await getUserMap(memberIds);
 
@@ -408,22 +399,18 @@ const buildWeeklyMemberTaskRows = async (tasks: MetricTask[]) => {
       return;
     }
 
-    const assigneeIds = task.normalizedAssigneeIds;
     const dayKey =
       WEEK_DAY_KEYS[getMondayBasedDayIndex(new Date(task.createdAt))];
     const overdue = isTaskOverdue(task);
+    const row = rowMap.get(task.normalizedAssigneeId);
+    if (!row) {
+      return;
+    }
 
-    assigneeIds.forEach((assigneeId) => {
-      const row = rowMap.get(assigneeId);
-      if (!row) {
-        return;
-      }
-
-      row[dayKey].completed_task += 1;
-      row[dayKey].blocked = row[dayKey].blocked || task.isBlock;
-      row[dayKey].overdue = row[dayKey].overdue || overdue;
-      row.weekTotal += 1;
-    });
+    row[dayKey].completed_task += 1;
+    row[dayKey].blocked = row[dayKey].blocked || task.isBlock;
+    row[dayKey].overdue = row[dayKey].overdue || overdue;
+    row.weekTotal += 1;
   });
 
   return rows.map(({ userId, ...row }) => row);
@@ -437,13 +424,11 @@ const buildMonthlyMemberTaskRows = async (
   const normalizeAssigneeId = await resolveAssigneeIdNormalizer(tasks);
   const normalizedTasks = tasks.map((task) => ({
     ...task,
-    normalizedAssigneeIds: Array.from(
-      new Set(getTaskAssigneeIds(task).map(normalizeAssigneeId)),
-    ),
+    normalizedAssigneeId: normalizeAssigneeId(getTaskAssigneeId(task)),
   }));
 
   const memberIds = Array.from(
-    new Set(normalizedTasks.flatMap((task) => task.normalizedAssigneeIds)),
+    new Set(normalizedTasks.map((task) => task.normalizedAssigneeId)),
   );
   const userMap = await getUserMap(memberIds);
 
@@ -492,21 +477,19 @@ const buildMonthlyMemberTaskRows = async (
       return;
     }
 
-    task.normalizedAssigneeIds.forEach((assigneeId) => {
-      const row = rowMap.get(assigneeId);
-      if (!row) {
-        return;
-      }
+    const row = rowMap.get(task.normalizedAssigneeId);
+    if (!row) {
+      return;
+    }
 
-      const weekCell = row[matchedWeekRange.key] as {
-        completed_task: number;
-        startDate: Date;
-        endDate: Date;
-      };
+    const weekCell = row[matchedWeekRange.key] as {
+      completed_task: number;
+      startDate: Date;
+      endDate: Date;
+    };
 
-      weekCell.completed_task += 1;
-      row.total = Number(row.total) + 1;
-    });
+    weekCell.completed_task += 1;
+    row.total = Number(row.total) + 1;
   });
 
   return rows.map(({ userId, ...row }) => row);
@@ -526,7 +509,8 @@ router.post(
         taskName,
         taskDeadline,
         taskWorkTime,
-        taskMembers,
+        assigneeId,
+        collaboratorIds,
         taskDescription,
         taskPriority,
         taskStatus,
@@ -584,7 +568,8 @@ router.post(
         taskName,
         taskDeadline,
         taskWorkTime,
-        taskMembers: Array.isArray(taskMembers) ? taskMembers : [],
+        assigneeId,
+        collaboratorIds: Array.isArray(collaboratorIds) ? collaboratorIds : [],
         taskDescription,
         taskPriority,
         taskStatus,
@@ -850,7 +835,7 @@ router.get(
         },
       })
         .select(
-          "createdBy taskMembers taskStatus taskPriority isBlock taskDeadline taskWorkTime createdAt -_id",
+          "createdBy assigneeId taskStatus taskPriority isBlock taskDeadline taskWorkTime createdAt -_id",
         )
         .lean<MetricTask[]>();
 
@@ -886,8 +871,14 @@ router.get(
     try {
       const boardId = getRouteParam(req.params.boardId);
       const currentUserId = req.user?.userId;
-      const { member, taskPriority, taskStatus, keyword, startDate, endDate } =
-        req.query;
+      const {
+        assigneeId,
+        taskPriority,
+        taskStatus,
+        keyword,
+        startDate,
+        endDate,
+      } = req.query;
 
       const boardAccess = await getAccessibleBoard(boardId, currentUserId);
       if (!("board" in boardAccess)) {
@@ -896,8 +887,8 @@ router.get(
 
       const filters: Record<string, unknown> = { boardId };
 
-      if (member && member !== "all") {
-        filters.taskMembers = member;
+      if (assigneeId) {
+        filters.assigneeId = assigneeId;
       }
 
       if (taskPriority && taskPriority !== "all") {
@@ -967,34 +958,14 @@ router.put(
         return res.status(boardAccess.status).json(boardAccess.body);
       }
 
-      const rawTask =
-        typeof req.body.task !== "undefined"
-          ? req.body.task
-          : typeof req.body.taskData !== "undefined"
-            ? req.body.taskData
-            : null;
-
-      let taskData = req.body;
-      if (typeof rawTask === "string") {
-        try {
-          taskData = JSON.parse(rawTask);
-        } catch (error) {
-          return res.status(400).json({
-            success: false,
-            message: "任务数据格式不正确",
-          });
-        }
-      } else if (rawTask && typeof rawTask === "object") {
-        taskData = rawTask;
-      }
-
       const {
         taskId,
         taskNumber,
         taskName,
         taskDeadline,
         taskWorkTime,
-        taskMembers,
+        assigneeId,
+        collaboratorIds,
         taskDescription,
         taskPriority,
         taskStatus,
@@ -1004,7 +975,7 @@ router.put(
         overdueInfo,
         subtask,
         removeFileIds: removeFileIdsRaw,
-      } = taskData;
+      } = req.body;
 
       const removeFileIds: string[] = (() => {
         if (Array.isArray(removeFileIdsRaw)) {
@@ -1100,10 +1071,22 @@ router.put(
         task.taskWorkTime = taskWorkTime;
       }
 
-      if (typeof taskMembers !== "undefined") {
-        task.taskMembers = Array.isArray(taskMembers)
-          ? taskMembers
-          : task.taskMembers;
+      const nextAssigneeId =
+        typeof assigneeId !== "undefined" ? assigneeId : task.assigneeId;
+      if (typeof assigneeId !== "undefined") {
+        task.assigneeId = assigneeId;
+      }
+
+      if (
+        typeof collaboratorIds !== "undefined" ||
+        typeof assigneeId !== "undefined"
+      ) {
+        const nextCollaboratorIds = Array.isArray(collaboratorIds)
+          ? collaboratorIds
+          : task.collaboratorIds;
+        task.collaboratorIds = Array.from(
+          new Set(nextCollaboratorIds.filter((id) => id !== nextAssigneeId)),
+        );
       }
 
       if (typeof taskDescription !== "undefined") {

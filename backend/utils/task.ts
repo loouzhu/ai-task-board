@@ -3,7 +3,8 @@ import { getUserMap, formatUser } from "./user";
 
 interface TaskLike {
   createdBy: string;
-  taskMembers?: string[];
+  assigneeId: string;
+  collaboratorIds?: string[];
   taskStatus?: string;
   taskDeadline?: Date | string | null;
 }
@@ -62,7 +63,11 @@ const isTaskOverdueNow = (task: TaskLike) => {
 export const formatTaskInfo = async <T extends TaskLike>(tasks: T[]) => {
   try {
     const userMap = await getUserMap(
-      tasks.flatMap((task) => [task.createdBy, ...(task.taskMembers || [])]),
+      tasks.flatMap((task) => [
+        task.createdBy,
+        task.assigneeId,
+        ...(task.collaboratorIds || []),
+      ]),
     );
 
     return tasks.map((task) => {
@@ -75,8 +80,9 @@ export const formatTaskInfo = async <T extends TaskLike>(tasks: T[]) => {
         ...(typeof files === "undefined" ? {} : { files }),
         isOverdue: isTaskOverdueNow(task),
         createdBy: formatUser(task.createdBy, userMap),
-        taskMembers: (task.taskMembers || []).map((memberId) =>
-          formatUser(memberId, userMap),
+        assigneeName: userMap.get(task.assigneeId) || null,
+        collaboratorNames: (task.collaboratorIds || []).map(
+          (collaboratorId) => userMap.get(collaboratorId) || collaboratorId,
         ),
       };
     });

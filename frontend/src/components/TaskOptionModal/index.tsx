@@ -12,6 +12,7 @@ import { IconDelete } from "@arco-design/web-react/icon";
 import { useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import type { TaskFile, TaskPayload } from "@/types/task";
+import type { User } from "@/types/user";
 import { useTaskStore } from "@/stores/taskStore";
 import { useParams } from "react-router-dom";
 import { formatInput } from "@/utils/common";
@@ -20,7 +21,7 @@ import styles from "./index.module.less";
 
 interface taskOption {
   type: string;
-  boardMembers?: string[];
+  boardMembers?: User[];
   task?: TaskPayload;
   existingFiles?: TaskFile[];
   taskId?: string;
@@ -71,7 +72,11 @@ export default function TaskOptionModal({
   const taskDeadline = task?.taskDeadline?.toString()
     ? dayjs(task.taskDeadline)
     : undefined;
-  const taskMembers = task?.taskMembers;
+  const assigneeId = task?.assigneeId;
+  const collaboratorIds = useMemo(
+    () => task?.collaboratorIds ?? [],
+    [task?.collaboratorIds],
+  );
   const taskStatus = task?.taskStatus ?? addStatus;
   const taskWorkTime = task?.taskWorkTime ?? "";
   const isBlock = task?.isBlock ?? false;
@@ -180,6 +185,7 @@ export default function TaskOptionModal({
       }
 
       const payload: TaskPayload = {
+        assigneeId: String(values.assigneeId ?? ""),
         taskNumber: parsedTaskNumber,
         taskName: String(values.taskName).trim(),
         isBlock: Boolean(values.isBlock),
@@ -187,8 +193,10 @@ export default function TaskOptionModal({
         isOverdue: Boolean(values.isOverdue),
         overdueInfo: String(values.overdueInfo ?? "").trim(),
         taskPriority: values.taskPriority,
-        taskMembers: Array.isArray(values.taskMembers)
-          ? values.taskMembers
+        collaboratorIds: Array.isArray(values.collaboratorIds)
+          ? values.collaboratorIds.filter(
+              (collaboratorId: string) => collaboratorId !== values.assigneeId,
+            )
           : [],
         taskStatus: values.taskStatus,
       };
@@ -337,7 +345,8 @@ export default function TaskOptionModal({
       taskDescription,
       taskPriority,
       taskDeadline,
-      taskMembers,
+      assigneeId,
+      collaboratorIds,
       taskStatus,
       taskWorkTime,
       isBlock,
@@ -354,7 +363,8 @@ export default function TaskOptionModal({
     taskDescription,
     taskPriority,
     taskDeadline,
-    taskMembers,
+    assigneeId,
+    collaboratorIds,
     taskStatus,
     taskWorkTime,
     isBlock,
@@ -409,17 +419,27 @@ export default function TaskOptionModal({
             <Radio value="low">低</Radio>
           </Radio.Group>
         </FormItem>
-        {/* 任务成员 */}
+        {/* 任务负责人 */}
         <FormItem
-          label="任务成员："
-          field="taskMembers"
+          label="负责人："
+          field="assigneeId"
           required
           rules={[{ required: true }]}
         >
-          <Select placeholder="第一位成员为负责人" mode="multiple">
+          <Select placeholder="请选择负责人">
             {boardMembers?.map((member) => (
-              <Option key={member} value={member}>
-                {member}
+              <Option key={member.userId} value={member.userId}>
+                {member.username}
+              </Option>
+            ))}
+          </Select>
+        </FormItem>
+        {/* 其他参与人 */}
+        <FormItem label="其他参与人：" field="collaboratorIds">
+          <Select placeholder="请选择其他参与人" mode="multiple">
+            {boardMembers?.map((member) => (
+              <Option key={member.userId} value={member.userId}>
+                {member.username}
               </Option>
             ))}
           </Select>

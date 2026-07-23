@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p tsconfig.json",
+    "migrate:task-assignees": "tsx scripts/migrate-task-assignees.ts",
     "start": "node dist/server.js",
     "dev": "tsx watch server.ts"
   },

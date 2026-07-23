@@ -20,14 +20,21 @@ export default function RightSide() {
           taskStatus={task?.taskStatus}
         />
         <Tag
-          taskMembers={task?.taskMembers}
+          assigneeName={task?.assigneeName || task?.assigneeId}
           taskDeadline={task?.taskDeadline}
           taskPriority={task?.taskPriority}
           taskWorkTime={task?.taskWorkTime}
         />
         <Describe
           taskDescription={task?.taskDescription}
-          taskMembers={task?.taskMembers}
+          participantNames={
+            task
+              ? [
+                  task.assigneeName || task.assigneeId,
+                  ...task.collaboratorNames,
+                ].filter(Boolean)
+              : []
+          }
         />
         <TaskList subtasks={task?.subtask} />
         <Attachment files={task?.files} />

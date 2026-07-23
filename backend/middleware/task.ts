@@ -39,38 +39,32 @@ const normalizeStringArrayField = (value: unknown) => {
   return value;
 };
 
-const normalizeTaskMembersToUserIds = async (
+const normalizeTaskPeopleToUserIds = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const rawTaskMembers = req.body?.taskMembers;
-
-    if (!Array.isArray(rawTaskMembers)) {
-      return next();
-    }
-
-    const normalizedTaskMembers = rawTaskMembers.map((item) =>
-      typeof item === "string" ? item.trim() : item,
-    );
-    const memberIdentifiers = [
+    const rawAssigneeId = req.body?.assigneeId;
+    const rawCollaboratorIds = Array.isArray(req.body?.collaboratorIds)
+      ? req.body.collaboratorIds
+      : [];
+    const identifiers = [
       ...new Set(
-        normalizedTaskMembers.filter(
+        [rawAssigneeId, ...rawCollaboratorIds].filter(
           (item): item is string => typeof item === "string" && Boolean(item),
         ),
       ),
     ];
 
-    if (!memberIdentifiers.length) {
-      req.body.taskMembers = normalizedTaskMembers;
+    if (!identifiers.length) {
       return next();
     }
 
     const users = await User.find({
       $or: [
-        { userId: { $in: memberIdentifiers } },
-        { username: { $in: memberIdentifiers } },
+        { userId: { $in: identifiers } },
+        { username: { $in: identifiers } },
       ],
     })
       .select("userId username -_id")
@@ -81,13 +75,23 @@ const normalizeTaskMembersToUserIds = async (
       users.map((user) => [user.username, user.userId]),
     );
 
-    req.body.taskMembers = normalizedTaskMembers.map((item) => {
-      if (typeof item !== "string") {
-        return item;
+    const toUserId = (identifier: unknown) => {
+      if (typeof identifier !== "string") {
+        return identifier;
       }
+      const normalizedIdentifier = identifier.trim();
+      return (
+        userIdMap.get(normalizedIdentifier) ||
+        usernameMap.get(normalizedIdentifier) ||
+        normalizedIdentifier
+      );
+    };
 
-      return userIdMap.get(item) || usernameMap.get(item) || item;
-    });
+    const assigneeId = toUserId(rawAssigneeId);
+    req.body.assigneeId = assigneeId;
+    req.body.collaboratorIds = Array.from(
+      new Set(rawCollaboratorIds.map(toUserId)),
+    ).filter((collaboratorId) => collaboratorId !== assigneeId);
 
     return next();
   } catch (error) {
@@ -100,9 +104,17 @@ const normalizeTaskMembersToUserIds = async (
 };
 
 const normalizeTaskPayload = (req: Request) => {
+  const legacyTaskMembers = normalizeStringArrayField(req.body?.taskMembers);
+  const legacyMemberIds = Array.isArray(legacyTaskMembers)
+    ? legacyTaskMembers
+    : [];
+
   req.body = {
     ...req.body,
-    taskMembers: normalizeStringArrayField(req.body?.taskMembers),
+    assigneeId: req.body?.assigneeId ?? legacyMemberIds[0],
+    collaboratorIds: normalizeStringArrayField(
+      req.body?.collaboratorIds ?? legacyMemberIds.slice(1),
+    ),
     subtask: normalizeStringArrayField(req.body?.subtask),
   };
 
@@ -245,12 +257,35 @@ const taskWorkTimeValidation = body("taskWorkTime")
   .isString()
   .withMessage("任务工时必须是字符串");
 
-const taskMembersValidation = body("taskMembers")
+const validateExistingUserId = async (userId: string) => {
+  const userExists = await User.exists({ userId });
+  if (!userExists) {
+    throw new Error("用户必须是已存在用户的 userId");
+  }
+  return true;
+};
+
+const assigneeIdValidation = body("assigneeId")
+  .trim()
+  .notEmpty()
+  .withMessage("任务负责人不能为空")
+  .isString()
+  .withMessage("任务负责人必须是字符串")
+  .custom(validateExistingUserId);
+
+const assigneeIdOptionalValidation = body("assigneeId")
+  .optional({ values: "falsy" })
+  .trim()
+  .isString()
+  .withMessage("任务负责人必须是字符串")
+  .custom(validateExistingUserId);
+
+const collaboratorIdsValidation = body("collaboratorIds")
   .optional({ values: "falsy" })
   .isArray()
-  .withMessage("任务成员必须是数组")
+  .withMessage("任务参与人必须是数组")
   .custom((items: unknown[]) => items.every((item) => typeof item === "string"))
-  .withMessage("任务成员数组中的每一项都必须是字符串")
+  .withMessage("任务参与人数组中的每一项都必须是字符串")
   .custom(async (items: string[]) => {
     if (!Array.isArray(items) || items.length === 0) {
       return true;
@@ -262,7 +297,7 @@ const taskMembersValidation = body("taskMembers")
       .lean();
 
     if (users.length !== uniqueUserIds.length) {
-      throw new Error("任务成员必须全部是已存在用户的 userId");
+      throw new Error("任务参与人必须全部是已存在用户的 userId");
     }
 
     return true;
@@ -366,10 +401,10 @@ const filesValidation = body("files")
   .withMessage("附件数组中的每一项都必须是合法的附件对象");
 
 export const validateTaskListQuery = [
-  query("member")
+  query("assigneeId")
     .optional({ values: "falsy" })
     .isString()
-    .withMessage("成员ID必须是字符串"),
+    .withMessage("负责人ID必须是字符串"),
   query("taskPriority")
     .optional({ values: "falsy" })
     .isIn([...TASK_PRIORITY_VALUES, "all"])
@@ -406,13 +441,14 @@ export const validateTaskListQuery = [
 
 export const validateTaskCreate = [
   normalizeTaskCreatePayload,
-  normalizeTaskMembersToUserIds,
+  normalizeTaskPeopleToUserIds,
   boardIdValidation,
   taskNumberValidation,
   taskNameValidation,
   taskDeadlineValidation,
   taskWorkTimeValidation,
-  taskMembersValidation,
+  assigneeIdValidation,
+  collaboratorIdsValidation,
   taskDescriptionValidation,
   taskPriorityValidation,
   taskStatusValidation,
@@ -427,13 +463,14 @@ export const validateTaskCreate = [
 
 export const validateTaskUpdate = [
   normalizeTaskUpdatePayload,
-  normalizeTaskMembersToUserIds,
+  normalizeTaskPeopleToUserIds,
   boardIdValidation,
   taskNumberOptionalValidation,
   taskNameOptionalValidation,
   taskDeadlineValidation,
   taskWorkTimeValidation,
-  taskMembersValidation,
+  assigneeIdOptionalValidation,
+  collaboratorIdsValidation,
   taskDescriptionValidation,
   body("taskPriority")
     .optional({ values: "falsy" })

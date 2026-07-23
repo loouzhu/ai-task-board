@@ -3,14 +3,14 @@ import { useCreateBoard, useEditBoard } from "@/hooks/useBoard";
 import { useParams } from "react-router-dom";
 import { useGetTeamInfo } from "@/hooks/useTeam";
 import type { User } from "@/types/user";
-import type { boardPayload } from "@/types/board";
+import type { boardListProps } from "@/types/board";
 import { boardNameRules, boardMembersRules } from "@/rules/board";
 import { useEffect } from "react";
 import styles from "./index.module.less";
 
 interface BoardOptionModalProps {
   type: "edit" | "create";
-  board?: boardPayload;
+  board?: boardListProps;
   visible: boolean;
   onVisibleChange: (visible: boolean) => void;
 }
@@ -32,7 +32,7 @@ export default function BoardOptionModal({
 
   useEffect(() => {
     if (!visible) return;
-    const boardMembers = board?.boardMembers || [];
+    const boardMembers = board?.boardMembers.map((member) => member.userId) || [];
     form.setFieldsValue({
       boardName,
       boardMembers,
@@ -101,7 +101,7 @@ export default function BoardOptionModal({
           required
           rules={boardMembersRules}
         >
-          <Select placeholder="第一位成员为负责人" mode="multiple">
+          <Select placeholder="请选择看板成员" mode="multiple">
             {getTeamInfoQuery.data?.team?.teamMembers?.map((user: User) => (
               <Option key={user.userId} value={user.userId}>
                 {user.username}

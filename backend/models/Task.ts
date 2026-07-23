@@ -26,7 +26,8 @@ export interface TaskRecord {
   taskName: string;
   taskDeadline?: Date | null;
   taskWorkTime?: string;
-  taskMembers: string[];
+  assigneeId: string;
+  collaboratorIds: string[];
   taskDescription?: string;
   taskPriority: TaskPriorityValue;
   taskStatus: TaskStatusValue;
@@ -114,7 +115,12 @@ const taskSchema = new mongoose.Schema<TaskRecord>({
     type: String,
     required: false,
   },
-  taskMembers: {
+  assigneeId: {
+    type: String,
+    required: [true, "任务负责人是必填项"],
+    index: true,
+  },
+  collaboratorIds: {
     type: [String],
     required: false,
     default: [],

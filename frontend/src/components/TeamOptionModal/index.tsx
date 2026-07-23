@@ -126,7 +126,7 @@ export default function TeamOptionModal({
           required
           rules={teamMembersRules}
         >
-          <Select placeholder="第一位成员为负责人" mode="multiple">
+          <Select placeholder="请选择团队成员" mode="multiple">
             {getAllUserQuery.data?.users?.map((user: User) => (
               <Option key={user.userId} value={user.userId}>
                 {user.username}

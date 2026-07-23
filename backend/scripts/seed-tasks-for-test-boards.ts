@@ -85,10 +85,8 @@ async function seedTasksForEachBoard() {
       taskName: template.taskName,
       taskDeadline: new Date(dueBase + (index + 1) * 24 * 60 * 60 * 1000),
       taskWorkTime: template.taskWorkTime,
-      taskMembers:
-        board.boardMembers && board.boardMembers.length
-          ? board.boardMembers
-          : [user.userId],
+      assigneeId: board.boardMembers?.[0] || user.userId,
+      collaboratorIds: board.boardMembers?.slice(1) || [],
       taskDescription: template.taskDescription,
       taskPriority: template.taskPriority,
       taskStatus: template.taskStatus,

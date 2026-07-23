@@ -11,7 +11,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "types": ["node"],
-    "ignoreDeprecations": "6.0"
+    "ignoreDeprecations": "5.0"
   },
   "include": ["server.ts", "config/**/*.ts", "middleware/**/*.ts", "models/**/*.ts", "routes/**/*.ts", "scripts/**/*.ts", "utils/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules", "dist", "uploads"]

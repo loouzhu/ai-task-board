@@ -1,11 +1,12 @@
 import { create } from "zustand";
+import type { User } from "@/types/user";
 
 interface boardStore {
-  boardMembers: string[];
-  setBoardMembers: (members: string[]) => void;
+  boardMembers: User[];
+  setBoardMembers: (members: User[]) => void;
 }
 
 export const useBoardStore = create<boardStore>((set) => ({
   boardMembers: [],
-  setBoardMembers: (members: string[]) => set({ boardMembers: members }),
+  setBoardMembers: (members: User[]) => set({ boardMembers: members }),
 }));

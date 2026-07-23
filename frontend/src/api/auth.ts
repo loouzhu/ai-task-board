@@ -5,13 +5,13 @@ export const register = async (
   userData: RegisterUserData,
   signal?: AbortSignal,
 ) => {
-  const response = await request<RegisterUserData>({
+  const response = await request({
     url: "/api/auth/register",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(userData),
+    body: userData,
     signal,
     credentials: "include",
   });

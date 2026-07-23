@@ -12,9 +12,13 @@ export interface TaskFile {
 }
 
 export interface task {
+  assigneeId: string;
+  assigneeName?: string;
   blockInfo: string;
   boardId: string;
   boardName?: string;
+  collaboratorIds: string[];
+  collaboratorNames: string[];
   createdAt: string;
   createdBy: string;
   files: TaskFile[];
@@ -25,7 +29,6 @@ export interface task {
   taskDeadline: string;
   taskDescription: string;
   taskId: string;
-  taskMembers: string[];
   taskName: string;
   taskNumber: number;
   taskPriority: string;
@@ -36,7 +39,7 @@ export interface task {
 export type taskType = "pending" | "processing" | "testing" | "completed";
 
 export interface taskFilterParams {
-  filterMember?: string;
+  assigneeId?: string;
   taskPriority?: string;
   keyword?: string;
   startDate?: string;
@@ -50,7 +53,9 @@ export interface TaskItemProps {
 }
 
 export interface TaskPayload {
+  assigneeId: string;
   blockInfo: string;
+  collaboratorIds: string[];
   files?: File[];
   isBlock: boolean;
   isOverdue: boolean;
@@ -60,7 +65,6 @@ export interface TaskPayload {
   taskDeadline?: string;
   taskDescription?: string;
   taskId?: string;
-  taskMembers: string[];
   taskName: string;
   taskNumber: number;
   taskPriority: string;

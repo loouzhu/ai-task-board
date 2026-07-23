@@ -3,14 +3,14 @@ import { formatData, formatTaskPriority } from "@/utils/common";
 import styles from "./index.module.less";
 
 interface TagProps {
-  taskMembers?: string[];
+  assigneeName?: string;
   taskDeadline?: string;
   taskPriority?: string;
   taskWorkTime?: string;
 }
 
 export default function Tag({
-  taskMembers,
+  assigneeName,
   taskDeadline,
   taskPriority,
   taskWorkTime,
@@ -18,7 +18,7 @@ export default function Tag({
   const tagList = [
     {
       title: "负责人",
-      data: taskMembers?.[0] || "-",
+      data: assigneeName || "-",
     },
     {
       title: "截止日期",

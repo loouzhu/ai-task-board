@@ -11,7 +11,8 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
     taskName,
     taskPriority,
     taskDeadline,
-    taskMembers,
+    assigneeId,
+    assigneeName,
     isBlock,
     blockInfo,
     isOverdue,
@@ -39,8 +40,8 @@ export default function TaskItem({ task, onEdit, onDelete }: TaskItemProps) {
         <div className={styles.priority}>
           优先级：{formatTaskPriority(taskPriority)}
         </div>
-        <div className={styles.principle}>
-          负责人：{taskMembers?.[0] || "-"}{" "}
+        <div className={styles.assignee}>
+          负责人：{assigneeName || assigneeId || "-"}{" "}
         </div>
         <div className={styles.deadline}>
           截止日期：{taskDeadline ? formatData(taskDeadline) : "暂无"}

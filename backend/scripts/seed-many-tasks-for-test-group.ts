@@ -310,8 +310,14 @@ async function seedManyTasksForTestGroup() {
 
       const memberCount =
         userIds.length === 1 ? 1 : randomInt(2, userIds.length);
-      const taskMembers = pickMany(userIds, memberCount, userIds.length);
-      const createdBy = pickOne(taskMembers);
+      const selectedMemberIds = pickMany(
+        userIds,
+        memberCount,
+        userIds.length,
+      );
+      const createdBy = pickOne(selectedMemberIds);
+      const assigneeId = selectedMemberIds[0];
+      const collaboratorIds = selectedMemberIds.slice(1);
 
       const statusRoll = Math.random();
       const taskStatus =
@@ -339,7 +345,8 @@ async function seedManyTasksForTestGroup() {
         taskName: buildTaskName(taskNumber + index),
         taskDeadline,
         taskWorkTime: `${randomInt(2, 16)}h`,
-        taskMembers,
+        assigneeId,
+        collaboratorIds,
         taskDescription: `${board.boardName}任务批量造数-${index + 1}`,
         taskPriority,
         taskStatus,
@@ -360,12 +367,12 @@ async function seedManyTasksForTestGroup() {
   const insertedTasks = await Task.insertMany(payload);
 
   const currentMonthCount = insertedTasks.filter((task) => {
-    const createdAt = new Date(task.createdAt);
+    const createdAt = new Date(task.createdAt as Date);
     return createdAt >= currentMonthStart && createdAt <= currentMonthEnd;
   }).length;
 
   const previousMonthCount = insertedTasks.filter((task) => {
-    const createdAt = new Date(task.createdAt);
+    const createdAt = new Date(task.createdAt as Date);
     return createdAt >= previousMonthStart && createdAt <= previousMonthEnd;
   }).length;
 

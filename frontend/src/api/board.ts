@@ -1,4 +1,5 @@
 import type { boardListProps } from "@/types/board";
+import type { User } from "@/types/user";
 
 interface AllBoardsResponse {
   boards: boardListProps[];
@@ -29,18 +30,19 @@ const readJson = async (response: Response) => {
 
 const normalizeBoardMembers = (
   boardMembers?: Array<string | RawBoardMember>,
-) => {
+): User[] => {
   if (!Array.isArray(boardMembers)) {
     return [];
   }
-  return boardMembers
-    .map((member) => {
+  return boardMembers.flatMap((member) => {
       if (typeof member === "string") {
-        return member;
+        return [{ userId: member, username: member }];
       }
-      return member.username || "";
-    })
-    .filter(Boolean);
+      if (!member.userId) {
+        return [];
+      }
+      return [{ userId: member.userId, username: member.username || member.userId }];
+    });
 };
 
 const normalizeBoard = (board: RawBoard): boardListProps => ({

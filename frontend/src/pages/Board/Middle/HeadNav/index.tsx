@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTaskStore } from "@/stores/taskStore";
 import type { boardListProps } from "@/types/board";
+import type { User } from "@/types/user";
 import BoardOptionModal from "@/components/BoardOptionModal";
 import { useDeleteBoard } from "@/hooks/useBoard";
 import styles from "./index.module.less";
@@ -24,7 +25,7 @@ export default function HeaderNav({
   boardMemberList,
 }: {
   boardList: boardListProps[];
-  boardMemberList: string[];
+  boardMemberList: User[];
 }) {
   const Option = Select.Option;
   const MenuItem = Menu.Item;
@@ -126,10 +127,10 @@ export default function HeaderNav({
         <div className={styles.title}>参与研发：</div>
         <AvatarGroup className={styles.memberList} maxCount={3}>
           {boardMemberList &&
-            boardMemberList.map((member, index) => (
-              <div key={`${member}-${index}`}>
+            boardMemberList.map((member) => (
+              <div key={member.userId}>
                 <Avatar className={styles.member}>
-                  {member.slice(0, 1).toUpperCase()}
+                  {member.username.slice(0, 1).toUpperCase()}
                 </Avatar>
               </div>
             ))}

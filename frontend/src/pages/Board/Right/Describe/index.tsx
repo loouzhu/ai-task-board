@@ -2,12 +2,12 @@ import styles from "./index.module.less";
 
 interface DescribeProps {
   taskDescription?: string;
-  taskMembers?: string[];
+  participantNames?: string[];
 }
 
 export default function Describe({
   taskDescription,
-  taskMembers,
+  participantNames,
 }: DescribeProps) {
   return (
     <div className={styles.describe}>
@@ -17,7 +17,9 @@ export default function Describe({
       </div>
       <div className={styles.part}>
         <div className={styles.title}>参与研发</div>
-        <div className={styles.participants}>{taskMembers?.join("、") || "-"}</div>
+        <div className={styles.participants}>
+          {participantNames?.join("、") || "-"}
+        </div>
       </div>
     </div>
   );

@@ -8,14 +8,9 @@ import type {
 
 const BASE_URL = "/api/task";
 
-interface RawMember {
-  userId?: string;
-  username?: string;
-}
-
-interface RawTask extends Omit<task, "taskMembers"> {
-  taskMembers?: Array<string | RawMember>;
-  principle?: string;
+interface RawTask extends Omit<task, "assigneeName" | "collaboratorNames"> {
+  assigneeName?: string | null;
+  collaboratorNames?: string[];
 }
 
 interface FocusOnTaskResponse {
@@ -31,34 +26,21 @@ const readJson = async (response: Response) => {
   }
 };
 
-const normalizeTaskMembers = (taskMembers?: Array<string | RawMember>) => {
-  if (!Array.isArray(taskMembers)) {
-    return [];
-  }
-  return taskMembers
-    .map((member) => {
-      if (typeof member === "string") {
-        return member;
-      }
-      return member.username || member.userId || "";
-    })
-    .filter(Boolean);
-};
-
 const normalizeTask = (rawTask: RawTask): task => {
-  const taskMembers = normalizeTaskMembers(rawTask.taskMembers);
   return {
     ...rawTask,
+    assigneeId: rawTask.assigneeId || "",
+    assigneeName: rawTask.assigneeName || rawTask.assigneeId || "",
     isBlock: Boolean(rawTask.isBlock),
     blockInfo: rawTask.blockInfo ?? "",
+    collaboratorIds: Array.isArray(rawTask.collaboratorIds)
+      ? rawTask.collaboratorIds
+      : [],
+    collaboratorNames: Array.isArray(rawTask.collaboratorNames)
+      ? rawTask.collaboratorNames
+      : [],
     isOverdue: Boolean(rawTask.isOverdue),
     overdueInfo: rawTask.overdueInfo ?? "",
-    taskMembers:
-      taskMembers.length > 0
-        ? taskMembers
-        : rawTask.principle
-          ? [rawTask.principle]
-          : [],
   };
 };
 
@@ -170,7 +152,7 @@ export const addTask = async (
     }
   }
   const data = await response.json();
-  return normalizeTask(data);
+  return normalizeTask((data?.task ?? data) as RawTask);
 };
 
 // 编辑任务
@@ -202,7 +184,7 @@ export const editTask = async (
     }
   }
   const data = await response.json();
-  return normalizeTask(data);
+  return normalizeTask((data?.task ?? data) as RawTask);
 };
 
 // 删除任务

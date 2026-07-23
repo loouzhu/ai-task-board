@@ -1,7 +1,9 @@
+import type { User } from "./user";
+
 export interface boardListProps {
   boardId: string;
   boardName: string;
-  boardMembers: string[];
+  boardMembers: User[];
 }
 
 export interface boardPayload {
