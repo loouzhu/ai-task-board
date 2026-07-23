@@ -9,6 +9,7 @@ import {
   IconDelete,
   IconSun,
   IconMoon,
+  IconUser,
 } from "@arco-design/web-react/icon";
 import {
   Layout,
@@ -235,7 +236,7 @@ export default function Header() {
         }}
       >
         <Avatar size={35}>
-          <img src={avatar || ""} alt="" />
+          {avatar ? <img src={avatar || ""} alt="" /> : <IconUser />}
         </Avatar>
         <span className={styles.username} title={username || "用户名"}>
           {username || "用户名"}

@@ -7,10 +7,10 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: false,
-      // 数据缓存一天
-      staleTime: 1 * 24 * 60 * 60 * 1000,
-      // 过期一天后被回收
-      gcTime: 1 * 24 * 60 * 60 * 1000,
+      // 数据缓存一分钟
+      staleTime: 60 * 1000,
+      // 过期一分钟后被回收
+      gcTime: 60 * 1000,
     },
     mutations: {
       retry: false,

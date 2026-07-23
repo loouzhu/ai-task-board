@@ -12,9 +12,10 @@ export default function TeamRedirect() {
   const teamList = useMemo(() => {
     return teamQuery.data?.teams;
   }, [teamQuery.data?.teams]);
-  
+  console.log(teamList);
+
   useEffect(() => {
-    if (!isAuthenticated || teamList.length === 0) {
+    if (!isAuthenticated || teamList?.length === 0 || teamList === undefined) {
       return;
     }
     navigate(`/team/${teamList[0].teamId}/board`, { replace: true });
@@ -32,7 +33,7 @@ export default function TeamRedirect() {
     return <Navigate to="/auth" replace />;
   }
 
-  if (teamList.length === 0) {
+  if (teamList?.length === 0) {
     return <Empty description="暂无团队，请先创建团队" />;
   }
 
